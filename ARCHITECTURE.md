@@ -356,6 +356,7 @@ questions:
 - **Balíček nemá být monotónní**: ne každá karta má čtyři možnosti (2–4), kompromisní možnost má někdy cenu (odzbrojím první), a kolo má aspoň jedno dilema s existenčními sázkami (nemoc, zbraň), ne jen majetkové spory. Vyřazené otázky se parkují v `content/bench.yaml` (nenačítá se).
 - Validace vynucuje: přesně jeden honeypot na živé kolo, meta otázka těsně před svou cílovou otázkou, rozporná dvojice přes dvě různé otázky, 3–9 dilemat, unikátní klíče a pozice.
 - `scripts/sync-content.ts`: validace zod → `sync_round(jsonb)` (atomický upsert podle `(round.slug, question.key, option.key)`). Nikdy nemaže; deaktivuje (`active = false`).
+- **Nasazení obsahu**: při startu serveru (`instrumentation-node.ts` → `src/lib/db/bootstrap-pg.ts`) se pod poradním zámkem Postgresu (`pg_advisory_lock`) aplikují migrace a spustí `syncContent`. Obojí je idempotentní, takže víc replik současně je bezpečné. Railway `preDeployCommand` z `railway.json` se u nahrávaného zdroje (`railway up`) neaplikuje — bez tohoto bootstrapu by nasazení tiše servírovalo starý obsah.
 - `scripts/translate.ts`: pro chybějící locale vygeneruje překlad přes Claude API (Haiku), uloží jako `i18n.<locale>` s příznakem `machine: true`. Komunitní opravy = PR do repa. Politicky citlivé otázky (Rusko/Ukrajina, Čína, Izrael) mají v YAML `review_required: true` — bez lidského schválení (`reviewed: true` u daného locale) se v daném jazyce nezobrazí; hráč dostane anglický text s označením `fallback_locale`, aby kolo zůstalo hratelné a validace „všechny otázky zodpovězeny" platila.
 
 ---

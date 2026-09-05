@@ -1,16 +1,29 @@
+import { bootstrapPg } from "@/lib/db/bootstrap-pg";
 import { env, internalCronEnabled } from "@/lib/env";
 import { runNarratorJob, runRecomputeJob } from "@/lib/jobs";
 
 /**
  * Runs once per server process:
+ *  - brings the Postgres schema and content/*.yaml up to date (advisory-locked, so
+ *    several replicas starting at once is safe)
  *  - recompute every 10 minutes (weights, country_stats, planet_stats)
  *  - narrator draft once a day at 06:00 UTC
- * Both take a DB lease, so several replicas never double-run. Disable with PLANETCHECK_INTERNAL_CRON=false
- * and drive /api/cron/* from Railway cron instead.
+ * Both jobs take a DB lease, so several replicas never double-run. Disable the jobs with
+ * PLANETCHECK_INTERNAL_CRON=false and drive /api/cron/* from Railway cron instead.
  */
 export async function startScheduler() {
   const e = env();
-  if (!internalCronEnabled(e) || e.NODE_ENV === "test") return;
+  if (e.NODE_ENV === "test") return;
+
+  try {
+    const r = await bootstrapPg();
+    if (r.ran) console.log(`[bootstrap] migrations applied: ${r.applied.length ? r.applied.join(", ") : "none"}; content rounds: ${r.rounds}`);
+  } catch (err) {
+    // Loud on purpose: a half-migrated database is the one failure that must not pass quietly.
+    console.error("[bootstrap] FAILED — the schema or content may be stale:", err);
+  }
+
+  if (!internalCronEnabled(e)) return;
 
   const safe = (name: string, fn: () => Promise<unknown>) => async () => {
     try {

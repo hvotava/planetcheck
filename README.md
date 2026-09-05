@@ -29,9 +29,12 @@ Services: **Next.js** (this repo, `Dockerfile` + `railway.json`), **Postgres**, 
 Cloudflare proxies the domain (gives `cf-ipcountry` and Turnstile).
 
 1. Create a Railway project, add Postgres (and Redis if you want a shared flood limiter).
-2. Deploy this repo. `railway.json` runs `pnpm db:migrate` as the pre-deploy command and `pnpm start` after.
+2. Deploy this repo (`railway up`, or connect the GitHub repo for deploy-on-push).
 3. Set the variables from `.env.example` (`DATABASE_URL` is injected by Railway; use the private URL).
-4. Sync content once: `railway run pnpm content:sync` (or run it from CI on every content change).
+4. Migrations and `content/*.yaml` are applied automatically at server start, under a Postgres
+   advisory lock, so several replicas booting at once is safe. Railway does **not** apply
+   `railway.json`'s `preDeployCommand` to source uploads, which is why the app does this itself.
+   To run either by hand: `railway ssh -- pnpm db:migrate` / `railway ssh -- pnpm content:sync`.
 5. Scheduling: the app runs an internal scheduler (recompute every 10 min, narrator daily 06:00 UTC) guarded by a
    DB lease, so multiple replicas are safe. Set `PLANETCHECK_INTERNAL_CRON=false` and call `/api/cron/*` with
    `Authorization: Bearer $CRON_SECRET` from Railway cron if you prefer external scheduling.
