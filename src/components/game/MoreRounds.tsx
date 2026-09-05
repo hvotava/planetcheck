@@ -45,6 +45,11 @@ export function MoreRounds({ locale, excludeSlug }: { locale: string; excludeSlu
               <span className="min-w-0">
                 <span className="block font-semibold">{r.title}</span>
                 {r.blurb ? <span className="mt-0.5 block text-xs text-muted">{r.blurb}</span> : null}
+                {r.upcoming ? (
+                  <span className="mt-1 inline-block rounded-full border border-border px-2 py-0.5 text-[11px] text-faint">
+                    {t("moreUpcoming", { date: new Date(r.starts_at).toLocaleDateString(locale, { day: "numeric", month: "long" }) })}
+                  </span>
+                ) : null}
               </span>
               <span aria-hidden="true" className="shrink-0 text-accent">
                 →

@@ -280,12 +280,12 @@ test.describe("play a round on mobile", () => {
     await expect(page.getByTestId("already-voted-cta")).toHaveCount(0);
   });
 
-  test("a round that has not opened can be previewed but not voted on", async ({ page, request }) => {
-    // /play?round=<slug> serves a future deck so content can be checked before it goes live
+  test("a week that has not arrived yet can still be played", async ({ page, request }) => {
+    // starts_at decides which theme the site promotes, not when a deck may be played: a
+    // player who finished this week must be able to keep going instead of hitting a wall.
     await page.goto("/cs/play?round=2026-w41");
     await expect(page.getByTestId("options").getByRole("button").first()).toBeVisible({ timeout: 30_000 });
 
-    // …but the vote itself is refused, so a preview cannot seed the round's numbers
     const round = await request.get("/api/rounds/current?locale=cs&round=2026-w41");
     const data = (await round.json()).data as { id: string; questions: Array<{ id: string; type: string; options: Array<{ id: string }> }> };
     const res = await request.post("/api/vote", {
@@ -297,7 +297,13 @@ test.describe("play a round on mobile", () => {
         locale: "cs",
       },
     });
-    expect(res.status()).toBe(410);
+    expect(res.status()).toBe(201);
+
+    // it is offered as playable, and marked with the week it becomes the headline
+    const playable = await request.get("/api/rounds/playable?locale=cs");
+    const rows = (await playable.json()).data as Array<{ slug: string; upcoming: boolean }>;
+    expect(rows.find((r) => r.slug === "2026-w41")?.upcoming).toBe(true);
+    expect(rows.find((r) => r.slug === "2026-w37")?.upcoming).toBe(false);
   });
 
   test("API envelope, health and export", async ({ request }) => {

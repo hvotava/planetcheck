@@ -9,14 +9,25 @@ import { isLocale } from "@/lib/i18n/locales";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export type PlayableRound = { slug: string; kind: string; title: string; blurb: string | null; played: boolean; ends_at: string | null };
+export type PlayableRound = {
+  slug: string;
+  kind: string;
+  title: string;
+  blurb: string | null;
+  played: boolean;
+  starts_at: string;
+  ends_at: string | null;
+  /** true while this deck is playable but its week has not arrived yet */
+  upcoming: boolean;
+};
 
 /**
  * GET /api/rounds/playable?locale=cs — every round this visitor can still play.
  *
  * One vote per person per ROUND, not per person: `unique (round_id, voter_id)` has always
  * allowed a second round, we just never offered one. The anchors are the obvious next deck
- * once the weekly theme is done.
+ * once the weekly theme is done, and the weeks that are already written come after that —
+ * `starts_at` decides what the site promotes, not what may be played.
  */
 export const GET = handle(async (req) => {
   const url = new URL(req.url);
@@ -27,9 +38,7 @@ export const GET = handle(async (req) => {
   const now = Date.now();
 
   const rounds = await repo.listRounds(false);
-  const open = rounds.filter(
-    (r) => r.status === "live" && new Date(r.starts_at).getTime() <= now && (!r.ends_at || new Date(r.ends_at).getTime() > now),
-  );
+  const open = rounds.filter((r) => r.status === "live" && (!r.ends_at || new Date(r.ends_at).getTime() > now));
 
   const out: PlayableRound[] = [];
   for (const r of open) {
@@ -41,11 +50,14 @@ export const GET = handle(async (req) => {
       title: l?.title ?? r.slug,
       blurb: l?.blurb ?? null,
       played: !!status?.submission_id,
+      starts_at: r.starts_at,
       ends_at: r.ends_at,
+      upcoming: new Date(r.starts_at).getTime() > now,
     });
   }
-  // weekly first, then the anchors, so the current theme stays the headline offer
-  out.sort((a, b) => (a.kind === b.kind ? a.slug.localeCompare(b.slug) : a.kind === "weekly" ? -1 : 1));
+  // running weeks first, then the anchors, then the weeks that are written but not yet due
+  const rank = (r: PlayableRound) => (r.upcoming ? 2 : r.kind === "weekly" ? 0 : 1);
+  out.sort((a, b) => (rank(a) === rank(b) ? a.starts_at.localeCompare(b.starts_at) : rank(a) - rank(b)));
 
   const res = ok(out);
   setAnonCookie(res, anonId, env().NODE_ENV === "production");

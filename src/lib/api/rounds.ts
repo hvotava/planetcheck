@@ -37,9 +37,17 @@ export async function roundById(id: string): Promise<RoundPayload> {
   return round;
 }
 
+/**
+ * Whether a round accepts votes.
+ *
+ * A round that has not reached its week yet is deliberately still open: `starts_at` decides
+ * which theme the site *promotes* (that is `current_round` in SQL), not when the deck may be
+ * played. Somebody who has finished this week's dilemmas should be able to keep going rather
+ * than hit a wall, and each round keeps its own numbers either way.
+ * A round that has ENDED is closed for good, so its published result cannot move afterwards.
+ */
 export function isRoundOpen(round: RoundPayload, now = Date.now()): boolean {
   if (round.status !== "live") return false;
-  if (new Date(round.starts_at).getTime() > now) return false;
   if (round.ends_at && new Date(round.ends_at).getTime() <= now) return false;
   return true;
 }

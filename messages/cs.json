@@ -159,7 +159,8 @@
     "classBadge": "třída {code}",
     "moreTitle": "Chceš hrát dál?",
     "moreSubtitle": "Jeden hlas platí na jedno kolo, ne na osobu. Tyhle balíčky máš ještě před sebou.",
-    "playAgainCta": "Zahrát jiné kolo"
+    "playAgainCta": "Zahrát jiné kolo",
+    "moreUpcoming": "hlavní téma od {date}"
   },
   "result": {
     "title": "Tvůj verdikt",

@@ -159,7 +159,8 @@
     "classBadge": "class {code}",
     "moreTitle": "Want to keep playing?",
     "moreSubtitle": "One vote counts per round, not per person. These decks are still ahead of you.",
-    "playAgainCta": "Play another round"
+    "playAgainCta": "Play another round",
+    "moreUpcoming": "headline theme from {date}"
   },
   "result": {
     "title": "Your verdict",
