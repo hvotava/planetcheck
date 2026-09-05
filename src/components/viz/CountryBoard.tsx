@@ -52,7 +52,7 @@ export function CountryBoard({
             <span className="w-8 font-mono text-sm text-muted tabular">{t("rank", { rank: c.rank ?? "–" })}</span>
             <Flag code={c.code} className="text-xl" />
             <div className="min-w-0 flex-1">
-              <Link href={`/country/${c.code}`} className="font-semibold hover:underline">
+              <Link href={`/country/${c.code}`} className="-my-1 inline-block py-1 font-semibold hover:underline">
                 {c.name}
               </Link>
               <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-muted">
@@ -82,7 +82,7 @@ export function CountryBoard({
               <span className="w-8 text-center text-sm text-faint">🔒</span>
               <Flag code={c.code} className="text-xl opacity-70" />
               <div className="min-w-0 flex-1">
-                <Link href={`/country/${c.code}`} className="font-semibold text-muted hover:underline">
+                <Link href={`/country/${c.code}`} className="-my-1 inline-block py-1 font-semibold text-muted hover:underline">
                   {c.name}
                 </Link>
                 <div className="mt-1 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-surface-2">

@@ -37,7 +37,7 @@ export function MetaSlider({ question, index, total, onGuess }: { question: Play
         value={value}
         disabled={sent}
         onChange={(e) => setValue(Number(e.target.value))}
-        className="w-full accent-[var(--color-accent)]"
+        className="h-6 w-full cursor-pointer accent-[var(--color-accent)]"
         aria-label={question.text}
         aria-valuetext={`${value} %`}
       />

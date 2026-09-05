@@ -156,7 +156,10 @@
     "turnstileHint": "Overujem, že nie si robot…",
     "scenario": "Scenár",
     "timer": "{seconds} s",
-    "classBadge": "trieda {code}"
+    "classBadge": "trieda {code}",
+    "moreTitle": "Chceš hrať ďalej?",
+    "moreSubtitle": "Jeden hlas platí na jedno kolo, nie na osobu. Tieto balíčky máš ešte pred sebou.",
+    "playAgainCta": "Zahrať iné kolo"
   },
   "result": {
     "title": "Tvoj verdikt",

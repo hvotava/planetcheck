@@ -134,7 +134,7 @@ export default async function CountryPage({ params }: { params: Promise<{ locale
 
       <section className="mt-8">
         <h2 className="mb-3 text-xl font-bold">{t("questionsTitle")}</h2>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {data.questions.map((q) => (
             <div key={q.question_id} className="card p-4">
               <p className="font-semibold">{pickLocalized(q.i18n, locale)?.value.text ?? q.key}</p>

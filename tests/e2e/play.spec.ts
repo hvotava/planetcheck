@@ -59,6 +59,14 @@ test.describe("play a round on mobile", () => {
     // the verdict must say when the next theme opens and offer the calendar
     await expect(page.getByTestId("next-round")).toBeVisible();
     await expect(page.getByTestId("calendar-cta")).toBeVisible();
+    // one vote counts per round, not per person, so another deck is offered and reachable
+    const more = page.getByTestId("more-rounds");
+    await expect(more).toBeVisible({ timeout: 15_000 });
+    const other = more.getByRole("link").first();
+    await other.click();
+    await page.waitForURL(/\/play\?round=/, { timeout: 30_000 });
+    await expect(page.getByTestId("options").getByRole("button").first()).toBeVisible({ timeout: 30_000 });
+    await page.goBack();
     const elapsed = (Date.now() - started) / 1000;
     expect(elapsed).toBeLessThan(90);
 
@@ -231,6 +239,26 @@ test.describe("play a round on mobile", () => {
     await page.goto("/cs/newsletter/unsubscribe?token=nonsense");
     await page.getByTestId("unsub-button").click();
     await expect(page.getByTestId("unsub-invalid")).toBeVisible();
+  });
+
+  test("a round that has not opened can be previewed but not voted on", async ({ page, request }) => {
+    // /play?round=<slug> serves a future deck so content can be checked before it goes live
+    await page.goto("/cs/play?round=2026-w41");
+    await expect(page.getByTestId("options").getByRole("button").first()).toBeVisible({ timeout: 30_000 });
+
+    // …but the vote itself is refused, so a preview cannot seed the round's numbers
+    const round = await request.get("/api/rounds/current?locale=cs&round=2026-w41");
+    const data = (await round.json()).data as { id: string; questions: Array<{ id: string; type: string; options: Array<{ id: string }> }> };
+    const res = await request.post("/api/vote", {
+      data: {
+        roundId: data.id,
+        answers: data.questions.filter((q) => q.type === "choice").map((q) => ({ questionId: q.id, optionId: q.options[0]!.id })),
+        metaGuesses: data.questions.filter((q) => q.type === "meta").map((q) => ({ questionId: q.id, guess: 50 })),
+        loadedAt: new Date(Date.now() - 20_000).toISOString(),
+        locale: "cs",
+      },
+    });
+    expect(res.status()).toBe(410);
   });
 
   test("API envelope, health and export", async ({ request }) => {

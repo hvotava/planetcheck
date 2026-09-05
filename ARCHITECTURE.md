@@ -354,6 +354,8 @@ questions:
         axis_weights: {}
 ```
 
+- **Kolik kol si můžu zahrát**: unikátní klíč je `(round_id, voter_id)`, tedy **jeden hlas na kolo, ne na osobu**. Jeden člověk smí odehrát každé otevřené kolo právě jednou. Týdenní kolo je hlavní nabídka, kotvy jsou druhý balíček, který je otevřený pořád. `GET /api/rounds/playable` vrací všechna otevřená kola s příznakem, jestli je návštěvník už hrál; komponenta `MoreRounds` je nabídne na verdiktu i na obrazovce „už jsi hlasoval", která byla dřív slepá ulička.
+- **Konkrétní kolo**: `/play?round=<slug>` otevře daný balíček. Slouží k hraní kotev i k **náhledu kola, které ještě nezačalo** — `submit_vote` takový hlas odmítne (410), takže náhledem nejde kolu naočkovat čísla.
 - **Kotvy**: `content/rounds/anchor.yaml` je zároveň kolo (`kind: anchor`, bez konce — fallback, když neběží týdenní kolo) a knihovna. Týdenní kolo je přebírá přes `include_anchors: [{ key, position }]`; klíč otázky zůstává stejný napříč koly → dlouhodobý trend (`question_trend`). Pozice jsou explicitní, kolize = chyba validace.
 - **Rozporné dvojice** jsou knihovna v `content/contradictions.yaml`; sync připojí ke kolu každou dvojici, jejíž obě otázky v kole jsou. Dvojice musí spojovat dvě různé otázky (dvě možnosti téže otázky nejde zvolit obě — taková dvojice by jen nafukovala jmenovatel konzistence).
 - **Meta otázka stojí těsně před svou cílovou otázkou** (pozice cíle = pozice meta + 1). Důvod: po každé odpovědi se hned ukazuje rozložení planety; meta až po cíli by měřila paměť, ne realismus. Meta karta nic neodhaluje; odhalení tipu je součástí zpětné vazby cílové karty. Doporučeno jedna meta otázka na kolo.

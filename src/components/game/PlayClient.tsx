@@ -14,6 +14,7 @@ import { PlanetFeedback, type MetaReveal } from "./PlanetFeedback";
 import { ProgressDots } from "./ProgressDots";
 import { SwipeDeck } from "./SwipeDeck";
 import { TurnstileWidget } from "./TurnstileWidget";
+import { MoreRounds } from "./MoreRounds";
 
 type Phase =
   | { kind: "loading" }
@@ -43,17 +44,26 @@ export function PlayClient() {
   // School mode: /play?class=ABC123. Read from the URL rather than useSearchParams so the
   // page needs no Suspense boundary; an unknown code is ignored by the server.
   const [classCode, setClassCode] = useState<string | null>(null);
+  // /play?round=<slug> plays a specific deck: the anchors as a second round, or a preview of
+  // one that has not opened yet (a vote on it is still refused with 410 by the API).
+  const [roundSlug, setRoundSlug] = useState<string | null>(null);
+  const [bootstrapped, setBootstrapped] = useState(false);
   const [, force] = useState(0);
   const rerender = () => force((n) => n + 1);
 
   useEffect(() => {
-    const c = new URLSearchParams(window.location.search).get("class");
+    const params = new URLSearchParams(window.location.search);
+    const c = params.get("class");
     if (c && /^[A-Za-z0-9]{6}$/.test(c)) setClassCode(c.toUpperCase());
+    const r = params.get("round");
+    if (r && /^[a-z0-9-]{1,40}$/.test(r)) setRoundSlug(r);
+    setBootstrapped(true);
   }, []);
 
   useEffect(() => {
+    if (!bootstrapped) return;
     let cancelled = false;
-    api<PlayRound>(`/api/rounds/current?locale=${locale}`)
+    api<PlayRound>(`/api/rounds/current?locale=${locale}${roundSlug ? `&round=${encodeURIComponent(roundSlug)}` : ""}`)
       .then((r) => {
         if (cancelled) return;
         setRound(r);
@@ -68,7 +78,7 @@ export function PlayClient() {
     return () => {
       cancelled = true;
     };
-  }, [locale, t, tc]);
+  }, [locale, t, tc, roundSlug, bootstrapped]);
 
   const questions = useMemo(() => round?.questions ?? [], [round]);
   const total = questions.length;
@@ -198,6 +208,9 @@ export function PlayClient() {
             <Link href={`/result/${phase.submissionId}`} className="mt-5 inline-flex rounded-full bg-accent px-5 py-3 font-semibold text-bg" data-testid="already-voted-cta">
               {t("alreadyVotedCta")}
             </Link>
+            <div className="mt-4 text-left">
+              <MoreRounds locale={locale} excludeSlug={round?.slug} />
+            </div>
           </motion.div>
         ) : null}
 

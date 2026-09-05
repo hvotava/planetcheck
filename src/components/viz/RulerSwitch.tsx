@@ -10,7 +10,7 @@ export function RulerSwitch({ value, onChange }: { value: ResultsFilterPayload; 
   const td = useTranslations("demographics");
   const none = Object.keys(value).length === 0;
   const chip = (on: boolean, label: string, onClick: () => void, key: string) => (
-    <button key={key} type="button" aria-pressed={on} onClick={onClick} className={`rounded-full border px-3 py-1 text-xs transition ${on ? "border-accent bg-accent text-bg" : "border-border bg-surface text-muted hover:text-text"}`}>
+    <button key={key} type="button" aria-pressed={on} onClick={onClick} className={`rounded-full border px-3 py-1.5 text-xs transition ${on ? "border-accent bg-accent text-bg" : "border-border bg-surface text-muted hover:text-text"}`}>
       {label}
     </button>
   );

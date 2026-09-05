@@ -8,6 +8,7 @@ import { Link } from "@/lib/i18n/navigation";
 import type { SubmissionPayload } from "@/types/api";
 import type { ScheduledRound } from "@/lib/api/rounds";
 import { SignupForm } from "@/components/newsletter/SignupForm";
+import { MoreRounds } from "@/components/game/MoreRounds";
 
 /** Verdict screen (server component): archetype reveal, indices, axes, contradictions, share. */
 export async function Verdict({
@@ -89,7 +90,7 @@ export async function Verdict({
       </section>
 
       {/* axes + components */}
-      <section className="mt-4 grid gap-3 md:grid-cols-2">
+      <section className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
         <div className="card p-5">
           <h2 className="mb-4 text-lg font-bold">{t("axesTitle")}</h2>
           <AxisBars you={s.axis_scores} compare={s.planet?.axis_means?.weighted} compareLabel={t("survivalPlanet")} />
@@ -178,6 +179,8 @@ export async function Verdict({
           </Link>
         ) : null}
       </section>
+
+      <MoreRounds locale={locale} excludeSlug={s.round.slug} />
 
       {/* when the next theme opens — and a calendar subscription, which needs nothing from the reader */}
       <section className="card mt-6 p-5" data-testid="next-round">

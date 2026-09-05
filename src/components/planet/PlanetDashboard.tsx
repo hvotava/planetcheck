@@ -104,7 +104,7 @@ export function PlanetDashboard({ data }: { data: Localised }) {
       ) : null}
 
       <Section id="camps" title={t("campsTitle")} hint={t("campsHint")}>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {camps.map((c) => (
             <TwoCamps key={c.key} question={c.question} options={c.options} total={c.total} />
           ))}

@@ -60,7 +60,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
       </section>
 
       {/* how it works */}
-      <section className="grid gap-4 md:grid-cols-3">
+      <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {(["how1", "how2", "how3"] as const).map((k, i) => (
           <div key={k} className="card p-5">
             <p className="font-mono text-xs text-accent">0{i + 1}</p>
@@ -83,11 +83,11 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
         <section className="mt-10">
           <div className="mb-4 flex items-end justify-between">
             <h2 className="text-2xl font-bold">{t("campsTitle")}</h2>
-            <Link href="/planet#camps" className="text-sm text-muted hover:text-text">
+            <Link href="/planet#camps" className="-my-1.5 inline-block py-1.5 text-sm text-muted hover:text-text">
               {tc("nav.planet")} →
             </Link>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {teaser.map((c) => (
               <TwoCamps key={c.key} question={c.question} options={c.options} total={c.total} />
             ))}
@@ -99,7 +99,7 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
       <section className="mt-10">
         <div className="mb-4 flex items-end justify-between">
           <h2 className="text-2xl font-bold">{t("topCountries")}</h2>
-          <Link href="/methodology" className="text-sm text-muted hover:text-text">
+          <Link href="/methodology" className="-my-1.5 inline-block py-1.5 text-sm text-muted hover:text-text">
             {t("methodologyCta")} →
           </Link>
         </div>

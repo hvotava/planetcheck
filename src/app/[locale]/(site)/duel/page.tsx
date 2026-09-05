@@ -22,7 +22,7 @@ export default async function DuelIndexPage({ params }: { params: Promise<{ loca
     <div className="mx-auto w-full max-w-3xl px-4 pb-16 pt-6">
       <h1 className="text-3xl font-bold">{t("title")}</h1>
       <p className="mt-1 text-muted">{t("subtitle")}</p>
-      <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+      <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {duels.map((d) => (
           <li key={d.key}>
             <Link href={`/duel/${d.key}`} className="card flex h-full flex-col gap-2 p-5 transition hover:border-border-strong">

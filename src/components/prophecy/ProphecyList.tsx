@@ -126,7 +126,7 @@ function ProphecyCard({
             step={1}
             value={value}
             onChange={(e) => setValue(Number(e.target.value))}
-            className="mt-3 w-full accent-[var(--color-accent)]"
+            className="mt-3 h-6 w-full cursor-pointer accent-[var(--color-accent)]"
             aria-label={p.title}
             aria-valuetext={`${value} %`}
           />

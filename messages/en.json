@@ -156,7 +156,10 @@
     "turnstileHint": "Checking you're not a robot…",
     "scenario": "Scenario",
     "timer": "{seconds} s",
-    "classBadge": "class {code}"
+    "classBadge": "class {code}",
+    "moreTitle": "Want to keep playing?",
+    "moreSubtitle": "One vote counts per round, not per person. These decks are still ahead of you.",
+    "playAgainCta": "Play another round"
   },
   "result": {
     "title": "Your verdict",

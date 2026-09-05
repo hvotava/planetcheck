@@ -45,7 +45,7 @@ export default async function VerifyPage({ params, searchParams }: { params: Pro
             {!google && !apple ? <p className="text-sm text-faint">{t("unavailable")}</p> : null}
           </div>
         ) : null}
-        <Link href="/planet" className="mt-6 inline-block text-sm text-muted hover:text-text">
+        <Link href="/planet" className="mt-6 inline-block py-1.5 text-sm text-muted hover:text-text">
           {t("back")}
         </Link>
       </div>

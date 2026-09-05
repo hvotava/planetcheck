@@ -54,7 +54,7 @@ export default async function DuelPage({ params }: { params: Promise<{ locale: s
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 pb-16 pt-6">
-      <Link href="/duel" className="text-sm text-muted hover:text-text">
+      <Link href="/duel" className="-my-1.5 inline-block py-1.5 text-sm text-muted hover:text-text">
         ← {t("backToList")}
       </Link>
       <h1 className="mt-2 text-3xl font-bold">{duel.title}</h1>
