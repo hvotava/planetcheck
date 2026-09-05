@@ -193,7 +193,12 @@
     "countryLocked": "{country} se odemkne při {threshold} hlasech. Chybí {missing}.",
     "shareFlagNote": "Vlajka podle země, kterou počítáme.",
     "ogAlt": "Sdílecí kartička s verdiktem",
-    "youShort": "ty"
+    "youShort": "ty",
+    "nextRoundTitle": "Další kolo",
+    "nextRoundLine": "{title} začíná {date}.",
+    "nextRoundNone": "Další téma chystáme. Zatím se hrají Kotvy.",
+    "calendarCta": "Přidat termíny do kalendáře",
+    "calendarHint": "Kalendář si termíny sám aktualizuje. Nic od tebe nechceme, ani e-mail."
   },
   "planet": {
     "title": "Planeta živě",

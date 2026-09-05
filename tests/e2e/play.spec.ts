@@ -56,6 +56,9 @@ test.describe("play a round on mobile", () => {
     await page.waitForURL(/\/cs\/result\/[0-9a-f-]{36}/, { timeout: 30_000 });
     await expect(page.getByTestId("archetype-title")).toBeVisible();
     await expect(page.getByTestId("survival-you")).toContainText("%");
+    // the verdict must say when the next theme opens and offer the calendar
+    await expect(page.getByTestId("next-round")).toBeVisible();
+    await expect(page.getByTestId("calendar-cta")).toBeVisible();
     const elapsed = (Date.now() - started) / 1000;
     expect(elapsed).toBeLessThan(90);
 
@@ -185,6 +188,18 @@ test.describe("play a round on mobile", () => {
     // an unknown code is a 404, not an empty class
     const res = await page.goto("/cs/class/ZZZZZZ");
     expect(res?.status()).toBe(404);
+  });
+
+  test("the round schedule is a subscribable calendar, not a mailing list", async ({ request }) => {
+    const res = await request.get("/api/calendar/rounds.ics?locale=cs");
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toContain("text/calendar");
+    const body = await res.text();
+    expect(body.startsWith("BEGIN:VCALENDAR")).toBe(true);
+    expect(body.trimEnd().endsWith("END:VCALENDAR")).toBe(true);
+    // one event per weekly round that is running or still to come
+    expect((body.match(/BEGIN:VEVENT/g) ?? []).length).toBeGreaterThan(0);
+    expect(body).toContain("DTSTART:");
   });
 
   test("API envelope, health and export", async ({ request }) => {

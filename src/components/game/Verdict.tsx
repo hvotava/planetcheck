@@ -6,6 +6,7 @@ import { ShareButtons } from "@/components/ui/ShareButtons";
 import { AxisBars } from "@/components/viz/AxisBars";
 import { Link } from "@/lib/i18n/navigation";
 import type { SubmissionPayload } from "@/types/api";
+import type { ScheduledRound } from "@/lib/api/rounds";
 
 /** Verdict screen (server component): archetype reveal, indices, axes, contradictions, share. */
 export async function Verdict({
@@ -17,6 +18,8 @@ export async function Verdict({
   shareUrl,
   ogUrl,
   unlockThreshold,
+  nextRound,
+  calendarUrl,
 }: {
   submission: SubmissionPayload;
   archetypes: Record<string, ArchetypeMeta>;
@@ -26,6 +29,8 @@ export async function Verdict({
   shareUrl: string;
   ogUrl: string;
   unlockThreshold: number;
+  nextRound: ScheduledRound | null;
+  calendarUrl: string;
 }) {
   const t = await getTranslations("result");
   const tc = await getTranslations("common");
@@ -166,6 +171,23 @@ export async function Verdict({
             {t("seeCountry", { country: countryLabel })}
           </Link>
         ) : null}
+      </section>
+
+      {/* when the next theme opens — and a calendar subscription, which needs nothing from the reader */}
+      <section className="card mt-6 p-5" data-testid="next-round">
+        <h2 className="text-lg font-bold">{t("nextRoundTitle")}</h2>
+        <p className="mt-1 text-sm text-muted">
+          {nextRound
+            ? t("nextRoundLine", {
+                title: nextRound.title,
+                date: new Date(nextRound.starts_at).toLocaleDateString(undefined, { day: "numeric", month: "long" }),
+              })
+            : t("nextRoundNone")}
+        </p>
+        <a href={calendarUrl} className="mt-4 inline-flex rounded-full border border-accent px-5 py-3 font-semibold text-accent" data-testid="calendar-cta">
+          {t("calendarCta")}
+        </a>
+        <p className="mt-2 text-xs text-faint">{t("calendarHint")}</p>
       </section>
 
       {s.trust !== "verified" ? (

@@ -25,6 +25,11 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
             <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-accent" />
             {data.round ? t("roundTitle", { title: data.round.title }) : tc("live")}
           </p>
+          {data.round?.ends_at ? (
+            <p className="mb-3 text-xs text-faint">
+              {t("roundEnds", { date: new Date(data.round.ends_at).toLocaleDateString(locale, { day: "numeric", month: "long" }) })}
+            </p>
+          ) : null}
           <h1 className="text-balance text-5xl font-bold leading-[0.95] md:text-7xl">{t("title")}</h1>
           <p className="mt-5 max-w-lg text-balance text-lg text-muted">{t("subtitle")}</p>
           <div className="mt-8 flex flex-wrap items-center gap-4">

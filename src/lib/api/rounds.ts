@@ -43,3 +43,34 @@ export function isRoundOpen(round: RoundPayload, now = Date.now()): boolean {
   if (round.ends_at && new Date(round.ends_at).getTime() <= now) return false;
   return true;
 }
+
+export type ScheduledRound = { slug: string; title: string; blurb?: string; starts_at: string; ends_at: string | null; live: boolean };
+
+/**
+ * The weekly schedule, localised: rounds that are running or still to come.
+ * Feeds both the calendar file and the "next round" line on the verdict screen.
+ */
+export async function weeklySchedule(locale: string, now = Date.now()): Promise<ScheduledRound[]> {
+  const repo = await getRepo();
+  const { pickLocalized } = await import("@/lib/content/i18n");
+  const rows = await repo.listRounds(false);
+  return rows
+    .filter((r) => r.kind === "weekly" && r.status === "live" && (!r.ends_at || new Date(r.ends_at).getTime() > now))
+    .sort((a, b) => a.starts_at.localeCompare(b.starts_at))
+    .map((r) => {
+      const l = pickLocalized(r.i18n, locale)?.value;
+      return {
+        slug: r.slug,
+        title: l?.title ?? r.slug,
+        blurb: l?.blurb,
+        starts_at: r.starts_at,
+        ends_at: r.ends_at,
+        live: new Date(r.starts_at).getTime() <= now,
+      };
+    });
+}
+
+/** The next weekly round that has not started yet, or null when none is scheduled. */
+export async function nextWeeklyRound(locale: string, now = Date.now()): Promise<ScheduledRound | null> {
+  return (await weeklySchedule(locale, now)).find((r) => !r.live) ?? null;
+}

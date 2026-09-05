@@ -5,7 +5,7 @@ import { getRepo } from "@/lib/db/server";
 import { isUuid } from "@/lib/trust/fingerprint";
 import { archetypeMeta } from "@/lib/content/public";
 import { countryName } from "@/lib/countries";
-import { roundById } from "@/lib/api/rounds";
+import { nextWeeklyRound, roundById } from "@/lib/api/rounds";
 import { pickLocalized } from "@/lib/content/i18n";
 import { Verdict } from "@/components/game/Verdict";
 
@@ -50,6 +50,7 @@ export default async function ResultPage({ params }: { params: Promise<{ locale:
   );
   const questions = Object.fromEntries(round.questions.map((q) => [q.key, pickLocalized(q.i18n, locale)?.value.text ?? q.key]));
   const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const nextRound = await nextWeeklyRound(locale);
   return (
     <Verdict
       submission={s}
@@ -60,6 +61,8 @@ export default async function ResultPage({ params }: { params: Promise<{ locale:
       shareUrl={`${site}/${locale}/result/${s.id}`}
       ogUrl={`/api/og/${s.id}?locale=${locale}`}
       unlockThreshold={round.unlock_threshold}
+      nextRound={nextRound}
+      calendarUrl={`/api/calendar/rounds.ics?locale=${locale}`}
     />
   );
 }

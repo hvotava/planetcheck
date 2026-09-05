@@ -193,7 +193,12 @@
     "countryLocked": "{country} unlocks at {threshold} votes. {missing} to go.",
     "shareFlagNote": "Flag by the country we count you in.",
     "ogAlt": "Share card with the verdict",
-    "youShort": "you"
+    "youShort": "you",
+    "nextRoundTitle": "Next round",
+    "nextRoundLine": "{title} opens {date}.",
+    "nextRoundNone": "The next theme is on its way. The Anchors round runs meanwhile.",
+    "calendarCta": "Add the dates to my calendar",
+    "calendarHint": "Your calendar keeps the dates up to date by itself. We ask you for nothing, not even an email."
   },
   "planet": {
     "title": "Planet, live",

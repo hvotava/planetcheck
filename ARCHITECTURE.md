@@ -417,6 +417,8 @@ Každá fáze končí zeleným `pnpm test` a e2e průchodem. Nezačínej další
 - **Školní mód** ✅ — `/class` vygeneruje kód, studenti hrají přes `/play?class=KÓD`, `/class/[KÓD]` porovná třídu s planetou. Detaily a soukromí viz §5.
 - Embed widget (`/embed/planet` iframe) ✅.
 
+- **Oznamování dalších kol** ✅ — `/api/calendar/rounds.ics?locale=…` je odebíratelný kalendář rozvrhu kol (`src/lib/calendar/ics.ts`, čistá funkce). Výsledková obrazovka říká, které téma přijde a kdy, a nabídne odběr. Je to jediný oznamovací kanál, který nestojí žádná osobní data: připomínku si drží kalendář čtenáře, server se nikdy nedozví, že existuje. E-mailový newsletter by znamenal změnu §14 a ne-cílů — viz §16.
+
 **Fáze 5 je hotová.** Zbývá potvrdit formulace šesti proroctví a nasadit reálné Turnstile klíče (viz §16).
 
 ---
