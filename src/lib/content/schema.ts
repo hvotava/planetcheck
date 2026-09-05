@@ -199,6 +199,8 @@ export const weightingFileSchema = z.object({
   too_fast_seconds: z.number().positive(),
   rate_ip_per_hour: z.number().int().positive(),
   rate_anon_per_hour: z.number().int().positive(),
+  rate_ip_per_hour_class: z.number().int().positive().default(60),
+  min_class_submissions: z.number().int().positive().default(5),
 });
 
 export type RoundFile = z.infer<typeof roundFileSchema>;

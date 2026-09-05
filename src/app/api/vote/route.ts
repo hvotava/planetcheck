@@ -71,6 +71,14 @@ export const POST = handle(async (req) => {
   const { weighting } = content();
   if (!Number.isFinite(loadedAt) || Date.now() - loadedAt < weighting.too_fast_seconds * 1000) flags.push("too_fast");
 
+  const repo = await getRepo();
+
+  // A class code makes the shared school network expected rather than suspicious, so the
+  // per-IP flag threshold is raised for it (ARCHITECTURE §6: shared networks must not be banned).
+  // An unknown code is simply ignored — never a reason to refuse a vote.
+  const classCode = v.classCode ? v.classCode.toUpperCase() : null;
+  const classKnown = classCode ? ((await repo.classCodeInfo(classCode))?.code ?? null) : null;
+
   const geo = geoCountry(req.headers);
   const declared = v.demographics?.declared_country?.toUpperCase() ?? null;
   const declaredKnown = declared && isKnownCountry(declared) ? declared : null;
@@ -78,7 +86,6 @@ export const POST = handle(async (req) => {
   if (declaredKnown && geo && declaredKnown !== geo) flags.push("country_mismatch");
 
   // --- scoring (pure)
-  const repo = await getRepo();
   const actuals = await repo.metaActuals(round.id);
   const actualByQ = new Map(actuals.map((a) => [a.question_id, a.actual_weighted]));
   const metaGuesses: Array<MetaGuess & { question_id: string }> = metaQs.map((q) => ({
@@ -99,6 +106,7 @@ export const POST = handle(async (req) => {
     geo_country: geo,
     declared_country: declaredKnown,
     country,
+    class_code: classKnown,
     age_band: v.demographics?.age_band ?? null,
     gender: v.demographics?.gender ?? null,
     settlement: v.demographics?.settlement ?? null,
@@ -114,7 +122,7 @@ export const POST = handle(async (req) => {
       survival: round4(score.survival) ?? 0,
     },
     flags,
-    rate_ip_per_hour: weighting.rate_ip_per_hour,
+    rate_ip_per_hour: classKnown ? weighting.rate_ip_per_hour_class : weighting.rate_ip_per_hour,
     rate_anon_per_hour: weighting.rate_anon_per_hour,
   });
 
@@ -137,6 +145,7 @@ export const POST = handle(async (req) => {
         contradictions_hit: score.contradictions_hit,
         trust: result.trust,
         country: result.country,
+        classCode: classKnown,
       },
     },
     { status: 201 },

@@ -41,6 +41,14 @@ export type Tables = {
     subject_hash: string;
     created_at: string;
   };
+  class_codes: {
+    code: string;
+    label: string | null;
+    locale: string;
+    created_ip_hash: string | null;
+    active: boolean;
+    created_at: string;
+  };
   contradiction_pairs: {
     id: string;
     round_id: string;
@@ -236,6 +244,7 @@ export type Tables = {
     loaded_at: string | null;
     submitted_at: string;
     synthetic: boolean;
+    class_code: string | null;
   };
   voters: {
     id: string;

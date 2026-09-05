@@ -15,6 +15,8 @@ import type {
   SubmissionPayload,
   SubmitVoteResult,
   VoterStatus,
+  ClassInfo,
+  ClassResults,
   ProphecyStats,
   ProphecyGuessResult,
 } from "@/types/api";
@@ -29,6 +31,7 @@ export type SubmitVoteInput = {
   geo_country?: string | null;
   declared_country?: string | null;
   country?: string | null;
+  class_code?: string | null;
   loaded_at?: string | null;
   submitted_at?: string;
   answers: Array<{ question_id: string; option_id: string }>;
@@ -163,6 +166,17 @@ export class Repo {
   }
   releaseJobLease(name: string, status: string, error?: string) {
     return this.db.rpc<{ released: boolean }>("release_job_lease", { name, status, error: error ?? null });
+  }
+
+  // --- school mode (ARCHITECTURE §15 phase 5)
+  createClassCode(input: { label?: string; locale?: string; ip_hash?: string }) {
+    return this.db.rpc<{ code: string; label: string | null }>("create_class_code", input);
+  }
+  classCodeInfo(code: string) {
+    return this.db.rpc<ClassInfo | null>("class_code_info", { code });
+  }
+  classResults(code: string, roundId: string, minN: number) {
+    return this.db.rpc<ClassResults | null>("class_results", { code, round_id: roundId, min_n: minN });
   }
 
   // --- prophecies (ARCHITECTURE §15 phase 5)

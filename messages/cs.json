@@ -10,7 +10,8 @@
       "data": "Data",
       "verify": "Ověřit hlas",
       "duel": "Duely",
-      "prophecies": "Proroctví"
+      "prophecies": "Proroctví",
+      "classroom": "Pro školy"
     },
     "footer": {
       "madeBy": "Otevřená data, veřejná metodika, žádné osobní údaje.",
@@ -154,7 +155,8 @@
     "fallbackLocale": "Otázka zatím jen v angličtině",
     "turnstileHint": "Ověřuju, že nejsi robot…",
     "scenario": "Scénář",
-    "timer": "{seconds} s"
+    "timer": "{seconds} s",
+    "classBadge": "třída {code}"
   },
   "result": {
     "title": "Tvůj verdikt",
@@ -295,6 +297,41 @@
       "resolved": "Rozhodnuto",
       "void": "Zrušeno"
     }
+  },
+  "classroom": {
+    "title": "Školní mód",
+    "subtitle": "Vytvoř kód třídy. Studenti hrají jako všichni ostatní, navíc uvidíte, jak odpověděla vaše třída oproti planetě.",
+    "step1": "Vygeneruj kód a napiš ho na tabuli.",
+    "step2": "Studenti otevřou odkaz na hru s kódem a odehrají kolo.",
+    "step3": "Na stránce výsledků třídy porovnáte třídu s planetou.",
+    "labelField": "Název třídy (nepovinné)",
+    "labelPlaceholder": "7.B, Seminář ZSV…",
+    "labelHint": "Uvidí ho každý, kdo má kód. Nepiš sem jména.",
+    "create": "Vytvořit kód třídy",
+    "creating": "Vytvářím…",
+    "yourCode": "Kód vaší třídy",
+    "codeHint": "Kód je klíč. Kdo ho má, vidí výsledky třídy — a nic víc.",
+    "linkPlay": "Odkaz pro studenty",
+    "linkResults": "Odkaz na výsledky třídy",
+    "keepIt": "Kód si ulož. Bez něj se k výsledkům třídy nedostaneš, protože si o vás nic nepamatujeme.",
+    "privacy": "Neukládáme jména, e-maily ani IP adresy. Třída je jen štítek u hlasů, které by vznikly tak jako tak.",
+    "resultsTitle": "Třída {code}",
+    "classLabel": "Třída",
+    "untitled": "Bez názvu",
+    "votesSoFar": "{n} odehraných kol",
+    "tooSmallTitle": "Zatím je vás málo",
+    "tooSmallText": "Výsledky ukazujeme od {min} hlasů. Chybí {missing}. U menší skupiny už by to nebyl přehled, ale popis konkrétních lidí.",
+    "playCta": "Zahrát si za třídu",
+    "indexTitle": "Jak je na tom třída",
+    "survival": "Index přežití",
+    "compromise": "Kompromis",
+    "consistency": "Konzistence",
+    "noWeighting": "U třídy se neváží. Vážení přepočítává vzorek na populaci a třída není vzorek ničeho — proto tu je jen surové číslo.",
+    "axesTitle": "Kde stojí třída",
+    "questionsTitle": "Dilema po dilematu",
+    "classShort": "třída",
+    "planetShort": "planeta",
+    "classBadge": "třída {code}"
   },
   "methodology": {
     "title": "Metodika",

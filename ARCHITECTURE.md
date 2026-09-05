@@ -175,6 +175,7 @@ rounds ─┬─< questions ─< options
         └─< narrator_posts
 
 prophecies ─< prophecy_guesses                (proroctví; guess je vázán na voters, ne na kolo)
+class_codes ─< submissions.class_code         (školní mód; třída je štítek u hlasu, ne náhrada země)
 auth_users ─< voters ─< auth_sessions         (jen hash OAuth subjectu; žádný e-mail ani jméno)
 job_leases                                    (leader election pro interní scheduler)
 country_population                            (statická, World Bank + world-countries)
@@ -188,6 +189,7 @@ Klíčová rozhodnutí:
 - **Demografie** jsou volitelné a hrubé: `age_band` (18-24, 25-34, 35-44, 45-54, 55-64, 65+), `gender` (f, m, x), `settlement` (city, town, rural). Nic víc se nesbírá, nikdy.
 - **Datový přístup výhradně přes SQL funkce** `fn(p jsonb) returns jsonb` (0003). Aplikace volá `select fn($1::jsonb)`; stejný kód běží na Railway Postgresu (`pg`) i v PGlite (dev/testy). Typy tabulek generuje `pnpm db:types`.
 - `submissions.synthetic` označuje seedované hlasy (jen lokálně/staging), `contradictions_hit` drží klíče aktivovaných dvojic, `ua_family` hrubou rodinu prohlížeče.
+- **`class_codes` + `submissions.class_code`** (migrace `0005`): školní mód. Kód je 6 znaků z abecedy bez záměnných písmen (bez I, L, O, 0, 1 — čte se nahlas ve třídě) a je zároveň jediný klíč: nezakládá se účet, neukládá se jméno ani e-mail. Hlas s kódem **normálně počítá pro planetu i pro svou zemi** — studenti jsou skuteční lidé, třída je jen další pohled. Dvě věci z toho plynou: (a) třída sdílí školní síť, takže při platném kódu se pro `rate_ip` použije `rate_ip_per_hour_class` z `content/weighting.yaml` — jinak by se většina třídy oflagovala a zmizela z veřejných čísel, což je přesně ten ban sdílených sítí, který §6 zakazuje; (b) stránka třídy neukáže **nic** pod `min_class_submissions` hlasy a nikdy neukazuje demografii. Třída se **neváží** (`weighted = null`): post-stratifikace přepočítává vzorek na populaci a třída není vzorek ničeho. `submit_vote` je kvůli sloupci `create or replace`-nuté v `0005`, jak předepisuje hlavička `0003`.
 - **`prophecies` / `prophecy_guesses`** (migrace `0004`): proroctví je tvrzení o budoucnosti s oknem `opens_at … closes_at` a datem `resolves_at`. Není vázané na kolo — přežívá je. Jeden tip na votera a proroctví (unique), opakování = 409, nikdy tichá výměna. `outcome` nastavuje **jen** operátor přes `resolve_prophecy` (`POST /api/admin/prophecy` s `ADMIN_TOKEN`), nikdy obsah ani job; `resolution_note` je veřejný a povinný. Při rozhodnutí dostane každý tip `brier = (p − outcome)²`. Vážení používá jen zemskou část §9 (populace / vzorek, clamp z `content/weighting.yaml`) — tipy nenesou demografii, takže se neraky. Guess ukládá `ip_hash`, nikdy IP.
 
 ---
@@ -412,7 +414,10 @@ Každá fáze končí zeleným `pnpm test` a e2e průchodem. Nezačínej další
 **Fáze 5 — Virální vrstva** 🟡 (embed hotov)
 - **Duel zemí** ✅ — kurátorované dvojice v `content/duels.yaml` (kódy se ověřují proti `data/countries.json`), stránky `/duel` a `/duel/[key]`, čistá funkce `src/lib/duel/compare.ts` (shoda = 100 − ½·Σ|aᵢ−bᵢ| přes možnosti otázky, raw i weighted), komponenta `DuelBoard` s ukázkou na `/dev/viz`. Duel se nepočítá pro libovolnou dvojici — jen pro ty z obsahu, aby produkt nešel namířit na dvojici, kterou jsme nevybrali.
 - **Proroctví** ✅ — `content/prophecies.yaml` (každé musí v blurbu jmenovat zdroj, který ho rozhodne; `review_required: true` u všech, aby se přesná čísla nedostala do nezkontrolovaného strojového překladu), migrace `0004`, stránka `/prophecies`, čisté funkce `src/lib/prophecy/score.ts` (Brier, dovednost proti hodu mincí, kalibrace). Průměr planety se hráči **ukáže až po jeho tipu** — stejné pravidlo jako u meta otázky. Proroctví po `closes_at` zavírá `close_due_prophecies` v recompute jobu; rozhodnutí zůstává ruční.
-- Školní mód (kód třídy = pseudo-země), embed widget (`/embed/planet` iframe) ✅.
+- **Školní mód** ✅ — `/class` vygeneruje kód, studenti hrají přes `/play?class=KÓD`, `/class/[KÓD]` porovná třídu s planetou. Detaily a soukromí viz §5.
+- Embed widget (`/embed/planet` iframe) ✅.
+
+**Fáze 5 je hotová.** Zbývá potvrdit formulace šesti proroctví a nasadit reálné Turnstile klíče (viz §16).
 
 ---
 
@@ -422,3 +427,5 @@ Každá fáze končí zeleným `pnpm test` a e2e průchodem. Nezačínej další
 - Rozhodnuto v implementaci, potvrdit: `cell_clamp` [0.2, 5.0] pro raking faktory; index rozporů = podíl hlasů s ≥1 aktivovanou dvojicí; realism bez dat = `null` a survival se přenormuje; export slučuje země < 30 hlasů do `--`.
 - Zda „realism" počítat proti surovému nebo váženému podílu — návrh: vážený, ale ukázat hráči oba.
 - Kolik anchor otázek nechat trvale (návrh 5) vs. rotovat.
+- **Turnstile běží na testovacích klíčích Cloudflare**, které vždy projdou. Před spuštěním pro veřejnost je nutné nasadit reálné klíče: bez tajného klíče se každý hlas oflaguje `turnstile_unavailable` a zmizí z veřejných čísel.
+- Formulace šesti proroctví v `content/prophecies.yaml` jsou návrh; mechanismus je schválený, znění potvrdit před prvním uzavřením.

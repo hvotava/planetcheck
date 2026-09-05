@@ -144,6 +144,49 @@ test.describe("play a round on mobile", () => {
     await expect(again.getByTestId("prophecy-reveal")).toContainText(/už jsi tipoval/);
   });
 
+  test("school mode: a code, a round played for it, and a class page that stays shut", async ({ page }) => {
+    await page.goto("/cs/class");
+    await page.getByTestId("class-create").click();
+    const codeEl = page.getByTestId("class-code");
+    await codeEl.waitFor({ timeout: 20_000 });
+    const code = (await codeEl.innerText()).trim();
+    expect(code).toMatch(/^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{6}$/);
+
+    // play a full round carrying the class code
+    await page.goto(`/cs/play?class=${code}`);
+    await page.getByTestId("options").getByRole("button").first().waitFor({ timeout: 30_000 });
+    let guard = 0;
+    while (guard++ < 20) {
+      if (await page.getByRole("button", { name: /Odeslat hlas/ }).isVisible().catch(() => false)) break;
+      const slider = page.getByRole("slider");
+      if ((await slider.isVisible().catch(() => false)) && (await slider.isEnabled().catch(() => false))) {
+        await slider.fill("40");
+        await page.getByRole("button", { name: /Tipnout/ }).click();
+        continue;
+      }
+      const options = page.getByTestId("options").getByRole("button");
+      if ((await options.count()) > 0) {
+        await options.nth(1).click();
+        const next = page.getByRole("button", { name: /Další/ });
+        await next.waitFor();
+        await next.click();
+        continue;
+      }
+      await page.waitForTimeout(300);
+    }
+    await page.getByRole("button", { name: /Odeslat hlas/ }).click();
+    await page.waitForURL(/\/cs\/result\/[0-9a-f-]{36}/, { timeout: 30_000 });
+
+    // one vote is below the privacy floor, so the class page shows a count and nothing else
+    await page.goto(`/cs/class/${code}`);
+    await expect(page.getByTestId("class-too-small")).toBeVisible();
+    await expect(page.getByTestId("class-results")).toHaveCount(0);
+
+    // an unknown code is a 404, not an empty class
+    const res = await page.goto("/cs/class/ZZZZZZ");
+    expect(res?.status()).toBe(404);
+  });
+
   test("API envelope, health and export", async ({ request }) => {
     const health = await request.get("/api/health");
     expect(health.ok()).toBeTruthy();

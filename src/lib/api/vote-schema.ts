@@ -18,6 +18,8 @@ export const voteBodySchema = z.object({
   token: z.string().max(4096).nullable().optional(),
   loadedAt: z.string().datetime({ offset: true }).nullable().optional(),
   locale: z.string().max(10).optional(),
+  /** School mode: an unknown or inactive code is ignored, never a reason to refuse the vote. */
+  classCode: z.string().regex(/^[A-Za-z0-9]{6}$/).nullable().optional(),
 });
 
 export type VoteBody = z.infer<typeof voteBodySchema>;

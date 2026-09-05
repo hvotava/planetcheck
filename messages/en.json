@@ -10,7 +10,8 @@
       "data": "Data",
       "verify": "Verify my vote",
       "duel": "Duels",
-      "prophecies": "Prophecies"
+      "prophecies": "Prophecies",
+      "classroom": "For schools"
     },
     "footer": {
       "madeBy": "Open data, public methodology, no personal data.",
@@ -154,7 +155,8 @@
     "fallbackLocale": "This question is in English for now",
     "turnstileHint": "Checking you're not a robot…",
     "scenario": "Scenario",
-    "timer": "{seconds} s"
+    "timer": "{seconds} s",
+    "classBadge": "class {code}"
   },
   "result": {
     "title": "Your verdict",
@@ -295,6 +297,41 @@
       "resolved": "Settled",
       "void": "Void"
     }
+  },
+  "classroom": {
+    "title": "Classroom mode",
+    "subtitle": "Create a class code. Students play like everyone else, and you get to see how your class answered next to the planet.",
+    "step1": "Generate a code and put it on the board.",
+    "step2": "Students open the play link with the code and play a round.",
+    "step3": "The class results page compares your class with the planet.",
+    "labelField": "Class name (optional)",
+    "labelPlaceholder": "Year 9B, Civics seminar…",
+    "labelHint": "Anyone with the code sees it. Don't put names here.",
+    "create": "Create a class code",
+    "creating": "Creating…",
+    "yourCode": "Your class code",
+    "codeHint": "The code is the key. Whoever has it sees the class results, and nothing else.",
+    "linkPlay": "Link for students",
+    "linkResults": "Link to the class results",
+    "keepIt": "Save the code. Without it you can't reach the class results, because we remember nothing about you.",
+    "privacy": "We store no names, no emails and no IP addresses. A class is just a label on votes that would exist anyway.",
+    "resultsTitle": "Class {code}",
+    "classLabel": "Class",
+    "untitled": "Untitled",
+    "votesSoFar": "{n} rounds played",
+    "tooSmallTitle": "Not enough of you yet",
+    "tooSmallText": "Results appear from {min} votes. {missing} to go. Below that it stops being an overview and becomes a description of particular people.",
+    "playCta": "Play for the class",
+    "indexTitle": "How the class is doing",
+    "survival": "Survival index",
+    "compromise": "Compromise",
+    "consistency": "Consistency",
+    "noWeighting": "A class is not weighted. Weighting projects a sample onto a population, and a class is not a sample of anything — so this is the raw number only.",
+    "axesTitle": "Where the class stands",
+    "questionsTitle": "Dilemma by dilemma",
+    "classShort": "class",
+    "planetShort": "planet",
+    "classBadge": "class {code}"
   },
   "methodology": {
     "title": "Methodology",

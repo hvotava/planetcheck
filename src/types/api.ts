@@ -257,6 +257,39 @@ export type NarratorPost = {
   context?: unknown;
 };
 
+export type ClassInfo = { code: string; label: string | null; created_at: string; active?: boolean };
+
+export type ClassResults = {
+  class: ClassInfo;
+  round_id: string;
+  n: number;
+  min_n: number;
+  /** false while the class is below the privacy floor — nothing but the count is returned */
+  enough: boolean;
+  survival: { raw: number | null; weighted: null; consistency: number | null; compromise: number | null; realism: number | null } | null;
+  contradiction_raw?: number | null;
+  axis_means: AxisMeans;
+  archetypes: ArchetypeShares;
+  questions: Array<{
+    question_id: string;
+    key: string;
+    position: number;
+    i18n: I18nMap<LocalizedQuestion>;
+    anchor: boolean;
+    total_raw: number;
+    options: Array<{
+      option_id: string;
+      key: string;
+      icon: string | null;
+      i18n: I18nMap<LocalizedOption>;
+      raw: number;
+      share_raw: number | null;
+      planet_share_raw: number | null;
+      planet_share_weighted: number | null;
+    }>;
+  }>;
+};
+
 export type ProphecyStatus = "open" | "closed" | "resolved" | "void";
 
 export type ProphecyStats = {

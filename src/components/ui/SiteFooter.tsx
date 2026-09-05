@@ -17,6 +17,9 @@ export async function SiteFooter() {
           <Link className="hover:text-text" href="/verify">
             {t("nav.verify")}
           </Link>
+          <Link className="hover:text-text" href="/class">
+            {t("nav.classroom")}
+          </Link>
           <Link className="hover:text-text" href="/methodology#privacy">
             {t("footer.privacy")}
           </Link>

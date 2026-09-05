@@ -40,8 +40,16 @@ export function PlayClient() {
   const shares = useRef(new Map<string, QuestionShares>());
   const token = useRef<string | null>(null);
   const demographics = useRef<Demographics | null>(null);
+  // School mode: /play?class=ABC123. Read from the URL rather than useSearchParams so the
+  // page needs no Suspense boundary; an unknown code is ignored by the server.
+  const [classCode, setClassCode] = useState<string | null>(null);
   const [, force] = useState(0);
   const rerender = () => force((n) => n + 1);
+
+  useEffect(() => {
+    const c = new URLSearchParams(window.location.search).get("class");
+    if (c && /^[A-Za-z0-9]{6}$/.test(c)) setClassCode(c.toUpperCase());
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -133,6 +141,7 @@ export function PlayClient() {
             token: token.current,
             loadedAt: round.loaded_at,
             locale,
+            classCode,
           }),
         });
         router.push(`/result/${res.submissionId}`);
@@ -145,7 +154,7 @@ export function PlayClient() {
         setPhase({ kind: "submitError", message: e instanceof Error ? e.message : String(e) });
       }
     },
-    [round, locale, router],
+    [round, locale, router, classCode],
   );
 
   const current = useMemo(() => (phase.kind === "question" || phase.kind === "feedback" ? questions[phase.index] : undefined), [phase, questions]);
@@ -155,7 +164,10 @@ export function PlayClient() {
       {round && (phase.kind === "question" || phase.kind === "feedback") ? (
         <div className="mb-4 flex flex-col items-center gap-2">
           <ProgressDots questions={questions} current={phase.index} />
-          <p className="text-xs text-faint">{round.title}</p>
+          <p className="text-xs text-faint">
+            {round.title}
+            {classCode ? <span className="ml-2 rounded-full border border-info/50 px-2 py-0.5 text-info">{t("classBadge", { code: classCode })}</span> : null}
+          </p>
         </div>
       ) : null}
 

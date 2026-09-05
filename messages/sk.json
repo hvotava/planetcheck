@@ -10,7 +10,8 @@
       "data": "Dáta",
       "verify": "Overiť hlas",
       "duel": "Duely",
-      "prophecies": "Proroctvá"
+      "prophecies": "Proroctvá",
+      "classroom": "Pre školy"
     },
     "footer": {
       "madeBy": "Otvorené dáta, verejná metodika, žiadne osobné údaje.",
@@ -154,7 +155,8 @@
     "fallbackLocale": "Otázka zatiaľ len v angličtine",
     "turnstileHint": "Overujem, že nie si robot…",
     "scenario": "Scenár",
-    "timer": "{seconds} s"
+    "timer": "{seconds} s",
+    "classBadge": "trieda {code}"
   },
   "result": {
     "title": "Tvoj verdikt",
@@ -295,6 +297,41 @@
       "resolved": "Rozhodnuté",
       "void": "Zrušené"
     }
+  },
+  "classroom": {
+    "title": "Školský mód",
+    "subtitle": "Vytvor kód triedy. Študenti hrajú ako všetci ostatní, navyše uvidíte, ako odpovedala vaša trieda oproti planéte.",
+    "step1": "Vygeneruj kód a napíš ho na tabuľu.",
+    "step2": "Študenti otvoria odkaz na hru s kódom a odohrajú kolo.",
+    "step3": "Na stránke výsledkov triedy porovnáte triedu s planétou.",
+    "labelField": "Názov triedy (nepovinné)",
+    "labelPlaceholder": "7.B, Seminár…",
+    "labelHint": "Uvidí ho každý, kto má kód. Nepíš sem mená.",
+    "create": "Vytvoriť kód triedy",
+    "creating": "Vytváram…",
+    "yourCode": "Kód vašej triedy",
+    "codeHint": "Kód je kľúč. Kto ho má, vidí výsledky triedy — a nič viac.",
+    "linkPlay": "Odkaz pre študentov",
+    "linkResults": "Odkaz na výsledky triedy",
+    "keepIt": "Kód si ulož. Bez neho sa k výsledkom triedy nedostaneš, lebo si o vás nič nepamätáme.",
+    "privacy": "Neukladáme mená, e-maily ani IP adresy. Trieda je len štítok pri hlasoch, ktoré by vznikli tak či tak.",
+    "resultsTitle": "Trieda {code}",
+    "classLabel": "Trieda",
+    "untitled": "Bez názvu",
+    "votesSoFar": "{n} odohraných kôl",
+    "tooSmallTitle": "Zatiaľ vás je málo",
+    "tooSmallText": "Výsledky ukazujeme od {min} hlasov. Chýba {missing}. Pri menšej skupine by to už nebol prehľad, ale opis konkrétnych ľudí.",
+    "playCta": "Zahrať si za triedu",
+    "indexTitle": "Ako je na tom trieda",
+    "survival": "Index prežitia",
+    "compromise": "Kompromis",
+    "consistency": "Konzistencia",
+    "noWeighting": "Trieda sa neváži. Váženie prepočítava vzorku na populáciu a trieda nie je vzorka ničoho — preto je tu len surové číslo.",
+    "axesTitle": "Kde stojí trieda",
+    "questionsTitle": "Dilema po dileme",
+    "classShort": "trieda",
+    "planetShort": "planéta",
+    "classBadge": "trieda {code}"
   },
   "methodology": {
     "title": "Metodika",

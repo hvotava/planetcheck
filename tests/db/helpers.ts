@@ -31,6 +31,8 @@ export type VoteOpts = {
   submitted_at?: string;
   locale?: string;
   declared_country?: string | null;
+  class_code?: string | null;
+  rate_ip_per_hour?: number;
 };
 
 /** Builds a full submit_vote payload from option keys, running the real scoring. */
@@ -76,6 +78,8 @@ export function buildVote(round: RoundPayload, choices: Record<string, string>, 
     settlement: opts.settlement ?? null,
     loaded_at: new Date(Date.now() - 60_000).toISOString(),
     submitted_at: opts.submitted_at,
+    class_code: opts.class_code ?? null,
+    rate_ip_per_hour: opts.rate_ip_per_hour,
     answers: answers.map(({ question_id, option_id }) => ({ question_id, option_id })),
     meta_guesses: metas.map(({ question_id, guess, actual_at_submit }) => ({ question_id, guess, actual_at_submit })),
     score,
