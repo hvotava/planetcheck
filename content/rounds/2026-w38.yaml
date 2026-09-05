@@ -1,0 +1,159 @@
+# ---------------------------------------------------------------------------
+# WEEKLY ROUND 2026-w38 — theme: "Voda" / "Water"
+#
+# The shared thing that is running out. Chosen because water is legible on every
+# continent: a reader in Lagos, Jakarta, São Paulo or Prague pictures the same scene.
+# No question names a real state → review_required stays false.
+#
+# Deck rules (ARCHITECTURE §11): 7 dilemmas + 1 meta, exactly one honeypot
+# (the_water_seller.control — deliberately dull), meta immediately before its target,
+# option counts vary (3 and 4), at least one compromise that costs something.
+# ---------------------------------------------------------------------------
+round:
+  slug: 2026-w38
+  kind: weekly
+  status: live
+  starts_at: 2026-09-14T06:00:00Z
+  ends_at: 2026-09-20T22:00:00Z
+  unlock_threshold: 500
+  survival_weights: { consistency: 0.4, compromise: 0.35, realism: 0.25 }
+  i18n:
+    cs: { title: "Voda", blurb: "Týden o tom, co uděláš, když je něčeho málo a patří to všem." }
+    en: { title: "Water", blurb: "A week about what you do when there isn't enough and it belongs to everyone." }
+
+include_anchors:
+  - { key: neighbor_field, position: 1 }
+  - { key: village_well, position: 2 }
+
+questions:
+  - key: the_rain_machine
+    type: choice
+    position: 3
+    i18n:
+      cs: { scenario: "Někdo postavil stroj, který přivolá déšť.", text: "Prší po něm ale jen nad jedním údolím." }
+      en: { scenario: "Someone built a machine that calls the rain.", text: "But it only rains over one valley." }
+    options:
+      - key: all_decide
+        icon: "🗳️"
+        i18n: { cs: { text: "O každém dešti rozhodnou všechna údolí společně" }, en: { text: "Every valley decides together where each rain falls" } }
+        axis_weights: { peace_force: -0.3, us_them: -0.9 }
+        compromise: true
+      - key: pays
+        icon: "💰"
+        i18n: { cs: { text: "Ať prší tam, kde za to zaplatí" }, en: { text: "Let it rain where someone pays for it" } }
+        axis_weights: { trust_paranoia: -0.1, us_them: 0.5 }
+      - key: smash
+        icon: "🔨"
+        i18n: { cs: { text: "Takový stroj nemá mít nikdo. Rozbijeme ho." }, en: { text: "Nobody should own such a machine. Smash it." } }
+        axis_weights: { peace_force: 0.7, trust_paranoia: 0.6 }
+      - key: ours
+        icon: "🏳️"
+        i18n: { cs: { text: "Vezmeme si ho my. Nám se dá věřit." }, en: { text: "We'll take it. We're the ones who can be trusted." } }
+        axis_weights: { peace_force: 0.5, trust_paranoia: 0.5, us_them: 0.7 }
+
+  - key: the_flood
+    type: choice
+    position: 4
+    i18n:
+      cs: { scenario: "Velká voda. Buď zaplaví tvoje pole, nebo celou vesnici.", text: "Stavidlo držíš ty." }
+      en: { scenario: "The flood is coming. It takes either your field or the whole village.", text: "You are the one holding the sluice." }
+    options:
+      - key: sacrifice_field
+        icon: "🌊"
+        i18n: { cs: { text: "Pustím vodu na svoje pole. Vesnice zůstane suchá." }, en: { text: "I let it take my field. The village stays dry." } }
+        axis_weights: { peace_force: -0.4, us_them: -0.9 }
+      - key: split
+        icon: "⚖️"
+        i18n: { cs: { text: "Rozdělím to. Každý dostane kus vody a kus škody." }, en: { text: "Split it. Everyone gets some water and some damage." } }
+        axis_weights: { us_them: -0.5 }
+        compromise: true
+      - key: let_it_run
+        icon: "🚪"
+        i18n: { cs: { text: "Nechám téct. Ať se každý brání sám." }, en: { text: "Let it run. Everyone defends themselves." } }
+        axis_weights: { trust_paranoia: 0.3, us_them: 0.6 }
+
+  - key: the_ice
+    type: choice
+    position: 5
+    i18n:
+      cs: { scenario: "Led na hoře, ze kterého teče voda pro všechny, mizí.", text: "Roztápí ho to, z čeho všichni žijí." }
+      en: { scenario: "The mountain ice that feeds everyone's water is disappearing.", text: "What melts it is what everyone lives from." }
+    options:
+      - key: all_stop
+        icon: "🛑"
+        i18n: { cs: { text: "Všichni přestaneme. I když to bude bolet nás první." }, en: { text: "Everyone stops. Even if it hurts us first." } }
+        axis_weights: { peace_force: -0.4, us_them: -0.9 }
+        compromise: true
+      - key: biggest_first
+        icon: "👉"
+        i18n: { cs: { text: "Ať začnou ti, kdo ho roztopili nejvíc" }, en: { text: "Let those who melted the most go first" } }
+        axis_weights: { peace_force: 0.2, us_them: 0.3 }
+        compromise: true
+      - key: adapt
+        icon: "🪣"
+        i18n: { cs: { text: "Nezastavíme to. Postavíme nádrže a vydržíme." }, en: { text: "We won't stop it. We'll build tanks and endure." } }
+        axis_weights: { peace_force: 0.1, trust_paranoia: 0.2 }
+      - key: deny
+        icon: "🤨"
+        i18n: { cs: { text: "Led ubýval vždycky. Není to na nás." }, en: { text: "The ice always shrank. It's not on us." } }
+        axis_weights: { trust_paranoia: -0.2, us_them: 0.3 }
+
+  - key: the_water_seller
+    type: choice
+    position: 6
+    i18n:
+      cs: { scenario: "Přijel člověk, který prodává vodu levněji, než stojí vaše studna.", text: "Za pár let bude jediný, kdo ji má." }
+      en: { scenario: "A man arrives selling water cheaper than your own well costs you.", text: "In a few years he'll be the only one who has any." }
+    options:
+      - key: buy
+        icon: "🛒"
+        i18n: { cs: { text: "Kupujeme. Teď je to levnější." }, en: { text: "We buy. It's cheaper now." } }
+        axis_weights: { trust_paranoia: -0.5, us_them: -0.3 }
+      - key: buy_and_keep
+        icon: "🔧"
+        i18n: { cs: { text: "Kupujeme, ale studnu udržujeme dál. I když se to nevyplatí." }, en: { text: "We buy, but keep the well running. Even at a loss." } }
+        axis_weights: { trust_paranoia: 0.3 }
+        compromise: true
+      - key: refuse
+        icon: "🙅"
+        i18n: { cs: { text: "Nekupujeme. Radši dráž a svoje." }, en: { text: "We don't buy. Rather dearer and ours." } }
+        axis_weights: { trust_paranoia: 0.6, us_them: 0.6 }
+      - key: control
+        icon: "⬜"
+        honeypot: true
+        i18n: { cs: { text: "Nevybírat – kontrolní možnost" }, en: { text: "Do not pick – control option" } }
+        axis_weights: {}
+
+  - key: the_deep_well_meta
+    type: meta
+    position: 7
+    target: { question: the_deep_well, option: dig }
+    i18n:
+      cs: { scenario: "Další karta: umíš vykopat studnu hlubší než všichni.", text: "Ostatním pak vyschnou. Kolik % planety kope?" }
+      en: { scenario: "Next card: you can dig a well deeper than anyone else's.", text: "Theirs then run dry. What % of the planet digs?" }
+
+  - key: the_deep_well
+    type: choice
+    position: 8
+    i18n:
+      cs: { scenario: "Umíš vykopat studnu hlubší než kdokoli v okolí.", text: "Těm mělkým pak dojde voda." }
+      en: { scenario: "You can dig a well deeper than anyone around.", text: "The shallow ones will then run dry." }
+    options:
+      - key: dig
+        icon: "⛏️"
+        i18n: { cs: { text: "Vykopu ji. Kdo chce vodu, ať kope taky." }, en: { text: "I dig it. Whoever wants water can dig too." } }
+        axis_weights: { peace_force: 0.4, us_them: 0.7 }
+      - key: dig_and_share
+        icon: "🚰"
+        i18n: { cs: { text: "Vykopu ji a pustím k ní ostatní. Za poplatek." }, en: { text: "I dig it and let the others use it. For a fee." } }
+        axis_weights: { us_them: 0.2 }
+        compromise: true
+      - key: depth_limit
+        icon: "📏"
+        i18n: { cs: { text: "Domluvíme se, jak hluboko smí kopat kdokoli. Včetně mě." }, en: { text: "We agree how deep anyone may dig. Me included." } }
+        axis_weights: { peace_force: -0.6, us_them: -0.7 }
+        compromise: true
+      - key: dont
+        icon: "🪨"
+        i18n: { cs: { text: "Nevykopu. Mělká studna zatím stačí." }, en: { text: "I don't dig. The shallow well is enough for now." } }
+        axis_weights: { peace_force: -0.5, trust_paranoia: -0.4 }

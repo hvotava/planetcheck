@@ -1,0 +1,162 @@
+# ---------------------------------------------------------------------------
+# WEEKLY ROUND 2026-w40 — theme: "Stroj" / "The Machine"
+#
+# Tools that outgrow the people who own them. The most globally shared question of
+# the decade, kept in village language so it needs no technical vocabulary.
+# No question names a real state → review_required stays false.
+# Honeypot comes with the bigger_stick anchor (control) — this round adds none.
+# ---------------------------------------------------------------------------
+round:
+  slug: 2026-w40
+  kind: weekly
+  status: live
+  starts_at: 2026-09-28T06:00:00Z
+  ends_at: 2026-10-04T22:00:00Z
+  unlock_threshold: 500
+  survival_weights: { consistency: 0.4, compromise: 0.35, realism: 0.25 }
+  i18n:
+    cs: { title: "Stroj", blurb: "Týden o věcech, které umí víc než ty, a přesto patří někomu." }
+    en: { title: "The Machine", blurb: "A week about things that can do more than you can, and still belong to someone." }
+
+include_anchors:
+  - { key: neighbor_field, position: 1 }
+  - { key: bigger_stick, position: 5 }
+
+questions:
+  - key: the_thinking_box_meta
+    type: meta
+    position: 2
+    target: { question: the_thinking_box, option: trust_it }
+    i18n:
+      cs: { scenario: "Další karta: bedna, která odpoví na každou otázku.", text: "Většinou správně. Kolik % planety jí prostě uvěří?" }
+      en: { scenario: "Next card: a box that answers any question.", text: "Usually correctly. What % of the planet simply believes it?" }
+
+  - key: the_thinking_box
+    type: choice
+    position: 3
+    i18n:
+      cs: { scenario: "Do vesnice přivezli bednu, která odpoví na každou otázku.", text: "Většinou správně. Nikdo neví, jak to dělá." }
+      en: { scenario: "A box arrives in the village that answers any question.", text: "Usually correctly. Nobody knows how." }
+    options:
+      - key: use_check
+        icon: "🔍"
+        i18n: { cs: { text: "Používáme ji, ale každou odpověď si ověříme" }, en: { text: "Use it, but check every answer ourselves" } }
+        axis_weights: { trust_paranoia: 0.4 }
+        compromise: true
+      - key: trust_it
+        icon: "🧠"
+        i18n: { cs: { text: "Používáme ji. Je chytřejší než my všichni." }, en: { text: "Use it. It's cleverer than all of us." } }
+        axis_weights: { peace_force: -0.2, trust_paranoia: -0.8 }
+      - key: elders_only
+        icon: "🔑"
+        i18n: { cs: { text: "Ptát se smí jen ten, kdo už umí rozhodovat sám" }, en: { text: "Only those who can already decide for themselves may ask" } }
+        axis_weights: { trust_paranoia: 0.3, us_them: 0.2 }
+        compromise: true
+      - key: burn
+        icon: "🔥"
+        i18n: { cs: { text: "Spálíme ji. Vesnice, co se neptá sama sebe, zajde." }, en: { text: "Burn it. A village that stops asking itself dies." } }
+        axis_weights: { peace_force: 0.6, trust_paranoia: 0.6 }
+
+  - key: the_tireless_hand
+    type: choice
+    position: 4
+    i18n:
+      cs: { scenario: "Jeden stroj udělá práci deseti lidí.", text: "Těch deset pak nemá co dělat." }
+      en: { scenario: "One machine does the work of ten people.", text: "Those ten then have nothing to do." }
+    options:
+      - key: share_work
+        icon: "🤲"
+        i18n: { cs: { text: "Stroj necháme a rozdělíme mezi všechny práci i výdělek" }, en: { text: "Keep the machine, split both the work and the earnings" } }
+        axis_weights: { peace_force: -0.3, us_them: -0.8 }
+        compromise: true
+      - key: retrain
+        icon: "🪚"
+        i18n: { cs: { text: "Stroj necháme a těch deset naučíme něco jiného" }, en: { text: "Keep the machine and teach the ten something else" } }
+        axis_weights: { us_them: -0.6 }
+        compromise: true
+      - key: keep_jobs
+        icon: "🚫"
+        i18n: { cs: { text: "Stroj nekoupíme. Práce je víc než rychlost." }, en: { text: "Don't buy it. Work matters more than speed." } }
+        axis_weights: { trust_paranoia: 0.3, us_them: 0.3 }
+      - key: owner_keeps
+        icon: "💼"
+        i18n: { cs: { text: "Kdo stroj koupil, tomu patří i výdělek" }, en: { text: "Whoever bought the machine owns what it earns" } }
+        axis_weights: { peace_force: 0.3, us_them: 0.6 }
+
+  - key: the_watching_eye
+    type: choice
+    position: 6
+    i18n:
+      cs: { scenario: "Nový stroj pozná zloděje dřív, než ukradne.", text: "Kouká se přitom na všechny pořád." }
+      en: { scenario: "A new machine spots a thief before the theft.", text: "To do it, it watches everyone, always." }
+    options:
+      - key: everywhere
+        icon: "👁️"
+        i18n: { cs: { text: "Postavíme ho. Kdo nekrade, nemá se čeho bát." }, en: { text: "Build it. If you don't steal, you've nothing to fear." } }
+        axis_weights: { trust_paranoia: 0.7, us_them: 0.3 }
+      - key: square_only
+        icon: "🏛️"
+        i18n: { cs: { text: "Jen na náměstí. Do ulic a dvorů nikdy." }, en: { text: "On the square only. Never in the lanes and yards." } }
+        axis_weights: { trust_paranoia: 0.2 }
+        compromise: true
+      - key: watch_watchers
+        icon: "🔄"
+        i18n: { cs: { text: "Postavíme ho, ale na toho, kdo se dívá, se dívají ostatní" }, en: { text: "Build it, but whoever watches is watched by the rest" } }
+        axis_weights: { trust_paranoia: 0.1, us_them: -0.5 }
+        compromise: true
+      - key: never
+        icon: "🙈"
+        i18n: { cs: { text: "Radši zloděje než oči všude" }, en: { text: "Rather thieves than eyes everywhere" } }
+        axis_weights: { peace_force: -0.4, trust_paranoia: -0.6 }
+
+  - key: the_copy
+    type: choice
+    position: 7
+    i18n:
+      cs: { scenario: "Stroj umí udělat kopii tvého hlasu.", text: "Vesnice pak nepozná, cos řekl ty a co stroj." }
+      en: { scenario: "A machine can copy your voice.", text: "The village can no longer tell you from it." }
+    options:
+      - key: sign
+        icon: "✍️"
+        i18n: { cs: { text: "Domluvíme si znamení, kterým se každý podepíše" }, en: { text: "Agree on a mark everyone signs their words with" } }
+        axis_weights: { trust_paranoia: 0.2, us_them: -0.5 }
+        compromise: true
+      - key: stop_believing
+        icon: "👀"
+        i18n: { cs: { text: "Přestaneme věřit hlasům. Důležité si řekneme tváří v tvář." }, en: { text: "Stop believing voices. What matters we say face to face." } }
+        axis_weights: { trust_paranoia: 0.4, us_them: -0.2 }
+        compromise: true
+      - key: forbid
+        icon: "⛔"
+        i18n: { cs: { text: "Kopie zakážeme. Kdo ji udělá, odejde z vesnice." }, en: { text: "Ban copies. Whoever makes one leaves the village." } }
+        axis_weights: { peace_force: 0.6, trust_paranoia: 0.5 }
+      - key: who_cares
+        icon: "😌"
+        i18n: { cs: { text: "Kdo chce lhát, lže i bez stroje" }, en: { text: "Anyone who wants to lie lies without a machine too" } }
+        axis_weights: { peace_force: -0.3, trust_paranoia: -0.6 }
+
+  - key: the_seed
+    type: choice
+    position: 8
+    i18n:
+      cs: { scenario: "Nové semeno rodí dvakrát víc.", text: "Klíčí ale jen se strojem, který má jediná vesnice." }
+      en: { scenario: "A new seed yields twice as much.", text: "But it only sprouts with a machine one village owns." }
+    options:
+      - key: buy_seed
+        icon: "🌾"
+        i18n: { cs: { text: "Kupujeme. Hlad nepočká." }, en: { text: "We buy it. Hunger doesn't wait." } }
+        axis_weights: { trust_paranoia: -0.4, us_them: -0.2 }
+      - key: keep_old_too
+        icon: "🫙"
+        i18n: { cs: { text: "Kupujeme, ale staré semeno pěstujeme dál. I když rodí míň." }, en: { text: "We buy it, but keep growing the old seed. Even for less." } }
+        axis_weights: { trust_paranoia: 0.3 }
+        compromise: true
+      - key: build_own
+        icon: "🛠️"
+        i18n: { cs: { text: "Postavíme si vlastní stroj. I kdyby to trvalo deset let." }, en: { text: "Build our own machine. Even if it takes ten years." } }
+        axis_weights: { peace_force: 0.2, us_them: 0.3 }
+        compromise: true
+      - key: refuse_seed
+        icon: "🌱"
+        i18n: { cs: { text: "Nekupujeme. Kdo drží semeno, drží vesnici." }, en: { text: "We don't buy. Whoever holds the seed holds the village." } }
+        axis_weights: { trust_paranoia: 0.7, us_them: 0.6 }

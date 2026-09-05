@@ -3,7 +3,7 @@
 # only among UNLOCKED countries. Result is stored (country_stats.titles), never computed live.
 #
 # metric: a column/path of country_stats; pick: max | min
-# DRAFT — confirm wording with Hynek.
+# Wording approved by Hynek 2026-09-05.
 # ---------------------------------------------------------------------------
 titles:
   - key: most_paranoid

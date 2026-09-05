@@ -6,8 +6,8 @@
 #          realism, consistency, compromise, survival (0..1)
 # Comparisons: lt, lte, gt, gte. Special: abs_all_axes_below.
 #
-# DRAFT thresholds (ARCHITECTURE §8 sample, sanity-adjusted: holubice = peaceful AND trusting).
-# Confirm with Hynek. Illustrations: public/archetypes/<key>.svg (static, never generated).
+# Thresholds approved by Hynek 2026-09-05 (ARCHITECTURE §8 sample, sanity-adjusted:
+# holubice = peaceful AND trusting). Illustrations: public/archetypes/<key>.svg (static, never generated).
 # ---------------------------------------------------------------------------
 archetypes:
   - key: svycar

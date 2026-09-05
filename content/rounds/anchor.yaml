@@ -10,8 +10,7 @@
 # IMMEDIATELY BEFORE its target: the player guesses before the planet's distribution
 # is shown; the reveal happens in the target card's feedback.
 #
-# DRAFT CONTENT — formulations, axis weights and flags must be confirmed by Hynek
-# before the first public round (CLAUDE.md: "Neodhaduj … formulace otázek").
+# Approved by Hynek 2026-09-05 (formulations, axis weights and flags).
 # No question here names a real state; therefore review_required is false everywhere.
 #
 # Axis convention (−1 … +1):

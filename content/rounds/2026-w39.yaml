@@ -1,0 +1,157 @@
+# ---------------------------------------------------------------------------
+# WEEKLY ROUND 2026-w39 — theme: "Pravda" / "Truth"
+#
+# Who decides what is true, and what you do when you can't check it yourself.
+# Global by design: every culture has a person everyone listens to, a story nobody
+# is allowed to tell, and two versions of the same map.
+# No question names a real state → review_required stays false.
+# Honeypot: the_loud_voice.control (deliberately dull).
+# ---------------------------------------------------------------------------
+round:
+  slug: 2026-w39
+  kind: weekly
+  status: live
+  starts_at: 2026-09-21T06:00:00Z
+  ends_at: 2026-09-27T22:00:00Z
+  unlock_threshold: 500
+  survival_weights: { consistency: 0.4, compromise: 0.35, realism: 0.25 }
+  i18n:
+    cs: { title: "Pravda", blurb: "Týden o tom, komu věříš, když si to nemůžeš ověřit sám." }
+    en: { title: "Truth", blurb: "A week about whom you believe when you can't check it yourself." }
+
+include_anchors:
+  - { key: rumor, position: 1 }
+  - { key: stranger_at_door, position: 5 }
+
+questions:
+  - key: the_only_storyteller
+    type: choice
+    position: 2
+    i18n:
+      cs: { scenario: "Jediný člověk ve vesnici umí číst.", text: "Zprávy zvenčí znáte tak, jak vám je předčítá." }
+      en: { scenario: "One person in the village can read.", text: "You know the news from outside only as they read it to you." }
+    options:
+      - key: teach_others
+        icon: "📖"
+        i18n: { cs: { text: "Naučíme číst další. I když to potrvá roky." }, en: { text: "Teach others to read. Even if it takes years." } }
+        axis_weights: { trust_paranoia: -0.3, us_them: -0.7 }
+        compromise: true
+      - key: check
+        icon: "👂"
+        i18n: { cs: { text: "Ať čte dál, ale někdo vždycky poslouchá s ním" }, en: { text: "Let them read, but someone always listens along" } }
+        axis_weights: { trust_paranoia: 0.4 }
+        compromise: true
+      - key: believe
+        icon: "🙏"
+        i18n: { cs: { text: "Věříme mu. Zatím nikdy nelhal." }, en: { text: "We trust them. They've never lied yet." } }
+        axis_weights: { trust_paranoia: -0.8 }
+      - key: replace
+        icon: "🚪"
+        i18n: { cs: { text: "Vyženeme ho a najdeme si vlastního" }, en: { text: "Drive them out and find our own" } }
+        axis_weights: { peace_force: 0.6, us_them: 0.5 }
+
+  - key: the_two_maps
+    type: choice
+    position: 3
+    i18n:
+      cs: { scenario: "Dvě vesnice mají mapu stejného kraje. Každá jinou.", text: "Podle jedné je studna vaše, podle druhé jejich." }
+      en: { scenario: "Two villages hold a map of the same land. The maps differ.", text: "On one the well is yours, on the other theirs." }
+    options:
+      - key: third_map
+        icon: "🧭"
+        i18n: { cs: { text: "Necháme nakreslit třetí mapu někoho, kdo tu nežije" }, en: { text: "Have a third map drawn by someone who doesn't live here" } }
+        axis_weights: { trust_paranoia: 0.3, us_them: -0.4 }
+        compromise: true
+      - key: walk_it
+        icon: "🚶"
+        i18n: { cs: { text: "Sejdeme se u studny a domluvíme se na místě" }, en: { text: "Meet at the well and settle it on the spot" } }
+        axis_weights: { peace_force: -0.4, us_them: -0.7 }
+        compromise: true
+      - key: our_map
+        icon: "📜"
+        i18n: { cs: { text: "Naše mapa je starší. Platí naše." }, en: { text: "Our map is older. Ours stands." } }
+        axis_weights: { peace_force: 0.5, us_them: 0.7 }
+      - key: burn_both
+        icon: "🔥"
+        i18n: { cs: { text: "Spálíme obě. Mapy nadělaly víc zla než dobra." }, en: { text: "Burn both. Maps have done more harm than good." } }
+        axis_weights: { peace_force: 0.3, trust_paranoia: 0.5 }
+
+  - key: the_loud_voice
+    type: choice
+    position: 4
+    i18n:
+      cs: { scenario: "Jeden hlas ve vesnici je desetkrát hlasitější než ostatní.", text: "Slyšet je hlavně on." }
+      en: { scenario: "One voice in the village carries ten times further than the rest.", text: "It's mostly what people hear." }
+    options:
+      - key: everyone_equal
+        icon: "⏳"
+        i18n: { cs: { text: "Zavedeme pravidlo: každý mluví stejně dlouho" }, en: { text: "Make a rule: everyone speaks for the same time" } }
+        axis_weights: { peace_force: -0.3, us_them: -0.6 }
+        compromise: true
+      - key: louder
+        icon: "📣"
+        i18n: { cs: { text: "Postavíme si vlastní, ještě hlasitější" }, en: { text: "Build our own, louder still" } }
+        axis_weights: { peace_force: 0.6, us_them: 0.5 }
+      - key: listen
+        icon: "🤷"
+        i18n: { cs: { text: "Ať mluví. Lidi si nakonec poradí." }, en: { text: "Let it speak. People work it out in the end." } }
+        axis_weights: { peace_force: -0.4, trust_paranoia: -0.7 }
+      - key: control
+        icon: "⬜"
+        honeypot: true
+        i18n: { cs: { text: "Nevybírat – kontrolní možnost" }, en: { text: "Do not pick – control option" } }
+        axis_weights: {}
+
+  - key: the_forbidden_word_meta
+    type: meta
+    position: 6
+    target: { question: the_forbidden_word, option: speak }
+    i18n:
+      cs: { scenario: "Další karta: o jedné věci se ve vesnici nemluví.", text: "Ty víš, že je důležitá. Kolik % planety to řekne nahlas?" }
+      en: { scenario: "Next card: there is one thing the village never speaks about.", text: "You know it matters. What % of the planet says it out loud?" }
+
+  - key: the_forbidden_word
+    type: choice
+    position: 7
+    i18n:
+      cs: { scenario: "Vesnice se kdysi dohodla, že se o jedné věci nemluví.", text: "Ty víš, že je důležitá." }
+      en: { scenario: "The village once agreed that one thing is never spoken of.", text: "You know it matters." }
+    options:
+      - key: speak
+        icon: "🗣️"
+        i18n: { cs: { text: "Řeknu to nahlas. I když mě za to vyženou." }, en: { text: "Say it out loud. Even if it gets me thrown out." } }
+        axis_weights: { peace_force: 0.3, trust_paranoia: -0.4, us_them: -0.3 }
+      - key: whisper
+        icon: "🤫"
+        i18n: { cs: { text: "Řeknu to jen těm, kterým věřím" }, en: { text: "Say it only to those I trust" } }
+        axis_weights: { trust_paranoia: 0.5, us_them: 0.3 }
+        compromise: true
+      - key: silent
+        icon: "🔇"
+        i18n: { cs: { text: "Mlčím. Dohoda je dohoda." }, en: { text: "Stay quiet. An agreement is an agreement." } }
+        axis_weights: { peace_force: -0.5, us_them: 0.2 }
+
+  - key: the_counted_hands
+    type: choice
+    position: 8
+    i18n:
+      cs: { scenario: "Vesnice hlasovala zvednutím rukou.", text: "Ten, kdo počítal, řekl jiné číslo, než jsi viděl ty." }
+      en: { scenario: "The village voted by a show of hands.", text: "The one counting announced a different number than you saw." }
+    options:
+      - key: count_again
+        icon: "🔢"
+        i18n: { cs: { text: "Přepočítáme to znovu, přede všemi" }, en: { text: "Count again, in front of everyone" } }
+        axis_weights: { trust_paranoia: 0.2, us_them: -0.5 }
+        compromise: true
+      - key: accept
+        icon: "😐"
+        i18n: { cs: { text: "Přijmu výsledek. Rozkol by byl horší." }, en: { text: "Accept it. A split would be worse." } }
+        axis_weights: { peace_force: -0.7, trust_paranoia: -0.3 }
+      - key: refuse
+        icon: "✋"
+        i18n: { cs: { text: "Nepřijmu ho. A řeknu to nahlas." }, en: { text: "Refuse it. And say so out loud." } }
+        axis_weights: { peace_force: 0.4, trust_paranoia: 0.6 }
+      - key: own_count
+        icon: "🏚️"
+        i18n: { cs: { text: "Uděláme si vlastní počítání a vlastní vesnici" }, en: { text: "Do our own count, and our own village" } }
+        axis_weights: { peace_force: 0.5, us_them: 0.9 }

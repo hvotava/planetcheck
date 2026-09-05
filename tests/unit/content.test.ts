@@ -66,6 +66,41 @@ describe("content/ validates and links", () => {
     expect(bundle.weighting.tolerance).toBe(0.01);
   });
 
+  it("every live weekly round follows the deck rules", () => {
+    const weeklies = bundle.rounds.filter((r) => r.kind === "weekly" && r.status === "live");
+    expect(weeklies.length).toBeGreaterThanOrEqual(5);
+    for (const r of weeklies) {
+      const choice = r.questions.filter((q) => q.type === "choice");
+      const meta = r.questions.filter((q) => q.type === "meta");
+      expect(choice, `${r.slug} dilemmas`).toHaveLength(7);
+      expect(meta, `${r.slug} meta`).toHaveLength(1);
+      // exactly one honeypot, and it is a dull control option
+      const honeypots = r.questions.flatMap((q) => q.options.filter((o) => o.honeypot));
+      expect(honeypots, `${r.slug} honeypot`).toHaveLength(1);
+      expect(honeypots[0]!.key).toBe("control");
+      // the guess is always made before the planet's distribution of the target is shown
+      const target = r.questions.find((q) => q.key === meta[0]!.target!.question)!;
+      expect(target.position, `${r.slug} meta adjacency`).toBe(meta[0]!.position + 1);
+      // option counts vary, so the deck does not settle into one rhythm
+      expect(new Set(choice.map((q) => q.options.length)).size, `${r.slug} option counts`).toBeGreaterThan(1);
+      // every dilemma offers at least one compromise, and the round has pairs to contradict
+      for (const q of choice) expect(q.options.some((o) => o.compromise || o.honeypot), `${r.slug}/${q.key} compromise`).toBe(true);
+      expect(r.contradictions.length, `${r.slug} pairs`).toBeGreaterThanOrEqual(4);
+    }
+  });
+
+  it("rounds run in consecutive, non-overlapping windows", () => {
+    const weeklies = bundle.rounds
+      .filter((r) => r.kind === "weekly" && r.status === "live")
+      .sort((a, b) => a.starts_at.localeCompare(b.starts_at));
+    for (let i = 1; i < weeklies.length; i++) {
+      const prev = weeklies[i - 1]!;
+      const cur = weeklies[i]!;
+      expect(prev.ends_at, `${prev.slug} needs an end`).toBeTruthy();
+      expect(cur.starts_at >= prev.ends_at!, `${cur.slug} starts after ${prev.slug} ends`).toBe(true);
+    }
+  });
+
   it("rejects a round with two honeypots", () => {
     expect(() => loadRounds("tests/unit/fixtures/bad-content")).toThrow(/honeypot/);
   });

@@ -1,0 +1,146 @@
+# ---------------------------------------------------------------------------
+# WEEKLY ROUND 2026-w41 — theme: "Děti" / "Children"
+#
+# What you owe people who are not here yet. Universal: a tree that shades your
+# grandchildren, grain borrowed against next year, a school or a wall.
+# No question names a real state → review_required stays false.
+# Honeypot: the_borrowed_grain.control (deliberately dull).
+# ---------------------------------------------------------------------------
+round:
+  slug: 2026-w41
+  kind: weekly
+  status: live
+  starts_at: 2026-10-05T06:00:00Z
+  ends_at: 2026-10-11T22:00:00Z
+  unlock_threshold: 500
+  survival_weights: { consistency: 0.4, compromise: 0.35, realism: 0.25 }
+  i18n:
+    cs: { title: "Děti", blurb: "Týden o tom, co dlužíš lidem, kteří tu ještě nejsou." }
+    en: { title: "Children", blurb: "A week about what you owe the people who aren't here yet." }
+
+include_anchors:
+  - { key: village_well, position: 1 }
+  - { key: stranger_at_door, position: 5 }
+
+questions:
+  - key: the_slow_tree
+    type: choice
+    position: 2
+    i18n:
+      cs: { scenario: "Strom, který dnes zasadíš, dá stín až tvým vnukům.", text: "Na stejném místě může být letos pole." }
+      en: { scenario: "A tree planted today shades your grandchildren, not you.", text: "The same ground could be a field this year." }
+    options:
+      - key: plant
+        icon: "🌳"
+        i18n: { cs: { text: "Zasadím strom" }, en: { text: "Plant the tree" } }
+        axis_weights: { peace_force: -0.4, us_them: -0.6 }
+      - key: half
+        icon: "🪴"
+        i18n: { cs: { text: "Půlku pole, půlku stromů" }, en: { text: "Half field, half trees" } }
+        axis_weights: { us_them: -0.3 }
+        compromise: true
+      - key: field
+        icon: "🌾"
+        i18n: { cs: { text: "Pole. Hlad je teď." }, en: { text: "The field. Hunger is now." } }
+        axis_weights: { peace_force: 0.2, us_them: 0.4 }
+
+  - key: the_borrowed_grain
+    type: choice
+    position: 3
+    i18n:
+      cs: { scenario: "Můžeš si půjčit obilí proti příštím sklizním.", text: "Splácet ho budou tvoje děti." }
+      en: { scenario: "You can borrow grain against future harvests.", text: "Your children will be the ones repaying it." }
+    options:
+      - key: dont_borrow
+        icon: "🥔"
+        i18n: { cs: { text: "Nepůjčím si. Utáhneme opasky teď." }, en: { text: "Don't borrow. We tighten our belts now." } }
+        axis_weights: { trust_paranoia: 0.3, us_them: -0.2 }
+      - key: borrow_small
+        icon: "🧮"
+        i18n: { cs: { text: "Půjčím si jen tolik, kolik stihnu splatit sám" }, en: { text: "Borrow only what I can repay myself" } }
+        axis_weights: { peace_force: -0.2, us_them: -0.4 }
+        compromise: true
+      - key: borrow
+        icon: "📈"
+        i18n: { cs: { text: "Půjčím si. Děti to budou mít snazší než my." }, en: { text: "Borrow. My children will have it easier than we did." } }
+        axis_weights: { trust_paranoia: -0.5, us_them: 0.3 }
+      - key: control
+        icon: "⬜"
+        honeypot: true
+        i18n: { cs: { text: "Nevybírat – kontrolní možnost" }, en: { text: "Do not pick – control option" } }
+        axis_weights: {}
+
+  - key: the_last_fish
+    type: choice
+    position: 4
+    i18n:
+      cs: { scenario: "V jezeře zbývá tolik ryb, že se dá jíst letos, nebo napřesrok.", text: "Ne obojí." }
+      en: { scenario: "The lake holds enough fish for this year, or for next.", text: "Not both." }
+    options:
+      - key: stop_now
+        icon: "🛑"
+        i18n: { cs: { text: "Přestaneme lovit hned" }, en: { text: "Stop fishing now" } }
+        axis_weights: { peace_force: -0.4, us_them: -0.7 }
+      - key: quota
+        icon: "📋"
+        i18n: { cs: { text: "Domluvíme se, kolik smí kdo ulovit, a kontrolujeme se navzájem" }, en: { text: "Agree how much each may take, and check on each other" } }
+        axis_weights: { trust_paranoia: 0.3, us_them: -0.6 }
+        compromise: true
+      - key: fish
+        icon: "🎣"
+        i18n: { cs: { text: "Lovíme. Kdybychom my ne, uloví je jiní." }, en: { text: "We fish. If we don't, someone else will." } }
+        axis_weights: { peace_force: 0.5, us_them: 0.6 }
+      - key: stop_others
+        icon: "🚫"
+        i18n: { cs: { text: "My přestaneme, ale ostatním to zakážeme silou" }, en: { text: "We stop, and stop the others by force" } }
+        axis_weights: { peace_force: 0.8, us_them: 0.5 }
+
+  - key: the_school_or_the_wall_meta
+    type: meta
+    position: 6
+    target: { question: the_school_or_the_wall, option: wall }
+    i18n:
+      cs: { scenario: "Další karta: kamene je dost na školu, nebo na hradbu.", text: "Ne na obojí. Kolik % planety postaví hradbu?" }
+      en: { scenario: "Next card: enough stone for a school or for a wall.", text: "Not both. What % of the planet builds the wall?" }
+
+  - key: the_school_or_the_wall
+    type: choice
+    position: 7
+    i18n:
+      cs: { scenario: "Kamene je dost na školu, nebo na hradbu.", text: "Ne na obojí." }
+      en: { scenario: "There is enough stone for a school or for a wall.", text: "Not for both." }
+    options:
+      - key: school
+        icon: "🏫"
+        i18n: { cs: { text: "Škola" }, en: { text: "The school" } }
+        axis_weights: { peace_force: -0.8, us_them: -0.4 }
+      - key: wall
+        icon: "🧱"
+        i18n: { cs: { text: "Hradba" }, en: { text: "The wall" } }
+        axis_weights: { peace_force: 0.8, trust_paranoia: 0.7, us_them: 0.5 }
+      - key: small_both
+        icon: "🤏"
+        i18n: { cs: { text: "Menší škola a nižší hradba. Ani jedno pořádně." }, en: { text: "A smaller school and a lower wall. Neither one properly." } }
+        axis_weights: { peace_force: 0.1 }
+        compromise: true
+
+  - key: the_child_who_leaves
+    type: choice
+    position: 8
+    i18n:
+      cs: { scenario: "Tvoje dítě umí něco, co ve vesnici nikdo nepotřebuje.", text: "Za horami by o to stáli." }
+      en: { scenario: "Your child is good at something nobody here needs.", text: "Beyond the hills they would want it." }
+    options:
+      - key: let_go
+        icon: "🕊️"
+        i18n: { cs: { text: "Ať jde. Vesnice není klec." }, en: { text: "Let them go. A village isn't a cage." } }
+        axis_weights: { trust_paranoia: -0.3, us_them: -0.7 }
+      - key: go_and_send
+        icon: "📮"
+        i18n: { cs: { text: "Ať jde, ale posílá zpátky, co může" }, en: { text: "Let them go, but send back what they can" } }
+        axis_weights: { us_them: -0.2 }
+        compromise: true
+      - key: stay
+        icon: "🏡"
+        i18n: { cs: { text: "Ať zůstane. Vesnice ho potřebuje víc než on ji." }, en: { text: "Let them stay. The village needs them more than they need it." } }
+        axis_weights: { trust_paranoia: 0.4, us_them: 0.6 }

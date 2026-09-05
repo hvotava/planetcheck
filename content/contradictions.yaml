@@ -5,7 +5,7 @@
 # A pair must span two different questions (validated) — otherwise it can never be
 # activated and only inflates the consistency denominator.
 #
-# DRAFT — confirm pairs and labels with Hynek.
+# Approved by Hynek 2026-09-05.
 # ---------------------------------------------------------------------------
 pairs:
   - key: small_sticks_secret_weapon
@@ -56,3 +56,147 @@ pairs:
     i18n:
       cs: { title: "Společné potrubí, otrávená fáma", blurb: "Vodu sdílím. Pomluvu taky." }
       en: { title: "A shared pipeline, a poisoned rumour", blurb: "We share the water. I share the slander." }
+
+  # --- 2026-w38 "Voda" -----------------------------------------------------
+  - key: shared_pipe_own_deep_well
+    a: { question: village_well, option: pipeline }
+    b: { question: the_deep_well, option: dig }
+    i18n:
+      cs: { title: "Společné potrubí, vlastní hluboká studna", blurb: "Vodu sdílíme. Tu svoji si vezmu první." }
+      en: { title: "A shared pipeline, my own deep well", blurb: "We share the water. I take mine first." }
+
+  - key: all_stop_but_i_dig
+    a: { question: the_ice, option: all_stop }
+    b: { question: the_deep_well, option: dig }
+    i18n:
+      cs: { title: "Ať přestanou všichni, já kopu dál", blurb: "Obětovat se máme společně. Začnu zítra." }
+      en: { title: "Everyone should stop, I keep digging", blurb: "We should all sacrifice together. I'll start tomorrow." }
+
+  - key: shared_pipe_flood_alone
+    a: { question: village_well, option: pipeline }
+    b: { question: the_flood, option: let_it_run }
+    i18n:
+      cs: { title: "Potrubí sdílíme, povodeň ne", blurb: "Když teče do mě, jsme vesnice. Když teče do nich, jsou sousedi." }
+      en: { title: "We share the pipe, not the flood", blurb: "When it floods me, we're a village. When it floods them, they're neighbours." }
+
+  - key: rain_for_all_water_for_us
+    a: { question: the_rain_machine, option: all_decide }
+    b: { question: the_water_seller, option: refuse }
+    i18n:
+      cs: { title: "O dešti rozhodneme společně, vodu od nich nekoupím", blurb: "Dohoda ano, závislost ne." }
+      en: { title: "We decide the rain together, but I won't buy their water", blurb: "Agreement yes, dependence no." }
+
+  - key: my_field_yes_the_ice_no
+    a: { question: the_flood, option: sacrifice_field }
+    b: { question: the_ice, option: deny }
+    i18n:
+      cs: { title: "Pole obětuju, led není na mně", blurb: "Co vidím, to řeším. Co nevidím, to není." }
+      en: { title: "I'll give up my field, the ice isn't on me", blurb: "I fix what I can see. What I can't see isn't there." }
+
+  # --- 2026-w39 "Pravda" ---------------------------------------------------
+  - key: numbers_public_word_forbidden
+    a: { question: rumor, option: test }
+    b: { question: the_forbidden_word, option: silent }
+    i18n:
+      cs: { title: "Čísla zveřejním, o tomhle mlčím", blurb: "Průhlednost, dokud se netýká nás." }
+      en: { title: "I publish the numbers, I keep quiet about this", blurb: "Transparency, until it's about us." }
+
+  - key: third_map_but_my_count
+    a: { question: the_two_maps, option: third_map }
+    b: { question: the_counted_hands, option: refuse }
+    i18n:
+      cs: { title: "Cizí mapa ano, cizí počítání ne", blurb: "Nestrannost platí, dokud vychází." }
+      en: { title: "A stranger's map yes, a stranger's count no", blurb: "Impartiality holds while it goes my way." }
+
+  - key: trust_the_reader_spread_the_rumor
+    a: { question: the_only_storyteller, option: believe }
+    b: { question: rumor, option: retaliate }
+    i18n:
+      cs: { title: "Jemu věřím, o nich lžu", blurb: "Pravda je to, co říká ten můj." }
+      en: { title: "I believe him, I lie about them", blurb: "The truth is whatever my man says." }
+
+  - key: settle_at_the_well_split_the_village
+    a: { question: the_two_maps, option: walk_it }
+    b: { question: the_counted_hands, option: own_count }
+    i18n:
+      cs: { title: "U studny se domluvíme, u hlasování se rozejdeme", blurb: "Dohodnu se o vodu. O moc ne." }
+      en: { title: "We settle it at the well and split over the vote", blurb: "I'll deal over water. Not over power." }
+
+  - key: loud_about_theirs_quiet_about_ours
+    a: { question: the_forbidden_word, option: speak }
+    b: { question: the_counted_hands, option: accept }
+    i18n:
+      cs: { title: "Nahlas o zakázaném, mlčky o podvodu", blurb: "Odvaha, když nic nestojí." }
+      en: { title: "Loud about the taboo, silent about the count", blurb: "Courage, when it costs nothing." }
+
+  # --- 2026-w40 "Stroj" ----------------------------------------------------
+  - key: box_is_smarter_voices_are_liars
+    a: { question: the_thinking_box, option: trust_it }
+    b: { question: the_copy, option: stop_believing }
+    i18n:
+      cs: { title: "Bedně věřím, lidem ne", blurb: "Stroj se neptám, jak to ví. Souseda ano." }
+      en: { title: "I trust the box, not people", blurb: "I don't ask the machine how it knows. I ask my neighbour." }
+
+  - key: no_eyes_but_exile_for_a_copy
+    a: { question: the_watching_eye, option: never }
+    b: { question: the_copy, option: forbid }
+    i18n:
+      cs: { title: "Oči nikde, ale za kopii vyženeme", blurb: "Svoboda pro mě, vyhnanství pro něj." }
+      en: { title: "No eyes anywhere, but exile for a copy", blurb: "Freedom for me, banishment for him." }
+
+  - key: law_for_my_field_market_for_their_work
+    a: { question: neighbor_field, option: un }
+    b: { question: the_tireless_hand, option: owner_keeps }
+    i18n:
+      cs: { title: "Právo na moje pole, trh na cizí práci", blurb: "Když přijdu o svoje, volám právo. Když o svoje přijdou oni, je to trh." }
+      en: { title: "Law for my field, the market for their work", blurb: "When I lose mine, I call the law. When they lose theirs, it's the market." }
+
+  - key: their_seed_no_their_answers_yes
+    a: { question: the_seed, option: refuse_seed }
+    b: { question: the_thinking_box, option: trust_it }
+    i18n:
+      cs: { title: "Semeno od nich ne, odpovědi ano", blurb: "Nezávislost na jídle. Závislost na myšlení." }
+      en: { title: "Not their seed, but their answers", blurb: "Independent in food. Dependent in thought." }
+
+  - key: i_drop_my_stick_and_watch_you
+    a: { question: bigger_stick, option: treaty }
+    b: { question: the_watching_eye, option: everywhere }
+    i18n:
+      cs: { title: "Klacek zahodím první, ale koukat budu na všechny", blurb: "Důvěřuju ti tak, že tě sleduju." }
+      en: { title: "I drop my stick first, and watch everyone", blurb: "I trust you enough to keep you on camera." }
+
+  # --- 2026-w41 "Děti" -----------------------------------------------------
+  - key: tree_for_grandchildren_fish_for_me
+    a: { question: the_slow_tree, option: plant }
+    b: { question: the_last_fish, option: fish }
+    i18n:
+      cs: { title: "Strom vnukům, ryby sobě", blurb: "Na sto let dopředu myslím. Na příští rok ne." }
+      en: { title: "A tree for the grandchildren, the fish for me", blurb: "I plan a century ahead. Not next year." }
+
+  - key: tree_for_children_debt_on_children
+    a: { question: the_slow_tree, option: plant }
+    b: { question: the_borrowed_grain, option: borrow }
+    i18n:
+      cs: { title: "Strom pro děti, dluh na děti", blurb: "Nechám jim stín. A účet." }
+      en: { title: "A tree for the children, a debt on the children", blurb: "I leave them shade. And the bill." }
+
+  - key: school_not_wall_but_door_stays_shut
+    a: { question: the_school_or_the_wall, option: school }
+    b: { question: stranger_at_door, option: no_open }
+    i18n:
+      cs: { title: "Škola místo hradby, ale v noci neotvírám", blurb: "Hradbu nestavím. Mám ji na dveřích." }
+      en: { title: "A school instead of a wall, but the door stays shut", blurb: "I build no wall. I keep one on my door." }
+
+  - key: stranger_in_child_stays
+    a: { question: stranger_at_door, option: let_in }
+    b: { question: the_child_who_leaves, option: stay }
+    i18n:
+      cs: { title: "Cizince pustím dovnitř, vlastní dítě ven ne", blurb: "Dveře jsou otevřené. Jedním směrem." }
+      en: { title: "A stranger may come in, my child may not go out", blurb: "The door is open. One way." }
+
+  - key: quota_on_fish_dam_on_water
+    a: { question: the_last_fish, option: quota }
+    b: { question: village_well, option: dam }
+    i18n:
+      cs: { title: "Kvóty na ryby, hráz na vodu", blurb: "Ať se všichni uskromní. U vody začnu brát." }
+      en: { title: "Quotas on the fish, a dam on the water", blurb: "Everyone should hold back. At the water I start taking." }

@@ -4,7 +4,7 @@
 # published methodology can never drift from what the numbers actually do.
 #
 # Values from ARCHITECTURE §9. `cell_clamp` (trimming of within-country raking
-# factors) is an addition for safety against tiny demographic cells — confirm with Hynek.
+# factors) is an addition for safety against tiny demographic cells — approved by Hynek 2026-09-05.
 # ---------------------------------------------------------------------------
 country_clamp: [0.2, 5.0]          # clamp of population/sample ratio per country
 cell_clamp: [0.2, 5.0]             # trimming of within-country raking factors
