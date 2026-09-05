@@ -9,6 +9,7 @@ export type Enums = {
   round_kind: "anchor" | "weekly" | "flash";
   round_status: "draft" | "live" | "closed";
   settlement_band: "city" | "town" | "rural";
+  subscriber_status: "pending" | "confirmed" | "unsubscribed";
   trust_level: "anon" | "verified";
 };
 
@@ -111,6 +112,19 @@ export type Tables = {
     approved: boolean;
     generated_at: string;
     published_at: string | null;
+  };
+  newsletter_subscribers: {
+    id: string;
+    email: string;
+    locale: string;
+    status: Enums["subscriber_status"];
+    confirm_token_hash: string | null;
+    ip_hash: string | null;
+    created_at: string;
+    confirmed_at: string | null;
+    unsubscribed_at: string | null;
+    last_sent_at: string | null;
+    last_sent_slug: string | null;
   };
   options: {
     id: string;

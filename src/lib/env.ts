@@ -26,6 +26,10 @@ const schema = z.object({
   APPLE_KEY_ID: z.string().optional(),
   APPLE_PRIVATE_KEY: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
+  // Newsletter. Without a sender the signup is not offered at all (see lib/newsletter/sender.ts).
+  RESEND_API_KEY: z.string().optional(),
+  NEWSLETTER_FROM: z.string().optional(),
+  NEWSLETTER_DEV_LOG: z.string().optional(),
   NARRATOR_MODEL: z.string().default("claude-sonnet-5"),
   TRANSLATE_MODEL: z.string().default("claude-haiku-4-5-20251001"),
   NEXT_PUBLIC_SITE_URL: z.string().default("http://localhost:3000"),

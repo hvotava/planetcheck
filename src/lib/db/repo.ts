@@ -17,6 +17,9 @@ import type {
   VoterStatus,
   ClassInfo,
   ClassResults,
+  NewsletterRecipient,
+  NewsletterResult,
+  NewsletterStats,
   ProphecyStats,
   ProphecyGuessResult,
 } from "@/types/api";
@@ -166,6 +169,29 @@ export class Repo {
   }
   releaseJobLease(name: string, status: string, error?: string) {
     return this.db.rpc<{ released: boolean }>("release_job_lease", { name, status, error: error ?? null });
+  }
+
+  // --- newsletter (ARCHITECTURE §14a). Tokens arrive hashed; the plaintext never reaches the DB.
+  newsletterSubscribe(input: { email: string; locale: string; confirm_token_hash: string; ip_hash?: string }) {
+    return this.db.rpc<NewsletterResult>("newsletter_subscribe", input);
+  }
+  newsletterConfirm(tokenHash: string) {
+    return this.db.rpc<NewsletterResult>("newsletter_confirm", { token_hash: tokenHash });
+  }
+  newsletterUnsubscribe(id: string) {
+    return this.db.rpc<NewsletterResult>("newsletter_unsubscribe", { id });
+  }
+  newsletterRecipients(args: { slug: string; starts_at: string; limit?: number }) {
+    return this.db.rpc<NewsletterRecipient[]>("newsletter_recipients", { limit: 200, ...args });
+  }
+  newsletterMarkSent(slug: string, ids: string[]) {
+    return this.db.rpc<{ marked: number }>("newsletter_mark_sent", { slug, ids });
+  }
+  newsletterPurge(pendingDays = 14, unsubscribedDays = 30) {
+    return this.db.rpc<{ pending_deleted: number; unsubscribed_deleted: number }>("newsletter_purge", { pending_days: pendingDays, unsubscribed_days: unsubscribedDays });
+  }
+  newsletterStats() {
+    return this.db.rpc<NewsletterStats>("newsletter_stats", {});
   }
 
   // --- school mode (ARCHITECTURE §15 phase 5)

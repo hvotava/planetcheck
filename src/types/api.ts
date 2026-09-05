@@ -257,6 +257,10 @@ export type NarratorPost = {
   context?: unknown;
 };
 
+export type NewsletterResult = { ok: boolean; code: string; send_confirmation?: boolean; locale?: string; id?: string };
+export type NewsletterRecipient = { id: string; email: string; locale: string };
+export type NewsletterStats = { pending: number; confirmed: number; unsubscribed: number };
+
 export type ClassInfo = { code: string; label: string | null; created_at: string; active?: boolean };
 
 export type ClassResults = {

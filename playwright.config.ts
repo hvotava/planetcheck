@@ -46,6 +46,9 @@ export default defineConfig({
       IP_SALT: "e2e-salt",
       CRON_SECRET: "e2e-cron",
       ADMIN_TOKEN: "e2e-admin",
+      AUTH_SECRET: "e2e-auth-secret",
+      // print the confirmation mail instead of sending it, so the signup form renders at all
+      NEWSLETTER_DEV_LOG: "true",
     },
   },
 });

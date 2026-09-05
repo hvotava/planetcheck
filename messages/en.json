@@ -14,7 +14,7 @@
       "classroom": "For schools"
     },
     "footer": {
-      "madeBy": "Open data, public methodology, no personal data.",
+      "madeBy": "Open data, public methodology, votes without personal data.",
       "source": "Source code",
       "privacy": "Privacy"
     },
@@ -338,6 +338,47 @@
     "planetShort": "planet",
     "classBadge": "class {code}"
   },
+  "newsletter": {
+    "title": "Dates of the next rounds",
+    "subtitle": "Leave an email and we'll tell you when a new theme opens. We won't send anything else.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "submit": "Tell me about the next rounds",
+    "sending": "Sending…",
+    "done": "Check your inbox.",
+    "doneHint": "We sent you a link. Until you click it your address goes on no list, and we delete it within two weeks.",
+    "consent": "We store your email and your language, nothing else. At most one letter per round, and every email unsubscribes in one click.",
+    "error": "That didn't work. Please try again.",
+    "invalidEmail": "That doesn't look like an email address.",
+    "disabled": "The mailing list isn't running yet. Try the calendar instead.",
+    "state": {
+      "confirmedTitle": "Done, you're on the list.",
+      "confirmedText": "We'll write when a new theme opens. Every email has an unsubscribe link.",
+      "invalidTitle": "This link is no longer valid.",
+      "invalidText": "It may have expired or already been used. Try signing up again."
+    },
+    "unsubscribe": {
+      "title": "Unsubscribe",
+      "text": "Press the button and we'll stop writing. We delete your address entirely within a month.",
+      "button": "Unsubscribe",
+      "working": "Unsubscribing…",
+      "doneTitle": "Unsubscribed.",
+      "doneText": "We won't write again. Thanks for trying it.",
+      "invalidTitle": "This link is no longer valid.",
+      "invalidText": "You may already be unsubscribed. If mail keeps arriving, tell us."
+    },
+    "mail": {
+      "confirmSubject": "Confirm your subscription — Will we survive?",
+      "confirmIntro": "Someone (hopefully you) asked to hear about the next rounds of Will we survive?. Please confirm with this link:",
+      "confirmAction": "After that we'll only write when a new theme opens.",
+      "confirmIgnore": "If this wasn't you, do nothing. We delete the address within two weeks.",
+      "signature": "Will we survive?",
+      "roundSubject": "New round: {title}",
+      "roundIntro": "A new theme has opened. Ninety seconds, seven dilemmas.",
+      "roundAction": "However it goes, you'll see straight away what the rest of the planet said.",
+      "roundUnsubscribe": "Unsubscribe:"
+    }
+  },
   "methodology": {
     "title": "Methodology",
     "subtitle": "Every number on this page is generated from the same constants the code uses. Change the code and this page changes too.",
@@ -355,7 +396,7 @@
     "trustTitle": "Trust and abuse",
     "trustText": "A suspicious vote is never blocked, only flagged and kept out of public numbers: honeypot (a nonsense option), submitting within {fast} s of loading, more than {ip} votes per hour from one IP fingerprint, more than {anon} per hour from one device, declared vs detected country mismatch. The only hard block is a duplicate: one vote per person per round.",
     "privacyTitle": "Privacy",
-    "privacyText": "We store no IP address (only a salted fingerprint), no User-Agent (only a coarse browser family) and nothing personal. Demographics are optional and coarse. The verified layer stores an identity fingerprint, never a name or e-mail.",
+    "privacyText": "Votes are anonymous. We store no name, no email and no IP address — only a `sha256(IP_SALT + IP)` fingerprint for de-duplication, and the coarse demographics you volunteer (age band, gender, settlement size). The verified layer holds only a hash of your Google or Apple identity, never an address or a name. The one place a personal detail is stored is the optional subscription to round dates: we keep your email and your language, nothing else. You confirm the address by clicking a link, and until you do we delete it within two weeks. Every letter unsubscribes in one click, and a month after that the address is deleted entirely.",
     "contradictionTitle": "Contradiction meter",
     "contradictionText": "A country's or the planet's contradiction index = weighted share of votes that activated at least one contradiction pair.",
     "unlockTitle": "Unlocking countries",

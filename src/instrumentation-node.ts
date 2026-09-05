@@ -1,6 +1,7 @@
 import { bootstrapPg } from "@/lib/db/bootstrap-pg";
 import { env, internalCronEnabled } from "@/lib/env";
 import { runNarratorJob, runRecomputeJob } from "@/lib/jobs";
+import { runNewsletterJob } from "@/lib/jobs/newsletter";
 
 /**
  * Runs once per server process:
@@ -40,4 +41,9 @@ export async function startScheduler() {
     const now = new Date();
     if (now.getUTCHours() === 6 && now.getUTCMinutes() < 10) void safe("narrator", () => runNarratorJob())();
   }, 10 * 60_000).unref();
+
+  // Hourly: tell confirmed readers a new theme opened, and purge unconfirmed addresses.
+  // Idempotent per round, so an hourly tick cannot mail anyone twice.
+  setTimeout(safe("newsletter", () => runNewsletterJob()), 60_000).unref();
+  setInterval(safe("newsletter", () => runNewsletterJob()), 60 * 60_000).unref();
 }

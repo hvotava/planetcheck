@@ -6,6 +6,7 @@ import { isUuid } from "@/lib/trust/fingerprint";
 import { archetypeMeta } from "@/lib/content/public";
 import { countryName } from "@/lib/countries";
 import { nextWeeklyRound, roundById } from "@/lib/api/rounds";
+import { newsletterEnabled } from "@/lib/newsletter/sender";
 import { pickLocalized } from "@/lib/content/i18n";
 import { Verdict } from "@/components/game/Verdict";
 
@@ -63,6 +64,8 @@ export default async function ResultPage({ params }: { params: Promise<{ locale:
       unlockThreshold={round.unlock_threshold}
       nextRound={nextRound}
       calendarUrl={`/api/calendar/rounds.ics?locale=${locale}`}
+      locale={locale}
+      newsletter={newsletterEnabled() ? { turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? null } : null}
     />
   );
 }

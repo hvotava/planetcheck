@@ -202,6 +202,37 @@ test.describe("play a round on mobile", () => {
     expect(body).toContain("DTSTART:");
   });
 
+  test("newsletter: double opt-in, and no address is taken without a way to confirm it", async ({ page, request }) => {
+    await page.goto("/cs/newsletter");
+    const form = page.getByTestId("newsletter-form");
+    await expect(form).toBeVisible();
+
+    // a malformed address is refused before anything is stored
+    const bad = await request.post("/api/newsletter", { data: { email: "not-an-address", locale: "cs" } });
+    expect(bad.status()).toBe(400);
+    expect((await bad.json()).error.code).toBe("invalid_email");
+
+    await page.waitForTimeout(1500); // Turnstile token
+    await form.getByLabel(/E-mail/).fill("e2e@example.org");
+    await form.getByRole("button", { name: /Chci vědět/ }).click();
+    await expect(page.getByTestId("newsletter-done")).toBeVisible({ timeout: 20_000 });
+
+    // the answer is identical for an address already on the list, so it cannot be probed
+    const again = await request.post("/api/newsletter", { data: { email: "e2e@example.org", locale: "cs" } });
+    expect(again.status()).toBe(202);
+
+    // a confirmation link that does not check out lands on the "no longer valid" page
+    await page.goto("/api/newsletter/confirm?token=nonsense");
+    await expect(page.getByTestId("newsletter-invalid")).toBeVisible();
+
+    // unsubscribing is a POST behind a button, so a scanner following the link removes nobody
+    const scanned = await request.get("/api/newsletter/unsubscribe?token=nonsense", { maxRedirects: 0 });
+    expect(scanned.status()).toBe(303);
+    await page.goto("/cs/newsletter/unsubscribe?token=nonsense");
+    await page.getByTestId("unsub-button").click();
+    await expect(page.getByTestId("unsub-invalid")).toBeVisible();
+  });
+
   test("API envelope, health and export", async ({ request }) => {
     const health = await request.get("/api/health");
     expect(health.ok()).toBeTruthy();

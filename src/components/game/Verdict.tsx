@@ -7,6 +7,7 @@ import { AxisBars } from "@/components/viz/AxisBars";
 import { Link } from "@/lib/i18n/navigation";
 import type { SubmissionPayload } from "@/types/api";
 import type { ScheduledRound } from "@/lib/api/rounds";
+import { SignupForm } from "@/components/newsletter/SignupForm";
 
 /** Verdict screen (server component): archetype reveal, indices, axes, contradictions, share. */
 export async function Verdict({
@@ -20,6 +21,8 @@ export async function Verdict({
   unlockThreshold,
   nextRound,
   calendarUrl,
+  locale,
+  newsletter,
 }: {
   submission: SubmissionPayload;
   archetypes: Record<string, ArchetypeMeta>;
@@ -31,6 +34,9 @@ export async function Verdict({
   unlockThreshold: number;
   nextRound: ScheduledRound | null;
   calendarUrl: string;
+  locale: string;
+  /** null when no email sender is configured — then no address is asked for at all */
+  newsletter: { turnstileSiteKey: string | null } | null;
 }) {
   const t = await getTranslations("result");
   const tc = await getTranslations("common");
@@ -188,6 +194,11 @@ export async function Verdict({
           {t("calendarCta")}
         </a>
         <p className="mt-2 text-xs text-faint">{t("calendarHint")}</p>
+        {newsletter ? (
+          <div className="mt-5 border-t border-border pt-4">
+            <SignupForm locale={locale} turnstileSiteKey={newsletter.turnstileSiteKey} compact />
+          </div>
+        ) : null}
       </section>
 
       {s.trust !== "verified" ? (

@@ -382,7 +382,15 @@ questions:
 - Klient nikdy nepíše do DB přímo a nikdy s ní nemluví: jediné připojení drží Next.js server (`src/lib/db/server.ts`, `import "server-only"`). Prohlížeč vidí jen `/api/*` a SSE.
 - `.env`: `DATABASE_URL`, `PGSSLMODE`, `REDIS_URL`, `TURNSTILE_SECRET`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `IP_SALT`, `CRON_SECRET`, `ADMIN_TOKEN`, `AUTH_SECRET`, `GOOGLE_*`, `APPLE_*`, `ANTHROPIC_API_KEY`, `NEXT_PUBLIC_SITE_URL`, `PLANETCHECK_INTERNAL_CRON` (viz `.env.example`). V produkci `env()` odmítne startovat s dev/placeholder hodnotami tajemství.
 - Cron endpointy vyžadují `Authorization: Bearer ${CRON_SECRET}`.
-- GDPR: žádná osobní data; ověřená vrstva drží jen hash OAuth subjectu. Export dat obsahuje jen agregace, nikdy řádky submissions.
+- GDPR: **hlasy** neobsahují žádná osobní data; ověřená vrstva drží jen hash OAuth subjectu. Export dat obsahuje jen agregace, nikdy řádky submissions.
+- **Newsletter (migrace `0006`)** je jediné místo v produktu, kde se ukládá osobní údaj, a je to vědomé rozhodnutí Hynka z 2026-09-05, ne vedlejší efekt. Pravidla jsou zapsaná ve schématu, ne jen v aplikaci:
+  - **Double opt-in.** Řádek je `pending`, dokud čtenář neklikne na odkaz, který dostal jen on. Bez nakonfigurovaného odesílatele se formulář vůbec nezobrazí a endpoint vrací 503 — sbírat adresy, které nelze potvrdit, je zbytečné i protiprávní.
+  - **Potvrzovací token se ukládá jen jako hash** (`sha256(AUTH_SECRET || token)`), takže únik databáze nedovolí potvrdit cizí adresu.
+  - **Odhlašovací token se neukládá vůbec.** Je to HMAC z `id` řádku, odvozený při každém odeslání a ověřený při použití. V databázi tedy není co uniknout.
+  - **Odhlášení je POST za tlačítkem.** Poštovní filtry proklikávají odkazy; GET by odhlašoval lidi, kteří o to nepožádali. Stejná URL slouží jako `List-Unsubscribe` s `List-Unsubscribe-Post` (RFC 8058), takže jde odhlásit i jedním klikem z klienta.
+  - **Retence.** Nepotvrzené adresy se mažou po 14 dnech, odhlášené po 30. Obojí dělá `newsletter_purge` v hodinovém jobu.
+  - **Endpoint neprozradí, kdo je na seznamu.** Odpověď je vždy stejná, ať adresa existuje nebo ne.
+  - Posílá se nanejvýš jeden dopis na kolo (`last_sent_slug`), a jen lidem, kteří potvrdili odběr **před** startem toho kola — kdo se přihlásí po dohrání, nedostane e-mail o kole, které právě hrál.
 - Symetrie formulací: každá otázka dotýkající se konkrétního státu musí mít `review_required` a druhou otázku se zrcadleným rámováním v tom samém kole.
 
 ---
@@ -417,7 +425,7 @@ Každá fáze končí zeleným `pnpm test` a e2e průchodem. Nezačínej další
 - **Školní mód** ✅ — `/class` vygeneruje kód, studenti hrají přes `/play?class=KÓD`, `/class/[KÓD]` porovná třídu s planetou. Detaily a soukromí viz §5.
 - Embed widget (`/embed/planet` iframe) ✅.
 
-- **Oznamování dalších kol** ✅ — `/api/calendar/rounds.ics?locale=…` je odebíratelný kalendář rozvrhu kol (`src/lib/calendar/ics.ts`, čistá funkce). Výsledková obrazovka říká, které téma přijde a kdy, a nabídne odběr. Je to jediný oznamovací kanál, který nestojí žádná osobní data: připomínku si drží kalendář čtenáře, server se nikdy nedozví, že existuje. E-mailový newsletter by znamenal změnu §14 a ne-cílů — viz §16.
+- **Oznamování dalších kol** ✅ — dvě cesty. (1) `/api/calendar/rounds.ics?locale=…` je odebíratelný kalendář rozvrhu kol (`src/lib/calendar/ics.ts`, čistá funkce); připomínku drží kalendář čtenáře, server se nikdy nedozví, že existuje, a nestojí to žádné údaje. (2) Dobrovolný e-mailový odběr termínů, jediné místo v produktu s osobním údajem — pravidla v §14. Výsledková obrazovka nabídne obojí a řekne, které téma přijde a kdy.
 
 **Fáze 5 je hotová.** Zbývá potvrdit formulace šesti proroctví a nasadit reálné Turnstile klíče (viz §16).
 
@@ -431,3 +439,4 @@ Každá fáze končí zeleným `pnpm test` a e2e průchodem. Nezačínej další
 - Kolik anchor otázek nechat trvale (návrh 5) vs. rotovat.
 - **Turnstile běží na testovacích klíčích Cloudflare**, které vždy projdou. Před spuštěním pro veřejnost je nutné nasadit reálné klíče: bez tajného klíče se každý hlas oflaguje `turnstile_unavailable` a zmizí z veřejných čísel.
 - Formulace šesti proroctví v `content/prophecies.yaml` jsou návrh; mechanismus je schválený, znění potvrdit před prvním uzavřením.
+- **Newsletter potřebuje odesílací službu.** Bez `RESEND_API_KEY` a `NEWSLETTER_FROM` se formulář nezobrazí a nic se nesbírá. Než se spustí, patří k němu i zásady zpracování údajů s identifikací správce (kdo je provozovatel, kontakt, doba uchování) — text z §14 je technický popis, ne právní dokument.

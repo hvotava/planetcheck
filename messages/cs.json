@@ -14,7 +14,7 @@
       "classroom": "Pro školy"
     },
     "footer": {
-      "madeBy": "Otevřená data, veřejná metodika, žádné osobní údaje.",
+      "madeBy": "Otevřená data, veřejná metodika, hlasy bez osobních údajů.",
       "source": "Zdrojový kód",
       "privacy": "Soukromí"
     },
@@ -338,6 +338,47 @@
     "planetShort": "planeta",
     "classBadge": "třída {code}"
   },
+  "newsletter": {
+    "title": "Termíny dalších kol",
+    "subtitle": "Napiš e-mail a dáme ti vědět, až začne nové téma. Nic jiného posílat nebudeme.",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "ty@example.cz",
+    "submit": "Chci vědět o dalších kolech",
+    "sending": "Posílám…",
+    "done": "Podívej se do schránky.",
+    "doneHint": "Poslali jsme ti odkaz. Dokud na něj neklikneš, tvoji adresu nikam nezařadíme a do dvou týdnů ji smažeme.",
+    "consent": "Uložíme jen tvůj e-mail a jazyk. Přijde nanejvýš jeden dopis za kolo, odhlásit se dá jedním klikem z každého e-mailu.",
+    "error": "Nepovedlo se to. Zkus to prosím znovu.",
+    "invalidEmail": "Tohle nevypadá jako e-mailová adresa.",
+    "disabled": "Odběr termínů zatím neběží. Zkus zatím kalendář.",
+    "state": {
+      "confirmedTitle": "Hotovo, jsi na seznamu.",
+      "confirmedText": "Napíšeme ti, až začne nové téma. Odhlásit se můžeš z každého e-mailu.",
+      "invalidTitle": "Tenhle odkaz už neplatí.",
+      "invalidText": "Odkaz mohl vypršet nebo už byl použit. Zkus se přihlásit znovu."
+    },
+    "unsubscribe": {
+      "title": "Odhlásit odběr",
+      "text": "Klikni na tlačítko a už ti nenapíšeme. Tvoji adresu do měsíce smažeme úplně.",
+      "button": "Odhlásit se",
+      "working": "Odhlašuji…",
+      "doneTitle": "Odhlášeno.",
+      "doneText": "Už ti nenapíšeme. Díky, že jsi to zkusil.",
+      "invalidTitle": "Tenhle odkaz už neplatí.",
+      "invalidText": "Možná jsi se už odhlásil. Pokud ti pošta chodí dál, napiš nám."
+    },
+    "mail": {
+      "confirmSubject": "Potvrď odběr termínů — Přežijeme?",
+      "confirmIntro": "Někdo (snad ty) požádal o zprávy o dalších kolech hry Přežijeme?. Potvrď to prosím tímhle odkazem:",
+      "confirmAction": "Pak už ti napíšeme jen tehdy, když začne nové téma.",
+      "confirmIgnore": "Pokud jsi o to nežádal, nedělej nic. Adresu do dvou týdnů smažeme.",
+      "signature": "Přežijeme?",
+      "roundSubject": "Nové kolo: {title}",
+      "roundIntro": "Začalo nové téma. Devadesát vteřin, sedm dilemat.",
+      "roundAction": "Ať to dopadne jakkoli, uvidíš hned, co říká zbytek planety.",
+      "roundUnsubscribe": "Odhlásit odběr:"
+    }
+  },
   "methodology": {
     "title": "Metodika",
     "subtitle": "Všechna čísla na téhle stránce jsou generovaná ze stejných konstant, které používá kód. Když se změní kód, změní se i tahle stránka.",
@@ -355,7 +396,7 @@
     "trustTitle": "Důvěra a podvody",
     "trustText": "Podezřelý hlas se nikdy neblokuje, jen se označí a nejde do veřejných čísel: honeypot (nesmyslná možnost), odeslání do {fast} s od načtení, více než {ip} hlasů za hodinu ze stejného otisku IP, více než {anon} za hodinu ze stejného zařízení, nesoulad deklarované a zjištěné země. Jediný tvrdý blok je duplicita: jeden hlas na osobu a kolo.",
     "privacyTitle": "Soukromí",
-    "privacyText": "Neukládáme IP adresu (jen její solený otisk), User-Agent (jen hrubou rodinu prohlížeče) ani nic osobního. Demografie je volitelná a hrubá. Ověřená vrstva ukládá jen otisk identity, ne jméno ani e-mail.",
+    "privacyText": "Hlasy jsou anonymní. Neukládáme jméno, e-mail ani IP adresu — jen otisk `sha256(IP_SALT + IP)` kvůli duplicitám a hrubou demografii (věkové pásmo, pohlaví, velikost sídla), kterou vyplníš dobrovolně. Ověřená vrstva drží jen hash identity od Googlu nebo Applu, nikdy adresu ani jméno. Jediné místo, kde se osobní údaj ukládá, je dobrovolný odběr termínů kol: uložíme e-mail a jazyk, nic víc. Adresu potvrzuješ klikem v e-mailu, dokud to neuděláš, do dvou týdnů ji smažeme. Odhlásit se dá jedním klikem z každého dopisu a měsíc po odhlášení adresu smažeme úplně.",
     "contradictionTitle": "Rozporoměr",
     "contradictionText": "Index rozporů země či planety = vážený podíl hlasů, které aktivovaly alespoň jednu rozpornou dvojici.",
     "unlockTitle": "Odemykání zemí",
