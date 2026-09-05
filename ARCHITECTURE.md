@@ -221,7 +221,7 @@ klient                         /api/vote                         Postgres
 Pravidla:
 - Duplicitní hlas (unique violation) → 409 s odkazem na původní výsledek, nikdy tichá výměna.
 - Podezřelé hlasy se **neblokují, flagují** (`flagged = true`, `flag_reasons text[]`). Do veřejných čísel jdou jen `flagged = false`. Sdílené sítě (školy, firmy) nesmí dostat ban.
-- Honeypot: každé kolo má 1 otázku s možností označenou `honeypot: true` (nesmyslná odpověď typu „Vyhlásím válku Měsíci"). Volba honeypotu = flag, ne blok.
+- Honeypot: každé kolo má 1 otázku s možností označenou `honeypot: true`. Je to **záměrně nudná kontrolní možnost** („Nevybírat – kontrolní možnost"), ne vtip — vtipná možnost láká přesně hravé hráče, které chceme udržet. Volba honeypotu = flag, ne blok.
 - Časový limit: submission odeslaná < 8 s po načtení kola = flag `too_fast`.
 - Turnstile token se ověřuje vždy; při výpadku CF hlas přijmi a flaguj `turnstile_unavailable`.
 - **`anonId` se nikdy nebere z těla requestu** — identita je httpOnly cookie `pc_anon`, kterou nastavuje server (`GET /api/rounds/current`, `POST /api/vote`). Klient ji nemůže číst ani podvrhnout.
@@ -320,6 +320,14 @@ round:
   unlock_threshold: 500
   survival_weights: { consistency: 0.4, compromise: 0.35, realism: 0.25 }
 questions:
+  # meta otázka stojí TĚSNĚ PŘED svou cílovou kartou: hráč tipuje dřív, než kartu a rozložení
+  # planety uvidí; odhalení („planeta říká X %, tvůj tip Y %") přijde ve zpětné vazbě cílové karty
+  - key: neighbor_field_meta
+    type: meta
+    target: { question: neighbor_field, option: cousin }
+    i18n:
+      cs: { scenario: "Další karta: soused ti zabral pole.", text: "Kolik % planety zavolá bratrance s traktorem?" }
+      en: { scenario: "Next card: your neighbour took your field.", text: "What % of the planet calls their cousin with the tractor?" }
   - key: neighbor_field
     type: choice
     i18n:
@@ -336,21 +344,17 @@ questions:
       - key: fence
         i18n: { cs: { text: "Postavím plot a dělám, že nic" }, en: { text: "Build a fence, pretend nothing happened" } }
         axis_weights: { peace_force: 0, trust_paranoia: -0.5 }
-      - key: moon
-        honeypot: true
-        i18n: { cs: { text: "Vyhlásím válku Měsíci" }, en: { text: "Declare war on the Moon" } }
+      - key: control
+        honeypot: true   # nudná kontrolní možnost, viz §6
+        i18n: { cs: { text: "Nevybírat – kontrolní možnost" }, en: { text: "Do not pick – control option" } }
         axis_weights: {}
-  - key: neighbor_field_meta
-    type: meta
-    target: { question: neighbor_field, option: cousin }
-    i18n:
-      cs: { text: "Kolik % lidí na planetě zavolalo bratrance?" }
-      en: { text: "What % of the planet called their cousin?" }
 ```
 
 - **Kotvy**: `content/rounds/anchor.yaml` je zároveň kolo (`kind: anchor`, bez konce — fallback, když neběží týdenní kolo) a knihovna. Týdenní kolo je přebírá přes `include_anchors: [{ key, position }]`; klíč otázky zůstává stejný napříč koly → dlouhodobý trend (`question_trend`). Pozice jsou explicitní, kolize = chyba validace.
-- **Rozporné dvojice** jsou knihovna v `content/contradictions.yaml`; sync připojí ke kolu každou dvojici, jejíž obě otázky v kole jsou.
-- Validace vynucuje: přesně jeden honeypot na živé kolo, meta otázka až po své cílové otázce, 3–9 dilemat, unikátní klíče a pozice.
+- **Rozporné dvojice** jsou knihovna v `content/contradictions.yaml`; sync připojí ke kolu každou dvojici, jejíž obě otázky v kole jsou. Dvojice musí spojovat dvě různé otázky (dvě možnosti téže otázky nejde zvolit obě — taková dvojice by jen nafukovala jmenovatel konzistence).
+- **Meta otázka stojí těsně před svou cílovou otázkou** (pozice cíle = pozice meta + 1). Důvod: po každé odpovědi se hned ukazuje rozložení planety; meta až po cíli by měřila paměť, ne realismus. Meta karta nic neodhaluje; odhalení tipu je součástí zpětné vazby cílové karty. Doporučeno jedna meta otázka na kolo.
+- **Balíček nemá být monotónní**: ne každá karta má čtyři možnosti (2–4), kompromisní možnost má někdy cenu (odzbrojím první), a kolo má aspoň jedno dilema s existenčními sázkami (nemoc, zbraň), ne jen majetkové spory. Vyřazené otázky se parkují v `content/bench.yaml` (nenačítá se).
+- Validace vynucuje: přesně jeden honeypot na živé kolo, meta otázka těsně před svou cílovou otázkou, rozporná dvojice přes dvě různé otázky, 3–9 dilemat, unikátní klíče a pozice.
 - `scripts/sync-content.ts`: validace zod → `sync_round(jsonb)` (atomický upsert podle `(round.slug, question.key, option.key)`). Nikdy nemaže; deaktivuje (`active = false`).
 - `scripts/translate.ts`: pro chybějící locale vygeneruje překlad přes Claude API (Haiku), uloží jako `i18n.<locale>` s příznakem `machine: true`. Komunitní opravy = PR do repa. Politicky citlivé otázky (Rusko/Ukrajina, Čína, Izrael) mají v YAML `review_required: true` — bez lidského schválení (`reviewed: true` u daného locale) se v daném jazyce nezobrazí; hráč dostane anglický text s označením `fallback_locale`, aby kolo zůstalo hratelné a validace „všechny otázky zodpovězeny" platila.
 

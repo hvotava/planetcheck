@@ -98,7 +98,7 @@
     },
     "how2": {
       "title": "Hádaj planétu",
-      "text": "Koľko ľudí zavolalo bratranca s traktorom? Trafa = realizmus."
+      "text": "Tipni si, čo odpovie planéta, skôr než to uvidíš. Trafa = realizmus."
     },
     "how3": {
       "title": "Dostaň verdikt",
@@ -124,9 +124,10 @@
     "next": "Ďalej",
     "continue": "Pokračovať",
     "metaTitle": "Odhadni planétu",
-    "metaHint": "Koľko percent ľudí to vybralo? Trafa sa počíta do realizmu.",
+    "metaHint": "Tipni si skôr, než uvidíš, čo planéta odpovedala. Trafa sa počíta do realizmu.",
     "metaSubmit": "Tipnúť {value} %",
     "metaResultTitle": "Planéta hovorí {actual} %",
+    "metaRevealTitle": "Tvoj tip na planétu",
     "metaYou": "Tvoj tip: {guess} %",
     "metaHit": "Trafa. Realista.",
     "metaClose": "Blízko. O {delta} b.",

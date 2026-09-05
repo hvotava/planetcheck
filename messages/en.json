@@ -98,7 +98,7 @@
     },
     "how2": {
       "title": "Guess the planet",
-      "text": "How many people called their cousin with the tractor? A hit = realism."
+      "text": "Guess what the planet will answer before you see it. A hit = realism."
     },
     "how3": {
       "title": "Get your verdict",
@@ -124,9 +124,10 @@
     "next": "Next",
     "continue": "Continue",
     "metaTitle": "Guess the planet",
-    "metaHint": "What percentage of people picked this? A close guess counts as realism.",
+    "metaHint": "Guess before you see what the planet answered. A close guess counts as realism.",
     "metaSubmit": "Guess {value}%",
     "metaResultTitle": "The planet says {actual}%",
+    "metaRevealTitle": "Your guess for the planet",
     "metaYou": "Your guess: {guess}%",
     "metaHit": "Bullseye. A realist.",
     "metaClose": "Close. Off by {delta} points.",

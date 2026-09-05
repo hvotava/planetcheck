@@ -1,0 +1,29 @@
+round:
+  slug: bad-meta
+  kind: weekly
+  status: live
+  starts_at: 2026-01-01T00:00:00Z
+questions:
+  - key: q1
+    type: choice
+    i18n: { en: { text: "Q1" } }
+    options:
+      - { key: a, i18n: { en: { text: "A" } } }
+      - { key: b, i18n: { en: { text: "B" } }, honeypot: true }
+  - key: q2
+    type: choice
+    i18n: { en: { text: "Q2" } }
+    options:
+      - { key: a, i18n: { en: { text: "A" } } }
+      - { key: b, i18n: { en: { text: "B" } } }
+  - key: q3
+    type: choice
+    i18n: { en: { text: "Q3" } }
+    options:
+      - { key: a, i18n: { en: { text: "A" } } }
+      - { key: b, i18n: { en: { text: "B" } } }
+  # meta AFTER its target: the player has already seen the planet's distribution of q1
+  - key: q1_meta
+    type: meta
+    target: { question: q1, option: a }
+    i18n: { en: { text: "What % picked A?" } }

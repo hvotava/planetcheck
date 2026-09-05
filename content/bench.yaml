@@ -1,0 +1,91 @@
+# ---------------------------------------------------------------------------
+# BENCH — questions and options taken out of the live decks, kept for later rounds.
+# NOT loaded by anything (the loader only reads content/rounds/*.yaml and the named files).
+# Move an entry back into a round file to use it; keep the same key to preserve trends.
+#
+# Why they were benched (2026-09-05 content review):
+#   the_bridge, the_harvest — same "they have it, we don't" shape as village_well; the w37 deck
+#   was nine cards of the same rural property dispute. Replaced by the_sick_village (higher stakes)
+#   and the rumor anchor (disinformation).
+#   bigger_stick.club — bigger_stick lost a slot to the dull honeypot (control option).
+#   neighbor_field.moon — the honeypot was the funniest option on the card; a control option
+#   must be dull. The Moon joke lives on in the Diplomat share line (archetypes.yaml).
+#   neighbor_field_meta — one meta question per round; the meta now sits before its target card.
+# ---------------------------------------------------------------------------
+questions:
+  - key: the_bridge
+    type: choice
+    i18n:
+      cs: { scenario: "Jediný most do města se rozpadá.", text: "Opravit ho umí jen firma z druhého břehu." }
+      en: { scenario: "The only bridge to town is falling apart.", text: "The only firm that can fix it is from the other bank." }
+    options:
+      - key: pay
+        icon: "🧾"
+        i18n: { cs: { text: "Zaplatíme jim a hotovo" }, en: { text: "Pay them, done" } }
+        axis_weights: { trust_paranoia: -0.5, us_them: -0.3 }
+      - key: own_footbridge
+        icon: "🪜"
+        i18n: { cs: { text: "Zaplatíme, ale vedle si postavíme vlastní lávku" }, en: { text: "Pay them, but build our own footbridge next to it" } }
+        axis_weights: { trust_paranoia: 0.3 }
+        compromise: true
+      - key: no_bridge
+        icon: "🚫"
+        i18n: { cs: { text: "Radši žádný most než jejich most" }, en: { text: "Rather no bridge than their bridge" } }
+        axis_weights: { trust_paranoia: 0.8, us_them: 0.9 }
+      - key: together
+        icon: "🧑‍🤝‍🧑"
+        i18n: { cs: { text: "Postavíme ho spolu, napůl" }, en: { text: "Build it together, fifty-fifty" } }
+        axis_weights: { peace_force: -0.3, us_them: -0.7 }
+        compromise: true
+
+  - key: the_harvest
+    type: choice
+    i18n:
+      cs: { scenario: "Letos je mizerná úroda.", text: "Vedlejší údolí má nadbytek, ale zadarmo se dělit nechce." }
+      en: { scenario: "This year's harvest is miserable.", text: "The next valley has plenty, but won't share for free." }
+    options:
+      - key: pay_up
+        icon: "💸"
+        i18n: { cs: { text: "Zaplatíme, co chtějí" }, en: { text: "Pay whatever they ask" } }
+        axis_weights: { peace_force: -0.4, trust_paranoia: -0.2 }
+      - key: trade_water
+        icon: "💧"
+        i18n: { cs: { text: "Nabídneme jim naši vodu příští léto" }, en: { text: "Offer them our water next summer" } }
+        axis_weights: { peace_force: -0.6, us_them: -0.6 }
+        compromise: true
+      - key: take
+        icon: "🔥"
+        i18n: { cs: { text: "Vezmeme si to. Hlad nečeká." }, en: { text: "Take it. Hunger doesn't wait." } }
+        axis_weights: { peace_force: 0.9, us_them: 0.7 }
+      - key: tighten_belts
+        icon: "🥔"
+        i18n: { cs: { text: "Utáhneme opasky. Nikomu nic dlužit nebudeme." }, en: { text: "Tighten our belts. We owe nobody anything." } }
+        axis_weights: { trust_paranoia: 0.4, us_them: 0.3 }
+
+options:
+  - question: bigger_stick
+    key: club
+    icon: "📣"
+    i18n: { cs: { text: "Založím spolek sousedů proti klackům" }, en: { text: "Start a neighbourhood association against sticks" } }
+    axis_weights: { peace_force: -0.4, us_them: -0.5 }
+    compromise: true
+
+pairs:
+  - key: un_for_me_force_for_them
+    a: { question: neighbor_field, option: un }
+    b: { question: the_harvest, option: take }
+    i18n:
+      cs: { title: "OSN pro moje pole, síla pro jejich úrodu", blurb: "Když jde o mě, volám právo. Když jde o ně, beru." }
+      en: { title: "The UN for my field, force for their harvest", blurb: "When it's mine, I call the law. When it's theirs, I take." }
+  - key: open_door_closed_bridge
+    a: { question: stranger_at_door, option: let_in }
+    b: { question: the_bridge, option: no_bridge }
+    i18n:
+      cs: { title: "Cizince do postele, most s druhým břehem ne", blurb: "Jednotlivci důvěřuju. Sousedům jako celku ne." }
+      en: { title: "A stranger in my bed, no bridge to the other bank", blurb: "I trust a person. I don't trust the people." }
+  - key: shared_pipe_upstream_dam
+    a: { question: village_well, option: pipeline }
+    b: { question: the_harvest, option: take }
+    i18n:
+      cs: { title: "Společné potrubí, ale jejich úrodu vezmu", blurb: "Sdílíme vodu. Jídlo sdílím já z jejich." }
+      en: { title: "A shared pipeline, but I'll take their harvest", blurb: "We share water. I share their food." }

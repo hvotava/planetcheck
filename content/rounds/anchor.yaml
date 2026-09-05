@@ -6,6 +6,10 @@
 #   2. A library: weekly rounds pull questions from here via `include_anchors: [key, …]`.
 #      The question `key` stays identical across rounds → long-term trend per key.
 #
+# Deck order here = listing order (no explicit positions). A meta question must sit
+# IMMEDIATELY BEFORE its target: the player guesses before the planet's distribution
+# is shown; the reveal happens in the target card's feedback.
+#
 # DRAFT CONTENT — formulations, axis weights and flags must be confirmed by Hynek
 # before the first public round (CLAUDE.md: "Neodhaduj … formulace otázek").
 # No question here names a real state; therefore review_required is false everywhere.
@@ -14,6 +18,9 @@
 #   peace_force    −1 = mír / peace            +1 = síla / force
 #   trust_paranoia −1 = důvěra / trust         +1 = paranoia
 #   us_them        −1 = "my všichni" / inclusive  +1 = "my vs. oni" / exclusive
+#
+# Honeypot: `bigger_stick.control` — deliberately dull ("do not pick"), never the funniest
+# option on the card. A funny honeypot attracts exactly the playful players we want to keep.
 # ---------------------------------------------------------------------------
 round:
   slug: anchor
@@ -47,18 +54,13 @@ questions:
         icon: "🪵"
         i18n: { cs: { text: "Postavím plot a dělám, že nic" }, en: { text: "Build a fence, pretend nothing happened" } }
         axis_weights: { peace_force: 0, trust_paranoia: -0.5 }
-      - key: moon
-        icon: "🌙"
-        honeypot: true
-        i18n: { cs: { text: "Vyhlásím válku Měsíci" }, en: { text: "Declare war on the Moon" } }
-        axis_weights: {}
 
-  - key: neighbor_field_meta
+  - key: stranger_at_door_meta
     type: meta
-    target: { question: neighbor_field, option: cousin }
+    target: { question: stranger_at_door, option: let_in }
     i18n:
-      cs: { text: "Kolik % lidí na planetě zavolalo bratrance?" }
-      en: { text: "What % of the planet called their cousin?" }
+      cs: { scenario: "Další karta: noc, mráz, cizinec u dveří.", text: "Prý mu shořel dům. Kolik % planety ho pustí dovnitř?" }
+      en: { scenario: "Next card: night, frost, a stranger at the door.", text: "Says his house burned down. What % of the planet lets him in?" }
 
   - key: stranger_at_door
     type: choice
@@ -85,13 +87,6 @@ questions:
         i18n: { cs: { text: "V noci nikomu neotvírám" }, en: { text: "I don't open the door at night. To anyone." } }
         axis_weights: { trust_paranoia: 0.8, us_them: 0.6 }
 
-  - key: stranger_at_door_meta
-    type: meta
-    target: { question: stranger_at_door, option: let_in }
-    i18n:
-      cs: { text: "Kolik % planety cizince pustilo dovnitř?" }
-      en: { text: "What % of the planet let the stranger in?" }
-
   - key: bigger_stick
     type: choice
     i18n:
@@ -106,16 +101,17 @@ questions:
         icon: "🏏"
         i18n: { cs: { text: "Koupím si větší klacek" }, en: { text: "Buy a bigger stick" } }
         axis_weights: { peace_force: 0.6, trust_paranoia: 0.6 }
+      # A compromise that costs something: disarm first, on trust. Not the obviously "right" answer.
       - key: treaty
         icon: "🤝"
-        i18n: { cs: { text: "Navrhnu, ať máme oba jen malé klacky, a kontrolujeme si to" }, en: { text: "Propose we both keep only small sticks, and check on each other" } }
-        axis_weights: { peace_force: -0.6, trust_paranoia: 0.2 }
+        i18n: { cs: { text: "Navrhnu, ať máme oba jen malé klacky. Svůj zahodím první." }, en: { text: "Propose we both keep only small sticks. I'll drop mine first." } }
+        axis_weights: { peace_force: -0.7, trust_paranoia: -0.4 }
         compromise: true
-      - key: club
-        icon: "📣"
-        i18n: { cs: { text: "Založím spolek sousedů proti klackům" }, en: { text: "Start a neighbourhood association against sticks" } }
-        axis_weights: { peace_force: -0.4, us_them: -0.5 }
-        compromise: true
+      - key: control
+        icon: "⬜"
+        honeypot: true
+        i18n: { cs: { text: "Nevybírat – kontrolní možnost" }, en: { text: "Do not pick – control option" } }
+        axis_weights: {}
 
   - key: village_well
     type: choice

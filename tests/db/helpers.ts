@@ -83,34 +83,37 @@ export function buildVote(round: RoundPayload, choices: Record<string, string>, 
   };
 }
 
+/** Every choice is a compromise option → archetype "diplomat" (trust_paranoia stays > 0 thanks to un + neighbours). */
 export const DOVE: Record<string, string> = {
   neighbor_field: "un",
-  stranger_at_door: "let_in",
+  stranger_at_door: "neighbours",
   bigger_stick: "treaty",
-  the_bridge: "together",
-  the_harvest: "trade_water",
-  secret_weapon: "promise",
   the_referee: "court",
+  secret_weapon: "promise",
+  rumor: "test",
+  the_sick_village: "quarantine_help",
 };
 
 export const HAWK: Record<string, string> = {
   neighbor_field: "cousin",
   stranger_at_door: "no_open",
   bigger_stick: "bigger",
-  the_bridge: "no_bridge",
-  the_harvest: "take",
-  secret_weapon: "buy",
   the_referee: "boats",
+  secret_weapon: "buy",
+  rumor: "retaliate",
+  the_sick_village: "close_road",
 };
 
+/** Activates 4 of the 6 pairs of 2026-w37 (the other two need mutually exclusive choices). */
 export const TORN: Record<string, string> = {
-  neighbor_field: "un", // + the_harvest.take → contradiction, + the_referee.boats → contradiction
-  stranger_at_door: "let_in", // + the_bridge.no_bridge → contradiction
-  bigger_stick: "treaty", // + secret_weapon.buy → contradiction
-  the_bridge: "no_bridge",
-  the_harvest: "take",
-  secret_weapon: "buy",
+  neighbor_field: "un", // + the_referee.boats → un_judge_but_boats_decide, + secret_weapon.buy → un_for_me_weapon_for_me
+  stranger_at_door: "let_in", // + the_sick_village.close_road → open_door_closed_village
+  bigger_stick: "treaty", // + secret_weapon.buy → small_sticks_secret_weapon
   the_referee: "boats",
+  secret_weapon: "buy",
+  rumor: "retaliate",
+  the_sick_village: "close_road",
 };
 
-export const MOON: Record<string, string> = { ...DOVE, neighbor_field: "moon" };
+/** DOVE, but picks the honeypot (dull control option) on bigger_stick. */
+export const CONTROL: Record<string, string> = { ...DOVE, bigger_stick: "control" };

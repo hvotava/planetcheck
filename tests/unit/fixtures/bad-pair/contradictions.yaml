@@ -1,0 +1,5 @@
+pairs:
+  - key: same_question
+    a: { question: q1, option: a }
+    b: { question: q1, option: b }
+    i18n: { en: { title: "Impossible" } }

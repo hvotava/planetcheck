@@ -65,7 +65,8 @@ function roundFiles(dir: string): string[] {
 
 /**
  * Loads all rounds, expands `include_anchors` from anchor.yaml, attaches contradiction pairs
- * whose both questions exist in the round, and runs cross-reference validation.
+ * whose both questions exist in the round, and runs cross-reference validation
+ * (unique keys/positions, exactly one honeypot, meta immediately before its target, 3–9 dilemmas).
  */
 export function loadRounds(dir = CONTENT_DIR): ContentRound[] {
   const files = roundFiles(dir).map((f) => ({ file: f, data: roundFileSchema.parse(readYaml(f)) }));
@@ -123,7 +124,10 @@ export function loadRounds(dir = CONTENT_DIR): ContentRound[] {
       if (!t) errors.push(`meta '${q.key}' targets unknown question '${q.target.question}'`);
       else {
         if (!t.options.some((o) => o.key === q.target!.option)) errors.push(`meta '${q.key}' targets unknown option '${q.target.question}.${q.target.option}'`);
-        if (t.position > q.position) errors.push(`meta '${q.key}' must come after its target '${t.key}'`);
+        // The guess must be made before the planet's distribution of the target is shown
+        // (PlanetFeedback reveals it right after the target is answered), so the meta card
+        // sits immediately before its target card.
+        if (t.position !== q.position + 1) errors.push(`meta '${q.key}' must come immediately before its target '${t.key}' (position ${q.position + 1})`);
       }
     }
     const choiceCount = questions.filter((q) => q.type === "choice").length;

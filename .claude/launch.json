@@ -6,6 +6,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["dev"],
       "port": 3000
+    },
+    {
+      "name": "planetcheck-review",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["PGLITE_DIR=.pglite/review", "PLANETCHECK_AUTOSEED=400", "PLANETCHECK_INTERNAL_CRON=false", "pnpm", "dev", "-p", "3101"],
+      "port": 3101
     }
   ]
 }

@@ -15,31 +15,38 @@ test.describe("play a round on mobile", () => {
     await expect(firstOption).toBeVisible({ timeout: 30_000 });
 
     let guard = 0;
+    let metaRevealSeen = false;
     while (guard++ < 20) {
       // finished? demographics form shows the submit button
       const submit = page.getByRole("button", { name: /Odeslat hlas/ });
       if (await submit.isVisible().catch(() => false)) break;
 
+      // the meta card stays in the DOM (disabled) during its exit animation — only an enabled slider is a new meta card
       const slider = page.getByRole("slider");
-      if (await slider.isVisible().catch(() => false)) {
+      if ((await slider.isVisible().catch(() => false)) && (await slider.isEnabled().catch(() => false))) {
+        // meta card: the guess is submitted and the deck moves straight to the target card —
+        // nothing is revealed here (the planet's share would bias the answer)
         await slider.fill("42");
         await page.getByRole("button", { name: /Tipnout/ }).click();
-        await page.getByRole("button", { name: /Další/ }).click();
+        await expect(page.getByTestId("meta-reveal")).toHaveCount(0);
         continue;
       }
 
       const options = page.getByTestId("options").getByRole("button");
       const count = await options.count();
       if (count > 0) {
-        // avoid the honeypot by never picking the last option of the first question blindly:
         // pick the second option (index 1) — never a honeypot in content/
         await options.nth(Math.min(1, count - 1)).click();
-        // planet feedback → next
-        await page.getByRole("button", { name: /Další/ }).click();
+        // planet feedback → next; the target card of the meta question also reveals the guess
+        const next = page.getByRole("button", { name: /Další/ });
+        await next.waitFor();
+        if (await page.getByTestId("meta-reveal").isVisible().catch(() => false)) metaRevealSeen = true;
+        await next.click();
         continue;
       }
       await page.waitForTimeout(300);
     }
+    expect(metaRevealSeen).toBe(true);
 
     await expect(page.getByRole("button", { name: /Odeslat hlas/ })).toBeVisible();
     // optional demographics: pick one chip, keep the rest empty

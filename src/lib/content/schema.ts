@@ -84,12 +84,18 @@ export const roundFileSchema = z.object({
 
 export const contradictionsFileSchema = z.object({
   pairs: z.array(
-    z.object({
-      key,
-      a: z.object({ question: key, option: key }),
-      b: z.object({ question: key, option: key }),
-      i18n: z.record(localeCode, localizedLabelSchema),
-    }),
+    z
+      .object({
+        key,
+        a: z.object({ question: key, option: key }),
+        b: z.object({ question: key, option: key }),
+        i18n: z.record(localeCode, localizedLabelSchema),
+      })
+      // Two options of the same question can never be chosen together: such a pair would only
+      // inflate the consistency denominator (ARCHITECTURE §8) without ever activating.
+      .superRefine((p, ctx) => {
+        if (p.a.question === p.b.question) ctx.addIssue({ code: "custom", message: `contradiction pair ${p.key} must span two different questions` });
+      }),
   ),
 });
 

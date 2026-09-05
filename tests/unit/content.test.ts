@@ -9,14 +9,17 @@ describe("content/ validates and links", () => {
     const weekly = bundle.rounds.find((r) => r.slug === "2026-w37")!;
     expect(weekly).toBeTruthy();
     expect(weekly.questions.filter((q) => q.type === "choice")).toHaveLength(7);
-    expect(weekly.questions.filter((q) => q.type === "meta")).toHaveLength(2);
+    expect(weekly.questions.filter((q) => q.type === "meta")).toHaveLength(1);
     expect(weekly.questions.filter((q) => q.anchor).map((q) => q.key)).toContain("neighbor_field");
-    // exactly one honeypot
-    expect(weekly.questions.flatMap((q) => q.options.filter((o) => o.honeypot))).toHaveLength(1);
-    // meta after target
-    const meta = weekly.questions.find((q) => q.key === "neighbor_field_meta")!;
-    const target = weekly.questions.find((q) => q.key === "neighbor_field")!;
-    expect(meta.position).toBeGreaterThan(target.position);
+    // exactly one honeypot, and it is the dull control option, not a joke
+    const honeypots = weekly.questions.flatMap((q) => q.options.filter((o) => o.honeypot).map((o) => `${q.key}.${o.key}`));
+    expect(honeypots).toEqual(["bigger_stick.control"]);
+    // meta immediately before its target (guess first, planet reveal after the target is answered)
+    const meta = weekly.questions.find((q) => q.key === "secret_weapon_meta")!;
+    const target = weekly.questions.find((q) => q.key === "secret_weapon")!;
+    expect(target.position).toBe(meta.position + 1);
+    // not every card has four options
+    expect(new Set(weekly.questions.filter((q) => q.type === "choice").map((q) => q.options.length))).toEqual(new Set([3, 4]));
     // positions unique + ordered
     const pos = weekly.questions.map((q) => q.position);
     expect(new Set(pos).size).toBe(pos.length);
@@ -26,9 +29,18 @@ describe("content/ validates and links", () => {
   it("attaches only contradiction pairs whose both questions are in the round", () => {
     const weekly = bundle.rounds.find((r) => r.slug === "2026-w37")!;
     const keys = weekly.contradictions.map((c) => c.key).sort();
-    expect(keys).toEqual(["open_door_closed_bridge", "small_sticks_secret_weapon", "un_for_me_force_for_them", "un_judge_but_boats_decide"]);
+    expect(keys).toEqual([
+      "court_for_fish_rumor_for_water",
+      "medicine_for_them_weapon_against_them",
+      "open_door_closed_village",
+      "small_sticks_secret_weapon",
+      "un_for_me_weapon_for_me",
+      "un_judge_but_boats_decide",
+    ]);
     const anchor = bundle.rounds.find((r) => r.slug === "anchor")!;
-    expect(anchor.contradictions.map((c) => c.key)).toEqual(["shared_pipe_upstream_dam", "test_the_water_spread_the_rumor"].filter((k) => k !== "shared_pipe_upstream_dam"));
+    expect(anchor.contradictions.map((c) => c.key)).toEqual(["shared_pipe_poisoned_rumor"]);
+    // every pair in the library spans two different questions (a same-question pair can never activate)
+    for (const r of bundle.rounds) for (const c of r.contradictions) expect(c.a.question).not.toBe(c.b.question);
   });
 
   it("every option has cs and en text and weights within bounds", () => {
@@ -56,6 +68,14 @@ describe("content/ validates and links", () => {
 
   it("rejects a round with two honeypots", () => {
     expect(() => loadRounds("tests/unit/fixtures/bad-content")).toThrow(/honeypot/);
+  });
+
+  it("rejects a meta question that comes after its target", () => {
+    expect(() => loadRounds("tests/unit/fixtures/bad-meta")).toThrow(/immediately before its target/);
+  });
+
+  it("rejects a contradiction pair inside a single question", () => {
+    expect(() => loadRounds("tests/unit/fixtures/bad-pair")).toThrow(/two different questions/);
   });
 });
 

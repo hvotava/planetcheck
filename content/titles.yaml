@@ -43,16 +43,16 @@ titles:
     pick: max
     emoji: "🏰"
     i18n:
-      cs: { title: "My a oni", blurb: "Most s druhým břehem? Radši žádný." }
-      en: { title: "Us and them", blurb: "A bridge to the other bank? Rather none." }
+      cs: { title: "My a oni", blurb: "Cesta k sousedům? Zavřít." }
+      en: { title: "Us and them", blurb: "The road to the neighbours? Close it." }
 
   - key: everyones_neighbour
     metric: axis_means.us_them
     pick: min
     emoji: "🌍"
     i18n:
-      cs: { title: "Soused všech", blurb: "Společné potrubí, společný most, společná deka." }
-      en: { title: "Everyone's neighbour", blurb: "Shared pipeline, shared bridge, shared blanket." }
+      cs: { title: "Soused všech", blurb: "Společné potrubí, společný doktor, společná deka." }
+      en: { title: "Everyone's neighbour", blurb: "Shared pipeline, shared doctor, shared blanket." }
 
   - key: most_consistent
     metric: contradiction_index

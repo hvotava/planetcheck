@@ -2,30 +2,18 @@
 # CONTRADICTION PAIRS — library of logically tense option pairs.
 # A pair is attached to every round that contains BOTH questions (sync-content does this).
 # A player "activates" a pair by choosing both options → lowers consistency.
+# A pair must span two different questions (validated) — otherwise it can never be
+# activated and only inflates the consistency denominator.
 #
 # DRAFT — confirm pairs and labels with Hynek.
 # ---------------------------------------------------------------------------
 pairs:
-  - key: un_for_me_force_for_them
-    a: { question: neighbor_field, option: un }
-    b: { question: the_harvest, option: take }
-    i18n:
-      cs: { title: "OSN pro moje pole, síla pro jejich úrodu", blurb: "Když jde o mě, volám právo. Když jde o ně, beru." }
-      en: { title: "The UN for my field, force for their harvest", blurb: "When it's mine, I call the law. When it's theirs, I take." }
-
   - key: small_sticks_secret_weapon
     a: { question: bigger_stick, option: treaty }
     b: { question: secret_weapon, option: buy }
     i18n:
       cs: { title: "Svět bez klacků, ale s mojí tajnou zbraní", blurb: "Odzbrojme se všichni. Já až potom." }
       en: { title: "A world without sticks, plus my secret weapon", blurb: "Everyone disarm. Me later." }
-
-  - key: open_door_closed_bridge
-    a: { question: stranger_at_door, option: let_in }
-    b: { question: the_bridge, option: no_bridge }
-    i18n:
-      cs: { title: "Cizince do postele, most s druhým břehem ne", blurb: "Jednotlivci důvěřuju. Sousedům jako celku ne." }
-      en: { title: "A stranger in my bed, no bridge to the other bank", blurb: "I trust a person. I don't trust the people." }
 
   - key: un_judge_but_boats_decide
     a: { question: neighbor_field, option: un }
@@ -34,16 +22,37 @@ pairs:
       cs: { title: "Spory má soudit OSN, ryby ten s víc loďmi", blurb: "Právo, dokud nemám víc lodí." }
       en: { title: "The UN should judge, unless I have more boats", blurb: "Law, until I have the bigger fleet." }
 
-  - key: shared_pipe_upstream_dam
-    a: { question: village_well, option: pipeline }
-    b: { question: the_harvest, option: take }
+  - key: un_for_me_weapon_for_me
+    a: { question: neighbor_field, option: un }
+    b: { question: secret_weapon, option: buy }
     i18n:
-      cs: { title: "Společné potrubí, ale jejich úrodu vezmu", blurb: "Sdílíme vodu. Jídlo sdílím já z jejich." }
-      en: { title: "A shared pipeline, but I'll take their harvest", blurb: "We share water. I share their food." }
+      cs: { title: "OSN na souseda, tajná zbraň pro mě", blurb: "Právo, dokud nemám zbraň." }
+      en: { title: "The UN for my neighbour, a secret weapon for me", blurb: "Law, until I have the weapon." }
 
-  - key: test_the_water_spread_the_rumor
-    a: { question: rumor, option: test }
+  - key: open_door_closed_village
+    a: { question: stranger_at_door, option: let_in }
+    b: { question: the_sick_village, option: close_road }
+    i18n:
+      cs: { title: "Cizince do postele, sousedy za závoru", blurb: "Jednomu otevřu. Vesnici zavřu." }
+      en: { title: "A stranger in my bed, the neighbours behind a barrier", blurb: "I open for one. I close for a village." }
+
+  - key: court_for_fish_rumor_for_water
+    a: { question: the_referee, option: court }
     b: { question: rumor, option: retaliate }
     i18n:
-      cs: { title: "Fakta pro mě, fáma pro ně", blurb: "Technicky nemožné zvolit obojí. Ale kdyby." }
-      en: { title: "Facts for me, rumours for them", blurb: "Technically impossible to choose both. But if." }
+      cs: { title: "Soud na ryby, fáma na vodu", blurb: "Právo, když se hádají jiní. Pomluva, když jde o mě." }
+      en: { title: "Court for the fish, rumours for the water", blurb: "Law when others quarrel. Slander when it's me." }
+
+  - key: medicine_for_them_weapon_against_them
+    a: { question: the_sick_village, option: send_doctor }
+    b: { question: secret_weapon, option: buy }
+    i18n:
+      cs: { title: "Doktora sousedům, zbraň na sousedy", blurb: "Léčím je. Pro jistotu se i zbrojím." }
+      en: { title: "A doctor for the neighbours, a weapon for the neighbours", blurb: "I heal them. I arm up, just in case." }
+
+  - key: shared_pipe_poisoned_rumor
+    a: { question: village_well, option: pipeline }
+    b: { question: rumor, option: retaliate }
+    i18n:
+      cs: { title: "Společné potrubí, otrávená fáma", blurb: "Vodu sdílím. Pomluvu taky." }
+      en: { title: "A shared pipeline, a poisoned rumour", blurb: "We share the water. I share the slander." }

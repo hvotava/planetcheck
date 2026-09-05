@@ -98,7 +98,7 @@
     },
     "how2": {
       "title": "Hádej planetu",
-      "text": "Kolik lidí zavolalo bratrance s traktorem? Trefa = realismus."
+      "text": "Tipni si, co odpoví planeta, dřív než to uvidíš. Trefa = realismus."
     },
     "how3": {
       "title": "Dostaň verdikt",
@@ -124,9 +124,10 @@
     "next": "Další",
     "continue": "Pokračovat",
     "metaTitle": "Odhadni planetu",
-    "metaHint": "Kolik procent lidí to vybralo? Trefa se počítá do realismu.",
+    "metaHint": "Tipni si dřív, než uvidíš, co planeta odpověděla. Trefa se počítá do realismu.",
     "metaSubmit": "Tipnout {value} %",
     "metaResultTitle": "Planeta říká {actual} %",
+    "metaRevealTitle": "Tvůj tip na planetu",
     "metaYou": "Tvůj tip: {guess} %",
     "metaHit": "Trefa. Realista.",
     "metaClose": "Blízko. O {delta} b.",

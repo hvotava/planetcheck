@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { buildVote, createTestRepo, DOVE, HAWK, MOON, TORN } from "./helpers";
+import { buildVote, createTestRepo, CONTROL, DOVE, HAWK, TORN } from "./helpers";
 
 let ctx: Awaited<ReturnType<typeof createTestRepo>>;
 
@@ -15,21 +15,22 @@ describe("content sync", () => {
   it("loads the weekly round with anchors, meta targets and pairs", async () => {
     const r = ctx.round;
     expect(r.kind).toBe("weekly");
-    expect(r.questions).toHaveLength(9);
-    expect(r.questions.map((q) => q.position)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    const meta = r.questions.find((q) => q.key === "neighbor_field_meta")!;
-    expect(meta.target?.question_key).toBe("neighbor_field");
-    expect(meta.target?.option_key).toBe("cousin");
-    expect(r.contradictions).toHaveLength(4);
+    expect(r.questions).toHaveLength(8);
+    expect(r.questions.map((q) => q.position)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    const meta = r.questions.find((q) => q.key === "secret_weapon_meta")!;
+    expect(meta.target?.question_key).toBe("secret_weapon");
+    expect(meta.target?.option_key).toBe("buy");
+    expect(meta.position).toBe(r.questions.find((q) => q.key === "secret_weapon")!.position - 1);
+    expect(r.contradictions).toHaveLength(6);
     expect(r.questions.flatMap((q) => q.options).filter((o) => o.honeypot)).toHaveLength(1);
   });
 
   it("is idempotent and deactivates removed options instead of deleting", async () => {
     const { syncContent } = await import("@/lib/content/sync");
     const again = await syncContent(ctx.repo, { log: () => undefined });
-    expect(again.rounds.find((x) => x.slug === "2026-w37")?.questions).toBe(9);
+    expect(again.rounds.find((x) => x.slug === "2026-w37")?.questions).toBe(8);
     const ids = await ctx.db.query<{ n: number }>("select count(*)::int as n from questions where round_id = $1", [ctx.round.id]);
-    expect(ids[0]!.n).toBe(9);
+    expect(ids[0]!.n).toBe(8);
     // simulate content removing an option
     const q = ctx.round.questions.find((x) => x.key === "the_referee")!;
     await ctx.repo.syncRound({
@@ -68,17 +69,18 @@ describe("content sync", () => {
 describe("submit_vote", () => {
   it("stores a vote, scores it and exposes it via get_submission", async () => {
     const anon = randomUUID();
-    const res = await ctx.repo.submitVote(buildVote(ctx.round, DOVE, { anon, meta: { neighbor_field_meta: { guess: 40, actual: 30 } } }));
+    const res = await ctx.repo.submitVote(buildVote(ctx.round, DOVE, { anon, meta: { secret_weapon_meta: { guess: 40, actual: 30 } } }));
     expect(res.ok).toBe(true);
     if (!res.ok) return;
     expect(res.flags).toEqual([]);
     expect(res.country).toBe("CZ");
     const s = (await ctx.repo.getSubmission(res.submission_id))!;
     expect(s.answers).toHaveLength(7);
-    expect(s.meta_guesses).toHaveLength(2);
+    expect(s.meta_guesses).toHaveLength(1);
+    expect(s.realism).toBeCloseTo(0.9, 3);
     expect(s.archetype).toBe("diplomat");
     expect(s.consistency).toBe(1);
-    expect(s.compromise).toBeCloseTo(6 / 7, 3); // let_in is not a compromise option
+    expect(s.compromise).toBe(1); // every DOVE choice is a compromise option
     expect(s.axis_scores.peace_force).toBeLessThan(0);
     expect(s.round.slug).toBe("2026-w37");
     const status = await ctx.repo.voterStatus(ctx.round.id, anon);
@@ -103,14 +105,14 @@ describe("submit_vote", () => {
   });
 
   it("flags the honeypot and keeps flagged votes out of the aggregates", async () => {
-    const q = ctx.round.questions.find((x) => x.key === "neighbor_field")!;
+    const q = ctx.round.questions.find((x) => x.key === "bigger_stick")!;
     const before = await ctx.repo.questionShares(q.id);
-    const res = await ctx.repo.submitVote(buildVote(ctx.round, MOON));
+    const res = await ctx.repo.submitVote(buildVote(ctx.round, CONTROL));
     expect(res.ok && res.flags).toEqual(["honeypot"]);
     const after = await ctx.repo.questionShares(q.id);
     expect(after.total_raw).toBe(before.total_raw);
-    const moon = after.options.find((o) => o.key === "moon")!;
-    expect(moon.raw).toBe(0);
+    const control = after.options.find((o) => o.key === "control")!;
+    expect(control.raw).toBe(0);
   });
 
   it("flags rate_ip after 10 votes/hour from one ip_hash — and still accepts them", async () => {
@@ -130,8 +132,8 @@ describe("submit_vote", () => {
     expect(res.ok).toBe(true);
     if (!res.ok) return;
     const s = (await ctx.repo.getSubmission(res.submission_id))!;
-    expect(s.contradictions_hit.sort()).toEqual(["open_door_closed_bridge", "small_sticks_secret_weapon", "un_for_me_force_for_them", "un_judge_but_boats_decide"]);
-    expect(s.consistency).toBe(0);
+    expect(s.contradictions_hit.sort()).toEqual(["open_door_closed_village", "small_sticks_secret_weapon", "un_for_me_weapon_for_me", "un_judge_but_boats_decide"]);
+    expect(s.consistency).toBeCloseTo(1 - 4 / 6, 4);
     expect(s.country_code).toBe("DE");
     const row = await ctx.db.query<{ flagged: boolean; flag_reasons: string[] }>("select flagged, flag_reasons from submissions where id = $1", [res.submission_id]);
     expect(row[0]).toEqual({ flagged: true, flag_reasons: ["country_mismatch"] });
@@ -151,7 +153,7 @@ describe("submit_vote", () => {
     expect(shares.country?.code).toBe("SK");
     expect(shares.country?.options.find((o) => o.key === "un")?.raw).toBe(10); // 11th vote was flagged rate_ip
     const actuals = await ctx.repo.metaActuals(ctx.round.id);
-    expect(actuals).toHaveLength(2);
+    expect(actuals).toHaveLength(1);
     expect(actuals[0]!.actual_weighted).not.toBeNull();
   });
 });

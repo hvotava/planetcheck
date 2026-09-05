@@ -10,7 +10,7 @@ import type { PlayOption, PlayQuestion, PlayRound, QuestionShares } from "@/type
 import type { Demographics } from "@/types/domain";
 import { DemographicsStep } from "./DemographicsStep";
 import { MetaSlider } from "./MetaSlider";
-import { PlanetFeedback } from "./PlanetFeedback";
+import { PlanetFeedback, type MetaReveal } from "./PlanetFeedback";
 import { ProgressDots } from "./ProgressDots";
 import { SwipeDeck } from "./SwipeDeck";
 import { TurnstileWidget } from "./TurnstileWidget";
@@ -76,12 +76,26 @@ export function PlayClient() {
     [round?.geo_country],
   );
 
-  // prefetch shares of the next meta target so the reveal is instant
+  // prefetch shares of the meta target while the player is guessing, so the reveal after the
+  // target card is instant (nothing is shown on the meta card itself)
   useEffect(() => {
     if (phase.kind !== "question") return;
     const q = questions[phase.index];
-    if (q?.type === "meta" && q.target) void fetchShares(q.target.question_id).then(rerender).catch(() => undefined);
+    if (q?.type === "meta" && q.target) void fetchShares(q.target.question_id).catch(() => undefined);
   }, [phase, questions, fetchShares]);
+
+  /** The guess made on the meta card that targets `q`, paired with the planet's current share — revealed only in q's feedback. */
+  const metaRevealFor = useCallback(
+    (q: PlayQuestion): MetaReveal | null => {
+      const meta = questions.find((m) => m.type === "meta" && m.target?.question_id === q.id);
+      const guess = meta ? guesses.current.get(meta.id) : undefined;
+      if (!meta?.target || guess == null) return null;
+      const s = shares.current.get(q.id);
+      const actual = s && s.total_raw > 0 ? (s.options.find((o) => o.option_id === meta.target!.option_id)?.share_weighted ?? null) : null;
+      return { guess, actual };
+    },
+    [questions],
+  );
 
   const advance = useCallback(
     (from: number) => {
@@ -198,20 +212,24 @@ export function PlayClient() {
               question={current}
               index={phase.index}
               total={total}
-              actual={(() => {
-                const s = current.target ? shares.current.get(current.target.question_id) : undefined;
-                if (!s || s.total_raw === 0) return null;
-                return s.options.find((o) => o.option_id === current.target!.option_id)?.share_weighted ?? null;
-              })()}
-              onGuess={(g) => guesses.current.set(current.id, g)}
-              onNext={() => advance(phase.index)}
+              onGuess={(g) => {
+                guesses.current.set(current.id, g);
+                advance(phase.index);
+              }}
             />
           </motion.div>
         ) : null}
 
         {phase.kind === "feedback" && current ? (
           <motion.div key={`f-${current.id}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-            <PlanetFeedback question={current} chosenId={phase.chosenId} shares={shares.current.get(current.id) ?? null} countryCode={round?.geo_country ?? null} onNext={() => advance(phase.index)} />
+            <PlanetFeedback
+              question={current}
+              chosenId={phase.chosenId}
+              shares={shares.current.get(current.id) ?? null}
+              countryCode={round?.geo_country ?? null}
+              metaReveal={metaRevealFor(current)}
+              onNext={() => advance(phase.index)}
+            />
           </motion.div>
         ) : null}
 
