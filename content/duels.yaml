@@ -1,0 +1,83 @@
+# ---------------------------------------------------------------------------
+# COUNTRY DUELS (ARCHITECTURE §15 phase 5) — curated head-to-head pairs.
+#
+# A duel is only a lens on data that already exists: it compares two countries'
+# answers in the live round. No duel is computed live for an arbitrary pair, so
+# nobody can point the product at a pairing we did not choose.
+#
+# Rule for picking pairs: friendly rivalries and plain contrasts only — neighbours
+# who tease each other, not countries in conflict. A duel must be something both
+# sides would share.
+#
+# Codes are ISO-3166 alpha-2 and are validated against data/countries.json on load.
+# ---------------------------------------------------------------------------
+duels:
+  - key: cz-sk
+    a: CZ
+    b: SK
+    i18n:
+      cs: { title: "Česko vs. Slovensko", blurb: "Rozdělili se v klidu. Souhlasí ale ještě v něčem?" }
+      en: { title: "Czechia vs. Slovakia", blurb: "They split peacefully. Do they still agree on anything?" }
+
+  - key: es-pt
+    a: ES
+    b: PT
+    i18n:
+      cs: { title: "Španělsko vs. Portugalsko", blurb: "Jeden poloostrov, dvě povahy." }
+      en: { title: "Spain vs. Portugal", blurb: "One peninsula, two temperaments." }
+
+  - key: au-nz
+    a: AU
+    b: NZ
+    i18n:
+      cs: { title: "Austrálie vs. Nový Zéland", blurb: "Přes moře se dobře hádá." }
+      en: { title: "Australia vs. New Zealand", blurb: "A sea between them makes arguing easier." }
+
+  - key: ca-us
+    a: CA
+    b: US
+    i18n:
+      cs: { title: "Kanada vs. USA", blurb: "Nejdelší nehlídaná hranice světa. A co hlavy?" }
+      en: { title: "Canada vs. USA", blurb: "The world's longest unguarded border. What about the minds?" }
+
+  - key: se-no
+    a: SE
+    b: "NO"
+    i18n:
+      cs: { title: "Švédsko vs. Norsko", blurb: "Dva bratři, kteří se nikdy neshodnou na tom, kdo je starší." }
+      en: { title: "Sweden vs. Norway", blurb: "Two brothers who never agree on who is older." }
+
+  - key: ar-br
+    a: AR
+    b: BR
+    i18n:
+      cs: { title: "Argentina vs. Brazílie", blurb: "Rivalita, která přežila všechno." }
+      en: { title: "Argentina vs. Brazil", blurb: "A rivalry that has outlived everything." }
+
+  - key: fr-de
+    a: FR
+    b: DE
+    i18n:
+      cs: { title: "Francie vs. Německo", blurb: "Kdysi to řešili jinak. Teď takhle." }
+      en: { title: "France vs. Germany", blurb: "They used to settle this differently. Now like this." }
+
+  - key: ng-za
+    a: NG
+    b: ZA
+    i18n:
+      cs: { title: "Nigérie vs. Jihoafrická republika", blurb: "Dva obři, každý na svém konci kontinentu." }
+      en: { title: "Nigeria vs. South Africa", blurb: "Two giants, one at each end of the continent." }
+
+  - key: id-ph
+    a: ID
+    b: PH
+    i18n:
+      cs: { title: "Indonésie vs. Filipíny", blurb: "Tisíce ostrovů proti tisícům ostrovů." }
+      en: { title: "Indonesia vs. the Philippines", blurb: "Thousands of islands against thousands of islands." }
+
+  - key: ke-ng
+    a: KE
+    b: NG
+    i18n:
+      cs: { title: "Keňa vs. Nigérie", blurb: "Východ proti západu. Afrického." }
+      en: { title: "Kenya vs. Nigeria", blurb: "East against west. Of Africa." }

@@ -146,6 +146,24 @@ export const titlesFileSchema = z.object({
   ),
 });
 
+export const duelsFileSchema = z.object({
+  duels: z
+    .array(
+      z
+        .object({
+          key: z.string().regex(/^[a-z]{2}-[a-z]{2}$/, "duel keys are '<a>-<b>' in lowercase ISO-3166 alpha-2"),
+          a: z.string().length(2).regex(/^[A-Z]{2}$/),
+          b: z.string().length(2).regex(/^[A-Z]{2}$/),
+          i18n: z.record(localeCode, localizedLabelSchema),
+        })
+        .superRefine((d, ctx) => {
+          if (d.a === d.b) ctx.addIssue({ code: "custom", message: `duel ${d.key} pits ${d.a} against itself` });
+          if (d.key !== `${d.a.toLowerCase()}-${d.b.toLowerCase()}`) ctx.addIssue({ code: "custom", message: `duel key ${d.key} must be '${d.a.toLowerCase()}-${d.b.toLowerCase()}'` });
+        }),
+    )
+    .default([]),
+});
+
 export const weightingFileSchema = z.object({
   country_clamp: z.tuple([z.number().positive(), z.number().positive()]),
   cell_clamp: z.tuple([z.number().positive(), z.number().positive()]),
@@ -163,4 +181,5 @@ export type ContradictionsFile = z.infer<typeof contradictionsFileSchema>;
 export type ArchetypesFile = z.infer<typeof archetypesFileSchema>;
 export type TitlesFile = z.infer<typeof titlesFileSchema>;
 export type WeightingFile = z.infer<typeof weightingFileSchema>;
+export type DuelsFile = z.infer<typeof duelsFileSchema>;
 export type AgeBandKey = (typeof AGE_BANDS)[number];

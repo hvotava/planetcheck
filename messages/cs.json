@@ -8,7 +8,8 @@
       "countries": "Země",
       "methodology": "Metodika",
       "data": "Data",
-      "verify": "Ověřit hlas"
+      "verify": "Ověřit hlas",
+      "duel": "Duely"
     },
     "footer": {
       "madeBy": "Otevřená data, veřejná metodika, žádné osobní údaje.",
@@ -240,6 +241,28 @@
     "unknown": "Tuhle zemi neznáme.",
     "population": "Populace {value}",
     "verified": "{count} ověřených"
+  },
+  "duel": {
+    "title": "Duely zemí",
+    "subtitle": "Dvě země, stejná dilemata. Kde se shodnou a kde se rozejdou.",
+    "pageTitle": "{title}",
+    "agreementLabel": "Shoda",
+    "sameTop": "Stejná nejčastější odpověď u {count} z {total} dilemat.",
+    "indicesTitle": "Čísla vedle sebe",
+    "metric": "Ukazatel",
+    "survival": "Index přežití",
+    "contradiction": "Index rozporů",
+    "realism": "Realismus",
+    "votes": "Hlasů",
+    "axesTitle": "Kde stojí na osách",
+    "gap": "rozdíl {value}",
+    "biggestTitle": "Největší rozkol",
+    "questionsTitle": "Dilema po dilematu",
+    "notReadyTitle": "Na duel je brzy",
+    "notReadyText": "{a}: {an} hlasů, {b}: {bn}. Duel se ukáže, až budou hlasovat obě strany.",
+    "roundNote": "Kolo: {round}",
+    "backToList": "Všechny duely",
+    "playCta": "Zahrát si a přidat hlas"
   },
   "methodology": {
     "title": "Metodika",

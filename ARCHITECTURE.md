@@ -408,7 +408,8 @@ Každá fáze končí zeleným `pnpm test` a e2e průchodem. Nezačínej další
 - Hotovo, když: přepnutí locale nezmění žádné číslo, narátor post se bez schválení nikde nezobrazí.
 
 **Fáze 5 — Virální vrstva** 🟡 (embed hotov)
-- Duel zemí (config v YAML), Proroctví (tabulky `prophecies`, `prophecy_guesses`, `resolution`), školní mód (kód třídy = pseudo-země), embed widget (`/embed/planet` iframe) ✅.
+- **Duel zemí** ✅ — kurátorované dvojice v `content/duels.yaml` (kódy se ověřují proti `data/countries.json`), stránky `/duel` a `/duel/[key]`, čistá funkce `src/lib/duel/compare.ts` (shoda = 100 − ½·Σ|aᵢ−bᵢ| přes možnosti otázky, raw i weighted), komponenta `DuelBoard` s ukázkou na `/dev/viz`. Duel se nepočítá pro libovolnou dvojici — jen pro ty z obsahu, aby produkt nešel namířit na dvojici, kterou jsme nevybrali.
+- Proroctví (tabulky `prophecies`, `prophecy_guesses`, `resolution`), školní mód (kód třídy = pseudo-země), embed widget (`/embed/planet` iframe) ✅.
 
 ---
 

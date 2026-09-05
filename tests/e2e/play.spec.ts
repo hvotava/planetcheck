@@ -100,6 +100,23 @@ test.describe("play a round on mobile", () => {
     expect(numbers(en)).toBe(numbers(cs));
   });
 
+  test("country duels list and render for the live round", async ({ page }) => {
+    await page.goto("/cs/duel");
+    const cards = page.getByRole("link", { name: /vs\./ });
+    expect(await cards.count()).toBeGreaterThan(0);
+
+    await page.goto("/cs/duel/cz-sk");
+    await expect(page.getByRole("heading", { name: /Česko vs\. Slovensko/ })).toBeVisible();
+    // either both sides have votes (full board) or the seed left one empty (progress note)
+    const board = page.getByTestId("duel-agreement");
+    const notReady = page.getByTestId("duel-not-ready");
+    await expect(board.or(notReady)).toBeVisible();
+
+    // an unknown pairing must not be reachable — duels are curated, never computed for any pair
+    const res = await page.goto("/cs/duel/cz-de");
+    expect(res?.status()).toBe(404);
+  });
+
   test("API envelope, health and export", async ({ request }) => {
     const health = await request.get("/api/health");
     expect(health.ok()).toBeTruthy();

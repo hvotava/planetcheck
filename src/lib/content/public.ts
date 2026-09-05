@@ -1,4 +1,4 @@
-import { loadArchetypes, loadTitles } from "./loader";
+import { loadArchetypes, loadDuels, loadTitles } from "./loader";
 import { pickLocalized } from "./i18n";
 import type { ArchetypeMeta } from "@/components/ui/ArchetypeBadge";
 
@@ -22,4 +22,14 @@ export function titleMeta(locale: string): Record<string, TitleMeta> {
     out[t.key] = { key: t.key, title: l?.title ?? t.key, blurb: l?.blurb, emoji: t.emoji };
   }
   return out;
+}
+
+export type DuelMeta = { key: string; a: string; b: string; title: string; blurb?: string };
+
+/** Localised curated duels (content/duels.yaml is the source; codes are validated on load). */
+export function duelMeta(locale: string): DuelMeta[] {
+  return loadDuels().map((d) => {
+    const l = pickLocalized(d.i18n, locale)?.value;
+    return { key: d.key, a: d.a, b: d.b, title: l?.title ?? d.key, blurb: l?.blurb };
+  });
 }

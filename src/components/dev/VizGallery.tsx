@@ -7,12 +7,14 @@ import { ArchetypeDonut } from "@/components/viz/ArchetypeDonut";
 import { AxisBars } from "@/components/viz/AxisBars";
 import { ContradictionMeter } from "@/components/viz/ContradictionMeter";
 import { CountryBoard, type BoardCountry } from "@/components/viz/CountryBoard";
+import { DuelBoard } from "@/components/viz/DuelBoard";
 import { Ekg } from "@/components/viz/Ekg";
 import { RulerSwitch } from "@/components/viz/RulerSwitch";
 import { TrendLine } from "@/components/viz/TrendLine";
 import { TwoCamps } from "@/components/viz/TwoCamps";
 import { WorldMap } from "@/components/viz/WorldMap";
 import type { TitleMeta } from "@/lib/content/public";
+import { compareCountries, type DuelSideInput } from "@/lib/duel/compare";
 import type { ResultsFilterPayload } from "@/types/api";
 
 function seeded(seed: number) {
@@ -62,6 +64,42 @@ export function VizGallery({ archetypes, titles, codes }: { archetypes: Record<s
     { key: "c", title: "Cizince do postele, most s druhým břehem ne", share_weighted: 9, share_raw: 8 },
   ];
 
+  // synthetic duel: CZ leans to the treaty, SK to the bigger stick
+  const duelSide = (code: string, field: [number, number, number], stick: [number, number, number], axes: [number, number, number]): DuelSideInput => ({
+    code,
+    live_count: 640,
+    stats: {
+      submissions_count: 640,
+      unlocked: true,
+      survival_index: code === "CZ" ? 61.4 : 55.8,
+      contradiction_index: code === "CZ" ? 24 : 31,
+      realism_mean: code === "CZ" ? 0.52 : 0.47,
+      axis_means: { weighted: { peace_force: axes[0], trust_paranoia: axes[1], us_them: axes[2] }, raw: { peace_force: axes[0], trust_paranoia: axes[1], us_them: axes[2] } },
+      top_archetype: code === "CZ" ? "diplomat" : "jestrab",
+      titles: [],
+    },
+    questions: [
+      { key: "neighbor_field", position: 1, options: ["un", "cousin", "fence"].map((k, i) => ({ key: k, icon: ["🏛️", "🚜", "🪵"][i]!, share_raw: field[i]!, share_weighted: field[i]! })) },
+      { key: "bigger_stick", position: 2, options: ["believe", "bigger", "treaty"].map((k, i) => ({ key: k, icon: ["🐻", "🏏", "🤝"][i]!, share_raw: stick[i]!, share_weighted: stick[i]! })) },
+    ],
+  });
+  const duel = compareCountries(
+    duelSide("CZ", [46, 21, 33], [28, 24, 48], [-0.18, 0.12, -0.31]),
+    duelSide("SK", [29, 44, 27], [19, 51, 30], [0.34, 0.28, 0.22]),
+  );
+  const duelTexts = {
+    names: { CZ: "Česko", SK: "Slovensko" },
+    questions: { neighbor_field: "Soused ti zabral pole. Co uděláš?", bigger_stick: "Soused si koupil velký klacek. Co ty?" },
+    options: {
+      "neighbor_field.un": "Zavolám OSN",
+      "neighbor_field.cousin": "Zavolám bratrance s traktorem",
+      "neighbor_field.fence": "Postavím plot a dělám, že nic",
+      "bigger_stick.believe": "Věřím mu, medvědi tu fakt jsou",
+      "bigger_stick.bigger": "Koupím si větší klacek",
+      "bigger_stick.treaty": "Oba jen malé klacky. Svůj zahodím první.",
+    },
+  };
+
   const block = (title: string, el: React.ReactNode) => (
     <section className="mt-8">
       <h2 className="mb-3 font-mono text-sm text-accent">{title}</h2>
@@ -81,6 +119,8 @@ export function VizGallery({ archetypes, titles, codes }: { archetypes: Record<s
       {block("RulerSwitch", <RulerSwitch value={filter} onChange={setFilter} />)}
       {block("TrendLine", <TrendLine points={data.trend} />)}
       {block("CountryBoard", <CountryBoard countries={data.board} threshold={500} archetypes={archetypes} titles={titles} highlight="CZ" />)}
+      {block("DuelBoard", <DuelBoard duel={duel} texts={duelTexts} />)}
+      {block("DuelBoard (not enough votes)", <DuelBoard duel={compareCountries(duelSide("CZ", [46, 21, 33], [28, 24, 48], [-0.18, 0.12, -0.31]), { code: "SK", live_count: 0, stats: null, questions: [] })} texts={duelTexts} />)}
     </div>
   );
 }

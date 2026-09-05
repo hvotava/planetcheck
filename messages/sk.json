@@ -8,7 +8,8 @@
       "countries": "Krajiny",
       "methodology": "Metodika",
       "data": "Dáta",
-      "verify": "Overiť hlas"
+      "verify": "Overiť hlas",
+      "duel": "Duely"
     },
     "footer": {
       "madeBy": "Otvorené dáta, verejná metodika, žiadne osobné údaje.",
@@ -240,6 +241,28 @@
     "unknown": "Túto krajinu nepoznáme.",
     "population": "Populácia {value}",
     "verified": "{count} overených"
+  },
+  "duel": {
+    "title": "Duely krajín",
+    "subtitle": "Dve krajiny, rovnaké dilemy. Kde sa zhodnú a kde sa rozídu.",
+    "pageTitle": "{title}",
+    "agreementLabel": "Zhoda",
+    "sameTop": "Rovnaká najčastejšia odpoveď pri {count} z {total} dilem.",
+    "indicesTitle": "Čísla vedľa seba",
+    "metric": "Ukazovateľ",
+    "survival": "Index prežitia",
+    "contradiction": "Index rozporov",
+    "realism": "Realizmus",
+    "votes": "Hlasov",
+    "axesTitle": "Kde stoja na osiach",
+    "gap": "rozdiel {value}",
+    "biggestTitle": "Najväčší rozkol",
+    "questionsTitle": "Dilema po dileme",
+    "notReadyTitle": "Na duel je skoro",
+    "notReadyText": "{a}: {an} hlasov, {b}: {bn}. Duel sa ukáže, keď budú hlasovať obe strany.",
+    "roundNote": "Kolo: {round}",
+    "backToList": "Všetky duely",
+    "playCta": "Zahrať si a pridať hlas"
   },
   "methodology": {
     "title": "Metodika",

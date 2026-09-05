@@ -1,14 +1,17 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse } from "yaml";
+import { isKnownCountry } from "@/lib/countries";
 import type { ArchetypeRule, ContentContradiction, ContentQuestion, ContentRound, WeightingParams } from "@/types/domain";
 import {
   archetypesFileSchema,
   contradictionsFileSchema,
+  duelsFileSchema,
   roundFileSchema,
   titlesFileSchema,
   weightingFileSchema,
   type ArchetypesFile,
+  type DuelsFile,
   type RoundFile,
   type TitlesFile,
   type WeightingFile,
@@ -50,6 +53,23 @@ export function archetypeRules(a: ArchetypesFile): ArchetypeRule[] {
 
 export function loadTitles(dir = CONTENT_DIR): TitlesFile {
   return titlesFileSchema.parse(readYaml(join(dir, "titles.yaml")));
+}
+
+/**
+ * Curated country duels. Codes are cross-checked against data/countries.json here, so a typo
+ * in content/duels.yaml fails the build rather than producing an empty page.
+ */
+export function loadDuels(dir = CONTENT_DIR): DuelsFile["duels"] {
+  const duels = duelsFileSchema.parse(readYaml(join(dir, "duels.yaml"))).duels;
+  const errors: string[] = [];
+  const seen = new Set<string>();
+  for (const d of duels) {
+    if (seen.has(d.key)) errors.push(`duplicate duel key '${d.key}'`);
+    seen.add(d.key);
+    for (const code of [d.a, d.b]) if (!isKnownCountry(code)) errors.push(`duel '${d.key}': unknown country code '${code}'`);
+  }
+  if (errors.length) throw new Error(`content/duels.yaml:\n  - ${errors.join("\n  - ")}`);
+  return duels;
 }
 
 export function loadContradictionsLibrary(dir = CONTENT_DIR): ContentContradiction[] {
@@ -182,8 +202,9 @@ export type ContentBundle = {
   archetypes: ArchetypesFile;
   titles: TitlesFile;
   weighting: WeightingFile;
+  duels: DuelsFile["duels"];
 };
 
 export function loadContent(dir = CONTENT_DIR): ContentBundle {
-  return { rounds: loadRounds(dir), archetypes: loadArchetypes(dir), titles: loadTitles(dir), weighting: loadWeighting(dir) };
+  return { rounds: loadRounds(dir), archetypes: loadArchetypes(dir), titles: loadTitles(dir), weighting: loadWeighting(dir), duels: loadDuels(dir) };
 }

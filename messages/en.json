@@ -8,7 +8,8 @@
       "countries": "Countries",
       "methodology": "Methodology",
       "data": "Data",
-      "verify": "Verify my vote"
+      "verify": "Verify my vote",
+      "duel": "Duels"
     },
     "footer": {
       "madeBy": "Open data, public methodology, no personal data.",
@@ -240,6 +241,28 @@
     "unknown": "We don't know this country.",
     "population": "Population {value}",
     "verified": "{count} verified"
+  },
+  "duel": {
+    "title": "Country duels",
+    "subtitle": "Two countries, the same dilemmas. Where they agree and where they part ways.",
+    "pageTitle": "{title}",
+    "agreementLabel": "Agreement",
+    "sameTop": "Same leading answer on {count} of {total} dilemmas.",
+    "indicesTitle": "The numbers side by side",
+    "metric": "Metric",
+    "survival": "Survival index",
+    "contradiction": "Contradiction index",
+    "realism": "Realism",
+    "votes": "Votes",
+    "axesTitle": "Where they stand",
+    "gap": "gap {value}",
+    "biggestTitle": "Biggest split",
+    "questionsTitle": "Dilemma by dilemma",
+    "notReadyTitle": "Too early for a duel",
+    "notReadyText": "{a}: {an} votes, {b}: {bn}. The duel appears once both sides have voted.",
+    "roundNote": "Round: {round}",
+    "backToList": "All duels",
+    "playCta": "Play and add your vote"
   },
   "methodology": {
     "title": "Methodology",
