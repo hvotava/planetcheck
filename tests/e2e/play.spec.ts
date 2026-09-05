@@ -241,6 +241,45 @@ test.describe("play a round on mobile", () => {
     await expect(page.getByTestId("unsub-invalid")).toBeVisible();
   });
 
+  test("switching decks from the already-voted screen actually changes the deck", async ({ page }) => {
+    // Regression: /play → /play?round=anchor is the SAME route, so React keeps PlayClient
+    // mounted. Reading the query once on mount left the screen frozen on "already voted".
+    await page.goto("/cs/play");
+    await page.getByTestId("options").getByRole("button").first().waitFor({ timeout: 30_000 });
+    let guard = 0;
+    while (guard++ < 20) {
+      if (await page.getByRole("button", { name: /Odeslat hlas/ }).isVisible().catch(() => false)) break;
+      const slider = page.getByRole("slider");
+      if ((await slider.isVisible().catch(() => false)) && (await slider.isEnabled().catch(() => false))) {
+        await slider.fill("40");
+        await page.getByRole("button", { name: /Tipnout/ }).click();
+        continue;
+      }
+      const options = page.getByTestId("options").getByRole("button");
+      if ((await options.count()) > 0) {
+        await options.nth(1).click();
+        const next = page.getByRole("button", { name: /Další/ });
+        await next.waitFor();
+        await next.click();
+        continue;
+      }
+      await page.waitForTimeout(300);
+    }
+    await page.getByRole("button", { name: /Odeslat hlas/ }).click();
+    await page.waitForURL(/\/cs\/result\//, { timeout: 30_000 });
+
+    await page.goto("/cs/play");
+    await expect(page.getByTestId("already-voted-cta")).toBeVisible({ timeout: 20_000 });
+    const more = page.getByTestId("more-rounds");
+    await expect(more).toBeVisible({ timeout: 15_000 });
+    await more.getByRole("link").first().click();
+
+    await page.waitForURL(/\/play\?round=/, { timeout: 20_000 });
+    // the deck must actually appear, not the screen we came from
+    await expect(page.getByTestId("options")).toBeVisible({ timeout: 30_000 });
+    await expect(page.getByTestId("already-voted-cta")).toHaveCount(0);
+  });
+
   test("a round that has not opened can be previewed but not voted on", async ({ page, request }) => {
     // /play?round=<slug> serves a future deck so content can be checked before it goes live
     await page.goto("/cs/play?round=2026-w41");

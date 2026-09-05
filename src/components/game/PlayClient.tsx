@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Link, useRouter } from "@/lib/i18n/navigation";
@@ -18,7 +19,7 @@ import { MoreRounds } from "./MoreRounds";
 
 type Phase =
   | { kind: "loading" }
-  | { kind: "error"; message: string }
+  | { kind: "error"; reason: "no_round" | "generic" }
   | { kind: "already"; submissionId: string }
   | { kind: "closed" }
   | { kind: "question"; index: number }
@@ -41,28 +42,33 @@ export function PlayClient() {
   const shares = useRef(new Map<string, QuestionShares>());
   const token = useRef<string | null>(null);
   const demographics = useRef<Demographics | null>(null);
-  // School mode: /play?class=ABC123. Read from the URL rather than useSearchParams so the
-  // page needs no Suspense boundary; an unknown code is ignored by the server.
-  const [classCode, setClassCode] = useState<string | null>(null);
-  // /play?round=<slug> plays a specific deck: the anchors as a second round, or a preview of
-  // one that has not opened yet (a vote on it is still refused with 410 by the API).
-  const [roundSlug, setRoundSlug] = useState<string | null>(null);
-  const [bootstrapped, setBootstrapped] = useState(false);
   const [, force] = useState(0);
   const rerender = () => force((n) => n + 1);
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const c = params.get("class");
-    if (c && /^[A-Za-z0-9]{6}$/.test(c)) setClassCode(c.toUpperCase());
-    const r = params.get("round");
-    if (r && /^[a-z0-9-]{1,40}$/.test(r)) setRoundSlug(r);
-    setBootstrapped(true);
-  }, []);
+  /**
+   * The query has to be read reactively, not once on mount. Going from /play to
+   * /play?round=anchor is the same route, so React keeps this component mounted: a
+   * mount-only effect never re-runs and the deck would silently never change.
+   */
+  const searchParams = useSearchParams();
+  const roundSlug = useMemo(() => {
+    const r = searchParams.get("round");
+    return r && /^[a-z0-9-]{1,40}$/.test(r) ? r : null;
+  }, [searchParams]);
+  // School mode: /play?class=ABC123. An unknown code is ignored by the server.
+  const classCode = useMemo(() => {
+    const c = searchParams.get("class");
+    return c && /^[A-Za-z0-9]{6}$/.test(c) ? c.toUpperCase() : null;
+  }, [searchParams]);
 
   useEffect(() => {
-    if (!bootstrapped) return;
     let cancelled = false;
+    // A different deck means a fresh game: the previous round's answers must not carry over.
+    answers.current = new Map();
+    guesses.current = new Map();
+    shares.current = new Map();
+    setRound(null);
+    setPhase({ kind: "loading" });
     api<PlayRound>(`/api/rounds/current?locale=${locale}${roundSlug ? `&round=${encodeURIComponent(roundSlug)}` : ""}`)
       .then((r) => {
         if (cancelled) return;
@@ -73,12 +79,13 @@ export function PlayClient() {
       })
       .catch((e: unknown) => {
         if (cancelled) return;
-        setPhase({ kind: "error", message: e instanceof ClientApiError && e.code === "no_round" ? t("closedText") : tc("error") });
+        setPhase({ kind: "error", reason: e instanceof ClientApiError && e.code === "no_round" ? "no_round" : "generic" });
       });
     return () => {
       cancelled = true;
     };
-  }, [locale, t, tc, roundSlug, bootstrapped]);
+    // Deliberately only the deck identity: translation functions must never restart a game.
+  }, [locale, roundSlug]);
 
   const questions = useMemo(() => round?.questions ?? [], [round]);
   const total = questions.length;
@@ -193,7 +200,7 @@ export function PlayClient() {
         {phase.kind === "error" ? (
           <motion.div key="error" className="card mx-auto max-w-sm p-6 text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <p className="text-lg font-bold">{tc("error")}</p>
-            <p className="mt-1 text-sm text-muted">{phase.message}</p>
+            <p className="mt-1 text-sm text-muted">{phase.reason === "no_round" ? t("closedText") : tc("error")}</p>
             <Button className="mt-4" variant="secondary" onClick={() => location.reload()}>
               {tc("retry")}
             </Button>
