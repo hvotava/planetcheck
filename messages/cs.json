@@ -198,7 +198,7 @@
     "nextRoundLine": "{title} začíná {date}.",
     "nextRoundNone": "Další téma chystáme. Zatím se hrají Kotvy.",
     "calendarCta": "Přidat termíny do kalendáře",
-    "calendarHint": "Kalendář si termíny sám aktualizuje. Nic od tebe nechceme, ani e-mail."
+    "calendarHint": "Kalendář si termíny sám aktualizuje a nepotřebuje od tebe žádné údaje."
   },
   "planet": {
     "title": "Planeta živě",

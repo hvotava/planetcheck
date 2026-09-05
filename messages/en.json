@@ -198,7 +198,7 @@
     "nextRoundLine": "{title} opens {date}.",
     "nextRoundNone": "The next theme is on its way. The Anchors round runs meanwhile.",
     "calendarCta": "Add the dates to my calendar",
-    "calendarHint": "Your calendar keeps the dates up to date by itself. We ask you for nothing, not even an email."
+    "calendarHint": "Your calendar keeps the dates current by itself, and needs nothing from you."
   },
   "planet": {
     "title": "Planet, live",

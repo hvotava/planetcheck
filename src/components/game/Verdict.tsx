@@ -186,7 +186,7 @@ export async function Verdict({
           {nextRound
             ? t("nextRoundLine", {
                 title: nextRound.title,
-                date: new Date(nextRound.starts_at).toLocaleDateString(undefined, { day: "numeric", month: "long" }),
+                date: new Date(nextRound.starts_at).toLocaleDateString(locale, { day: "numeric", month: "long" }),
               })
             : t("nextRoundNone")}
         </p>

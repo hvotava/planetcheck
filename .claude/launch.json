@@ -13,6 +13,7 @@
       "name": "planetcheck-review",
       "runtimeExecutable": "env",
       "runtimeArgs": [
+        "NEWSLETTER_DEV_LOG=true",
         "PGLITE_DIR=.pglite/review",
         "PLANETCHECK_AUTOSEED=4000",
         "PLANETCHECK_INTERNAL_CRON=false",
