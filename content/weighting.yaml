@@ -1,0 +1,19 @@
+# ---------------------------------------------------------------------------
+# WEIGHTING PARAMETERS — post-stratification (ARCHITECTURE §9).
+# The recompute cron AND the /methodology page read this same file, so the
+# published methodology can never drift from what the numbers actually do.
+#
+# Values from ARCHITECTURE §9. `cell_clamp` (trimming of within-country raking
+# factors) is an addition for safety against tiny demographic cells — confirm with Hynek.
+# ---------------------------------------------------------------------------
+country_clamp: [0.2, 5.0]          # clamp of population/sample ratio per country
+cell_clamp: [0.2, 5.0]             # trimming of within-country raking factors
+min_country_submissions: 30        # below this: weight 1 + insufficient_sample
+min_demographic_submissions: 200   # below this: no raking inside the country
+max_iterations: 10
+tolerance: 0.01
+
+# Suspicion thresholds (flags, never blocks) — ARCHITECTURE §6
+too_fast_seconds: 8
+rate_ip_per_hour: 10
+rate_anon_per_hour: 3

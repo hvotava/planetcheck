@@ -1,0 +1,166 @@
+# ---------------------------------------------------------------------------
+# ANCHOR ROUND — permanent library of "kotvy" (anchor dilemmas).
+#
+# Two roles:
+#   1. A round of its own (kind: anchor, no end) — served when no weekly round is live.
+#   2. A library: weekly rounds pull questions from here via `include_anchors: [key, …]`.
+#      The question `key` stays identical across rounds → long-term trend per key.
+#
+# DRAFT CONTENT — formulations, axis weights and flags must be confirmed by Hynek
+# before the first public round (CLAUDE.md: "Neodhaduj … formulace otázek").
+# No question here names a real state; therefore review_required is false everywhere.
+#
+# Axis convention (−1 … +1):
+#   peace_force    −1 = mír / peace            +1 = síla / force
+#   trust_paranoia −1 = důvěra / trust         +1 = paranoia
+#   us_them        −1 = "my všichni" / inclusive  +1 = "my vs. oni" / exclusive
+# ---------------------------------------------------------------------------
+round:
+  slug: anchor
+  kind: anchor
+  status: live
+  starts_at: 2026-01-01T00:00:00Z
+  ends_at: null
+  unlock_threshold: 500
+  survival_weights: { consistency: 0.4, compromise: 0.35, realism: 0.25 }
+  i18n:
+    cs: { title: "Kotvy", blurb: "Pět dilemat, která se ptáme pořád. Trend planety v čase." }
+    en: { title: "Anchors", blurb: "Five dilemmas we keep asking. The planet's trend over time." }
+
+questions:
+  - key: neighbor_field
+    type: choice
+    i18n:
+      cs: { text: "Soused ti zabral pole. Co uděláš?" }
+      en: { text: "Your neighbour took your field. What now?" }
+    options:
+      - key: un
+        icon: "🏛️"
+        i18n: { cs: { text: "Zavolám OSN" }, en: { text: "Call the UN" } }
+        axis_weights: { peace_force: -1, trust_paranoia: 1 }
+        compromise: true
+      - key: cousin
+        icon: "🚜"
+        i18n: { cs: { text: "Zavolám bratrance s traktorem" }, en: { text: "Call my cousin with the tractor" } }
+        axis_weights: { peace_force: 1, us_them: 1 }
+      - key: fence
+        icon: "🪵"
+        i18n: { cs: { text: "Postavím plot a dělám, že nic" }, en: { text: "Build a fence, pretend nothing happened" } }
+        axis_weights: { peace_force: 0, trust_paranoia: -0.5 }
+      - key: moon
+        icon: "🌙"
+        honeypot: true
+        i18n: { cs: { text: "Vyhlásím válku Měsíci" }, en: { text: "Declare war on the Moon" } }
+        axis_weights: {}
+
+  - key: neighbor_field_meta
+    type: meta
+    target: { question: neighbor_field, option: cousin }
+    i18n:
+      cs: { text: "Kolik % lidí na planetě zavolalo bratrance?" }
+      en: { text: "What % of the planet called their cousin?" }
+
+  - key: stranger_at_door
+    type: choice
+    i18n:
+      cs: { scenario: "Je noc, venku mrzne.", text: "Klepe cizinec. Prý mu shořel dům." }
+      en: { scenario: "It's night and freezing outside.", text: "A stranger knocks. Says his house burned down." }
+    options:
+      - key: let_in
+        icon: "🛏️"
+        i18n: { cs: { text: "Pustím ho dál a dám mu deku" }, en: { text: "Let him in, hand him a blanket" } }
+        axis_weights: { trust_paranoia: -0.8, us_them: -0.8 }
+      - key: yard
+        icon: "🏕️"
+        i18n: { cs: { text: "Pomůžu, ale spí na dvoře" }, en: { text: "Help him, but he sleeps in the yard" } }
+        axis_weights: { trust_paranoia: 0.1, us_them: -0.2 }
+        compromise: true
+      - key: neighbours
+        icon: "🔔"
+        i18n: { cs: { text: "Svolám sousedy, ať to posoudíme spolu" }, en: { text: "Wake the neighbours, we decide together" } }
+        axis_weights: { trust_paranoia: 0.3, us_them: -0.3 }
+        compromise: true
+      - key: no_open
+        icon: "🔒"
+        i18n: { cs: { text: "V noci nikomu neotvírám" }, en: { text: "I don't open the door at night. To anyone." } }
+        axis_weights: { trust_paranoia: 0.8, us_them: 0.6 }
+
+  - key: stranger_at_door_meta
+    type: meta
+    target: { question: stranger_at_door, option: let_in }
+    i18n:
+      cs: { text: "Kolik % planety cizince pustilo dovnitř?" }
+      en: { text: "What % of the planet let the stranger in?" }
+
+  - key: bigger_stick
+    type: choice
+    i18n:
+      cs: { scenario: "Soused si koupil velký klacek.", text: "Prý kvůli medvědům. Co ty?" }
+      en: { scenario: "Your neighbour bought a big stick.", text: "Says it's for the bears. What do you do?" }
+    options:
+      - key: believe
+        icon: "🐻"
+        i18n: { cs: { text: "Věřím mu, medvědi tu fakt jsou" }, en: { text: "I believe him, there really are bears" } }
+        axis_weights: { trust_paranoia: -0.8 }
+      - key: bigger
+        icon: "🏏"
+        i18n: { cs: { text: "Koupím si větší klacek" }, en: { text: "Buy a bigger stick" } }
+        axis_weights: { peace_force: 0.6, trust_paranoia: 0.6 }
+      - key: treaty
+        icon: "🤝"
+        i18n: { cs: { text: "Navrhnu, ať máme oba jen malé klacky, a kontrolujeme si to" }, en: { text: "Propose we both keep only small sticks, and check on each other" } }
+        axis_weights: { peace_force: -0.6, trust_paranoia: 0.2 }
+        compromise: true
+      - key: club
+        icon: "📣"
+        i18n: { cs: { text: "Založím spolek sousedů proti klackům" }, en: { text: "Start a neighbourhood association against sticks" } }
+        axis_weights: { peace_force: -0.4, us_them: -0.5 }
+        compromise: true
+
+  - key: village_well
+    type: choice
+    i18n:
+      cs: { scenario: "Vaše studna vysychá.", text: "Sousední vesnice má vody dost. Co uděláte?" }
+      en: { scenario: "Your well is drying up.", text: "The next village has plenty. What do you do?" }
+    options:
+      - key: pipeline
+        icon: "🔧"
+        i18n: { cs: { text: "Domluvíme se a postavíme společné potrubí" }, en: { text: "Make a deal, build a shared pipeline" } }
+        axis_weights: { peace_force: -0.5, us_them: -1 }
+        compromise: true
+      - key: buy
+        icon: "💰"
+        i18n: { cs: { text: "Koupíme jejich vodu. Za jakoukoli cenu." }, en: { text: "Buy their water. At any price." } }
+        axis_weights: { trust_paranoia: -0.3, us_them: 0.2 }
+      - key: dam
+        icon: "🧱"
+        i18n: { cs: { text: "Postavíme hráz proti proudu. Ať teče k nám." }, en: { text: "Build a dam upstream. Let it flow to us." } }
+        axis_weights: { peace_force: 0.7, us_them: 0.7 }
+      - key: move
+        icon: "🎒"
+        i18n: { cs: { text: "Přestěhujeme se" }, en: { text: "Move away" } }
+        axis_weights: { peace_force: -0.3, trust_paranoia: -0.3 }
+
+  - key: rumor
+    type: choice
+    i18n:
+      cs: { scenario: "Někdo šíří, že máte otrávenou vodu.", text: "Nemáte. Co uděláš?" }
+      en: { scenario: "Someone is spreading that your water is poisoned.", text: "It isn't. What do you do?" }
+    options:
+      - key: test
+        icon: "🧪"
+        i18n: { cs: { text: "Nechám vodu veřejně otestovat a zveřejním čísla" }, en: { text: "Get the water publicly tested, publish the numbers" } }
+        axis_weights: { trust_paranoia: -0.3, peace_force: -0.3 }
+        compromise: true
+      - key: sue
+        icon: "⚖️"
+        i18n: { cs: { text: "Najdu, kdo to šíří, a zažaluju ho" }, en: { text: "Find who's spreading it and sue them" } }
+        axis_weights: { peace_force: 0.4, trust_paranoia: 0.5 }
+      - key: retaliate
+        icon: "📢"
+        i18n: { cs: { text: "Rozšířím, že otrávená je jejich voda" }, en: { text: "Spread that their water is poisoned" } }
+        axis_weights: { peace_force: 0.7, trust_paranoia: 0.7, us_them: 0.8 }
+      - key: ignore
+        icon: "🤷"
+        i18n: { cs: { text: "Ignoruju to. Pravda se ukáže." }, en: { text: "Ignore it. Truth will out." } }
+        axis_weights: { peace_force: -0.5, trust_paranoia: -0.6 }

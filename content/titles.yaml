@@ -1,0 +1,87 @@
+# ---------------------------------------------------------------------------
+# COUNTRY TITLES — evaluated by the recompute cron over country_stats of a round,
+# only among UNLOCKED countries. Result is stored (country_stats.titles), never computed live.
+#
+# metric: a column/path of country_stats; pick: max | min
+# DRAFT — confirm wording with Hynek.
+# ---------------------------------------------------------------------------
+titles:
+  - key: most_paranoid
+    metric: axis_means.trust_paranoia
+    pick: max
+    emoji: "🕵️"
+    i18n:
+      cs: { title: "Nejparanoidnější stát planety", blurb: "Otevřít dveře? V noci? Cizinci?" }
+      en: { title: "Most paranoid nation on the planet", blurb: "Open the door? At night? To a stranger?" }
+
+  - key: most_trusting
+    metric: axis_means.trust_paranoia
+    pick: min
+    emoji: "🫶"
+    i18n:
+      cs: { title: "Nejdůvěřivější stát", blurb: "Medvědi tu prostě jsou." }
+      en: { title: "Most trusting nation", blurb: "There simply are bears." }
+
+  - key: hawk_nest
+    metric: axis_means.peace_force
+    pick: max
+    emoji: "🦅"
+    i18n:
+      cs: { title: "Hnízdo jestřábů", blurb: "Největší klacky na planetě." }
+      en: { title: "Hawk's nest", blurb: "The biggest sticks on the planet." }
+
+  - key: dovecote
+    metric: axis_means.peace_force
+    pick: min
+    emoji: "🕊️"
+    i18n:
+      cs: { title: "Holubník", blurb: "Zavolají OSN i na ztracené klíče." }
+      en: { title: "The dovecote", blurb: "Would call the UN about lost keys." }
+
+  - key: most_tribal
+    metric: axis_means.us_them
+    pick: max
+    emoji: "🏰"
+    i18n:
+      cs: { title: "My a oni", blurb: "Most s druhým břehem? Radši žádný." }
+      en: { title: "Us and them", blurb: "A bridge to the other bank? Rather none." }
+
+  - key: everyones_neighbour
+    metric: axis_means.us_them
+    pick: min
+    emoji: "🌍"
+    i18n:
+      cs: { title: "Soused všech", blurb: "Společné potrubí, společný most, společná deka." }
+      en: { title: "Everyone's neighbour", blurb: "Shared pipeline, shared bridge, shared blanket." }
+
+  - key: most_consistent
+    metric: contradiction_index
+    pick: min
+    emoji: "📏"
+    i18n:
+      cs: { title: "Stát bez rozporů", blurb: "Říkají, co dělají. Dělají, co říkají." }
+      en: { title: "The consistent nation", blurb: "Say what they do. Do what they say." }
+
+  - key: most_torn
+    metric: contradiction_index
+    pick: max
+    emoji: "🎭"
+    i18n:
+      cs: { title: "Nejrozpolcenější stát", blurb: "Mír, ale s tajnou zbraní." }
+      en: { title: "Most torn nation", blurb: "Peace, but with a secret weapon." }
+
+  - key: realists
+    metric: realism_mean
+    pick: max
+    emoji: "🎯"
+    i18n:
+      cs: { title: "Realisté", blurb: "Vědí, co si planeta myslí. Trefují to." }
+      en: { title: "The realists", blurb: "They know what the planet thinks. They nail it." }
+
+  - key: survivors
+    metric: survival_index
+    pick: max
+    emoji: "🏆"
+    i18n:
+      cs: { title: "Přežijí", blurb: "Nejvyšší index přežití. Zatím." }
+      en: { title: "Will survive", blurb: "Highest survival index. For now." }

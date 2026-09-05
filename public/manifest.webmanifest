@@ -1,0 +1,10 @@
+{
+  "name": "Přežijeme? / Will we survive?",
+  "short_name": "Přežijeme?",
+  "description": "90 seconds, 7 dilemmas, a live picture of what the planet thinks.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070a10",
+  "theme_color": "#070a10",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# next.js
+.next/
+out/
+next-env.d.ts
+
+# local embedded database (PGlite)
+.pglite/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# tests
+playwright-report/
+test-results/
+coverage/
+
+# misc
+.DS_Store
+*.log
+*.tsbuildinfo
+.netlify/
+.supabase/

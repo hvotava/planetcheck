@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Diplomat">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#173a2a"/>
+      <stop offset="1" stop-color="#0a1710"/>
+    </radialGradient>
+  </defs>
+  <circle cx="128" cy="128" r="124" fill="url(#bg)" stroke="#b8ff9a" stroke-opacity="0.4" stroke-width="3"/>
+  <!-- two speech bubbles meeting -->
+  <path d="M40 92c0-16 14-28 32-28h48c18 0 32 12 32 28v30c0 16-14 28-32 28h-20l-22 22v-22h-6c-18 0-32-12-32-28z" fill="#5cc8ff" opacity="0.92"/>
+  <path d="M104 118c0-16 14-28 32-28h48c18 0 32 12 32 28v30c0 16-14 28-32 28h-6v22l-22-22h-20c-18 0-32-12-32-28z" fill="#b8ff9a" opacity="0.92"/>
+  <!-- intersection -->
+  <path d="M104 118v4c0 16 14 28 32 28h16v-30c0-16-14-28-32-28h-2c-8 4-14 14-14 26z" fill="#e9fff2"/>
+  <!-- dots -->
+  <g fill="#0a1710">
+    <circle cx="72" cy="108" r="5"/><circle cx="90" cy="108" r="5"/>
+    <circle cx="168" cy="134" r="5"/><circle cx="186" cy="134" r="5"/>
+    <circle cx="128" cy="120" r="5"/>
+  </g>
+  <!-- little star at the meeting point -->
+  <path d="M128 92l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#ffd166"/>
+</svg>

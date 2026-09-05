@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Jestřáb">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#3a1f16"/>
+      <stop offset="1" stop-color="#140c0a"/>
+    </radialGradient>
+  </defs>
+  <circle cx="128" cy="128" r="124" fill="url(#bg)" stroke="#ff8a5b" stroke-opacity="0.4" stroke-width="3"/>
+  <!-- head, angular -->
+  <path d="M70 150c0-52 30-86 74-86 30 0 52 18 62 44l-26 6 14 22-40 6c-10 26-34 40-62 40-12 0-22-10-22-32z" fill="#c9622f"/>
+  <path d="M70 150c0-52 30-86 74-86 12 0 22 3 32 8-40 4-66 30-70 78-8 8-20 12-36 0z" fill="#ff8a5b"/>
+  <!-- brow ridge -->
+  <path d="M118 96l52 6-4 10-50-2z" fill="#3a1f16"/>
+  <!-- eye -->
+  <circle cx="150" cy="114" r="9" fill="#ffd166"/>
+  <circle cx="152" cy="114" r="4.5" fill="#0b0705"/>
+  <!-- beak -->
+  <path d="M180 108l38 14-20 14-8-10-14 2z" fill="#ffd166"/>
+  <path d="M198 136l6-8 10 6z" fill="#3a1f16"/>
+  <!-- feather marks -->
+  <g stroke="#ffb454" stroke-width="3" stroke-linecap="round" opacity="0.7">
+    <path d="M86 128l14-8"/><path d="M90 146l16-10"/><path d="M100 164l14-12"/>
+  </g>
+</svg>

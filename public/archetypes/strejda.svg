@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Strejda od piva">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#3b2e12"/>
+      <stop offset="1" stop-color="#15110a"/>
+    </radialGradient>
+  </defs>
+  <circle cx="128" cy="128" r="124" fill="url(#bg)" stroke="#ffd166" stroke-opacity="0.4" stroke-width="3"/>
+  <!-- mug body -->
+  <rect x="78" y="96" width="84" height="96" rx="12" fill="#ffb454"/>
+  <rect x="86" y="104" width="68" height="80" rx="8" fill="#ffd166"/>
+  <g stroke="#e59a2f" stroke-width="6" stroke-linecap="round" opacity="0.6">
+    <path d="M104 116v60"/><path d="M122 116v60"/><path d="M140 116v60"/>
+  </g>
+  <!-- handle -->
+  <path d="M162 116h14c14 0 22 10 22 24v18c0 14-8 24-22 24h-14v-14h12c6 0 10-4 10-10v-18c0-6-4-10-10-10h-12z" fill="#ffb454"/>
+  <!-- foam -->
+  <g fill="#fff6e6">
+    <circle cx="92" cy="96" r="16"/><circle cx="118" cy="86" r="20"/><circle cx="148" cy="94" r="17"/><circle cx="132" cy="102" r="12"/>
+  </g>
+  <!-- moustache on the foam -->
+  <path d="M92 108c10-12 24-8 28 0 4-8 18-12 28 0-6 8-16 10-28 4-12 6-22 4-28-4z" fill="#3b2e12"/>
+  <!-- pointing finger -->
+  <path d="M40 150c-8-6-6-18 4-20l30 2v18l-24 4c-4 0-8-2-10-4z" fill="#ffd166"/>
+  <path d="M44 128l32 2v-10c0-4-3-7-7-7h-16c-6 0-10 4-10 8z" fill="#ffb454"/>
+</svg>

@@ -1,0 +1,85 @@
+# ---------------------------------------------------------------------------
+# ARCHETYPES — evaluated top-down over SubmissionScore, first match wins,
+# the last rule (empty `when`) is the fallback.
+#
+# Metrics: peace_force, trust_paranoia, us_them (−1..+1),
+#          realism, consistency, compromise, survival (0..1)
+# Comparisons: lt, lte, gt, gte. Special: abs_all_axes_below.
+#
+# DRAFT thresholds (ARCHITECTURE §8 sample, sanity-adjusted: holubice = peaceful AND trusting).
+# Confirm with Hynek. Illustrations: public/archetypes/<key>.svg (static, never generated).
+# ---------------------------------------------------------------------------
+archetypes:
+  - key: svycar
+    emoji: "🧀"
+    color: "#e8e6df"
+    when: { abs_all_axes_below: 0.2 }
+    i18n:
+      cs:
+        title: "Švýcar"
+        blurb: "Neutrální ke všemu, včetně vlastního názoru. Přežije, protože si ho nikdo nevšimne."
+        share: "Jsem Švýcar. Nevím, na čí straně jsem, a je mi v tom dobře."
+      en:
+        title: "The Swiss"
+        blurb: "Neutral on everything, including their own opinion. Survives because nobody notices them."
+        share: "I'm The Swiss. I don't know whose side I'm on and I'm fine with that."
+
+  - key: holubice
+    emoji: "🕊️"
+    color: "#9ad7ff"
+    when: { peace_force: { lt: -0.4 }, trust_paranoia: { lt: 0 } }
+    i18n:
+      cs:
+        title: "Holubice"
+        blurb: "Věří lidem a nevěří klackům. Někdy má pravdu, někdy plot."
+        share: "Jsem Holubice. Věřím sousedům. Zatím to vychází."
+      en:
+        title: "The Dove"
+        blurb: "Trusts people, distrusts sticks. Sometimes right, sometimes fenced in."
+        share: "I'm The Dove. I trust my neighbours. So far so good."
+
+  - key: jestrab
+    emoji: "🦅"
+    color: "#ff8a5b"
+    when: { peace_force: { gt: 0.4 } }
+    i18n:
+      cs:
+        title: "Jestřáb"
+        blurb: "Když je pochybnost, větší klacek. Když není pochybnost, taky."
+        share: "Jsem Jestřáb. Mír je fajn, ale traktor je jistota."
+      en:
+        title: "The Hawk"
+        blurb: "When in doubt, bigger stick. When not in doubt, also bigger stick."
+        share: "I'm The Hawk. Peace is nice, but a tractor is certainty."
+
+  - key: diplomat
+    emoji: "🤝"
+    color: "#b8ff9a"
+    when: { compromise: { gt: 0.5 } }
+    i18n:
+      cs:
+        title: "Diplomat"
+        blurb: "Najde kompromis i tam, kde ho nikdo nechtěl. Planeta ho potřebuje víc, než přiznává."
+        share: "Jsem Diplomat. Dohodl bych se i s Měsícem."
+      en:
+        title: "The Diplomat"
+        blurb: "Finds a compromise even where nobody asked for one. The planet needs them more than it admits."
+        share: "I'm The Diplomat. I'd negotiate with the Moon."
+
+  - key: strejda
+    emoji: "🍺"
+    color: "#ffd166"
+    when: { realism: { lt: 0.4 }, us_them: { gt: 0.3 } }
+    i18n:
+      cs:
+        title: "Strejda od piva"
+        blurb: "Ví přesně, co si planeta myslí. Planeta si to nemyslí."
+        share: "Jsem Strejda od piva. Já to říkal."
+      en:
+        title: "The Pub Uncle"
+        blurb: "Knows exactly what the planet thinks. The planet doesn't think that."
+        share: "I'm The Pub Uncle. Told you so."
+
+  # fallback
+  - key: strejda
+    when: {}

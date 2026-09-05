@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Holubice">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#173047"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </radialGradient>
+  </defs>
+  <circle cx="128" cy="128" r="124" fill="url(#bg)" stroke="#9ad7ff" stroke-opacity="0.35" stroke-width="3"/>
+  <!-- olive branch -->
+  <path d="M60 176c26-4 46-18 60-40" fill="none" stroke="#7ee787" stroke-width="5" stroke-linecap="round"/>
+  <g fill="#7ee787" opacity="0.9">
+    <ellipse cx="76" cy="168" rx="11" ry="5" transform="rotate(-25 76 168)"/>
+    <ellipse cx="96" cy="156" rx="11" ry="5" transform="rotate(-40 96 156)"/>
+    <ellipse cx="112" cy="140" rx="10" ry="5" transform="rotate(-55 112 140)"/>
+  </g>
+  <!-- dove body -->
+  <path d="M96 150c-4-30 14-58 48-62 24-3 44 10 58 30-12 4-22 6-30 6 2 14-6 30-22 40-14 8-30 8-42 4l14-18-26 0z" fill="#e9f4ff"/>
+  <!-- wing -->
+  <path d="M110 120c10-30 40-46 78-40-20 10-32 26-36 46-8-10-24-14-42-6z" fill="#9ad7ff"/>
+  <!-- tail -->
+  <path d="M96 150l-30 18c10 2 20 0 30-6z" fill="#cfe8ff"/>
+  <!-- beak + eye -->
+  <path d="M202 118l16 4-14 8z" fill="#ffb454"/>
+  <circle cx="186" cy="112" r="3.5" fill="#0b1220"/>
+</svg>

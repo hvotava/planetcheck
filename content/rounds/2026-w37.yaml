@@ -1,0 +1,134 @@
+# ---------------------------------------------------------------------------
+# WEEKLY ROUND 2026-w37 — theme: "Sousedé" / "Neighbours"
+#
+# 7 dilemmas (3 anchors + 4 weekly) + 2 meta questions ≈ 90 seconds.
+# Exactly one honeypot per round (here: neighbor_field.moon, via the anchor include).
+# Meta questions must come after the question they target.
+#
+# DRAFT CONTENT — confirm with Hynek before going live (formulations + axis weights).
+# No question names a real state → review_required stays false.
+# ---------------------------------------------------------------------------
+round:
+  slug: 2026-w37
+  kind: weekly
+  status: live
+  starts_at: 2026-09-01T06:00:00Z
+  ends_at: 2026-09-13T22:00:00Z
+  unlock_threshold: 500
+  survival_weights: { consistency: 0.4, compromise: 0.35, realism: 0.25 }
+  i18n:
+    cs: { title: "Sousedé", blurb: "Týden o tom, co uděláš, když to, co chceš, má někdo vedle." }
+    en: { title: "Neighbours", blurb: "A week about what you do when the thing you want belongs to the people next door." }
+
+# Anchor questions copied from content/rounds/anchor.yaml (same keys → trend across rounds).
+# Positions are explicit so the deck order is unambiguous (meta after its target).
+include_anchors:
+  - { key: neighbor_field, position: 1 }
+  - { key: stranger_at_door, position: 2 }
+  - { key: bigger_stick, position: 3 }
+  - { key: neighbor_field_meta, position: 5 }
+  - { key: stranger_at_door_meta, position: 9 }
+
+questions:
+  - key: the_bridge
+    type: choice
+    position: 4
+    i18n:
+      cs: { scenario: "Jediný most do města se rozpadá.", text: "Opravit ho umí jen firma z druhého břehu." }
+      en: { scenario: "The only bridge to town is falling apart.", text: "The only firm that can fix it is from the other bank." }
+    options:
+      - key: pay
+        icon: "🧾"
+        i18n: { cs: { text: "Zaplatíme jim a hotovo" }, en: { text: "Pay them, done" } }
+        axis_weights: { trust_paranoia: -0.5, us_them: -0.3 }
+      - key: own_footbridge
+        icon: "🪜"
+        i18n: { cs: { text: "Zaplatíme, ale vedle si postavíme vlastní lávku" }, en: { text: "Pay them, but build our own footbridge next to it" } }
+        axis_weights: { trust_paranoia: 0.3 }
+        compromise: true
+      - key: no_bridge
+        icon: "🚫"
+        i18n: { cs: { text: "Radši žádný most než jejich most" }, en: { text: "Rather no bridge than their bridge" } }
+        axis_weights: { trust_paranoia: 0.8, us_them: 0.9 }
+      - key: together
+        icon: "🧑‍🤝‍🧑"
+        i18n: { cs: { text: "Postavíme ho spolu, napůl" }, en: { text: "Build it together, fifty-fifty" } }
+        axis_weights: { peace_force: -0.3, us_them: -0.7 }
+        compromise: true
+
+  - key: the_harvest
+    type: choice
+    position: 6
+    i18n:
+      cs: { scenario: "Letos je mizerná úroda.", text: "Vedlejší údolí má nadbytek, ale zadarmo se dělit nechce." }
+      en: { scenario: "This year's harvest is miserable.", text: "The next valley has plenty, but won't share for free." }
+    options:
+      - key: pay_up
+        icon: "💸"
+        i18n: { cs: { text: "Zaplatíme, co chtějí" }, en: { text: "Pay whatever they ask" } }
+        axis_weights: { peace_force: -0.4, trust_paranoia: -0.2 }
+      - key: trade_water
+        icon: "💧"
+        i18n: { cs: { text: "Nabídneme jim naši vodu příští léto" }, en: { text: "Offer them our water next summer" } }
+        axis_weights: { peace_force: -0.6, us_them: -0.6 }
+        compromise: true
+      - key: take
+        icon: "🔥"
+        i18n: { cs: { text: "Vezmeme si to. Hlad nečeká." }, en: { text: "Take it. Hunger doesn't wait." } }
+        axis_weights: { peace_force: 0.9, us_them: 0.7 }
+      - key: tighten_belts
+        icon: "🥔"
+        i18n: { cs: { text: "Utáhneme opasky. Nikomu nic dlužit nebudeme." }, en: { text: "Tighten our belts. We owe nobody anything." } }
+        axis_weights: { trust_paranoia: 0.4, us_them: 0.3 }
+
+  - key: secret_weapon
+    type: choice
+    position: 7
+    i18n:
+      cs: { scenario: "Soused má tajnou zbraň.", text: "Můžeš ji mít taky, ale stojí celou letošní úrodu." }
+      en: { scenario: "Your neighbour has a secret weapon.", text: "You can have one too, but it costs this year's entire harvest." }
+    options:
+      - key: buy
+        icon: "🛡️"
+        i18n: { cs: { text: "Koupím. Bezpečí především." }, en: { text: "Buy it. Safety first." } }
+        axis_weights: { peace_force: 0.8, trust_paranoia: 0.6 }
+      - key: promise
+        icon: "🕊️"
+        i18n: { cs: { text: "Nekoupím. Domluvím s ním, že ji nikdy nepoužije." }, en: { text: "Don't buy. Get him to promise he'll never use it." } }
+        axis_weights: { peace_force: -0.8, trust_paranoia: -0.5 }
+        compromise: true
+      - key: alliance
+        icon: "🏘️"
+        i18n: { cs: { text: "Nekoupím, ale domluvím se s ostatními sousedy na společné obraně" }, en: { text: "Don't buy, but agree with the other neighbours on a shared defence" } }
+        axis_weights: { peace_force: -0.2, us_them: -0.6 }
+        compromise: true
+      - key: half
+        icon: "🎭"
+        i18n: { cs: { text: "Koupím půlku a dělám, že mám celou" }, en: { text: "Buy half and pretend it's whole" } }
+        axis_weights: { peace_force: 0.3, trust_paranoia: 0.3 }
+
+  - key: the_referee
+    type: choice
+    position: 8
+    i18n:
+      cs: { scenario: "Dvě vesnice se hádají, kdo smí rybařit v jezeře.", text: "Kdo to má rozsoudit?" }
+      en: { scenario: "Two villages argue over who may fish the lake.", text: "Who should settle it?" }
+    options:
+      - key: elder
+        icon: "🎣"
+        i18n: { cs: { text: "Nejstarší rybář, kterého znají všichni" }, en: { text: "The oldest fisherman, whom everyone knows" } }
+        axis_weights: { trust_paranoia: -0.4, us_them: -0.2 }
+        compromise: true
+      - key: court
+        icon: "🏛️"
+        i18n: { cs: { text: "Soud v hlavním městě, i když to potrvá roky" }, en: { text: "The court in the capital, even if it takes years" } }
+        axis_weights: { peace_force: -0.5, trust_paranoia: 0.2 }
+        compromise: true
+      - key: boats
+        icon: "⛵"
+        i18n: { cs: { text: "Ten, kdo má víc lodí" }, en: { text: "Whoever has more boats" } }
+        axis_weights: { peace_force: 0.8, us_them: 0.5 }
+      - key: lottery
+        icon: "🎲"
+        i18n: { cs: { text: "Losujeme. Rybám je to jedno." }, en: { text: "Draw lots. The fish don't care." } }
+        axis_weights: { peace_force: -0.2, trust_paranoia: -0.2 }

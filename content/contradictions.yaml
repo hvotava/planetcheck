@@ -1,0 +1,49 @@
+# ---------------------------------------------------------------------------
+# CONTRADICTION PAIRS — library of logically tense option pairs.
+# A pair is attached to every round that contains BOTH questions (sync-content does this).
+# A player "activates" a pair by choosing both options → lowers consistency.
+#
+# DRAFT — confirm pairs and labels with Hynek.
+# ---------------------------------------------------------------------------
+pairs:
+  - key: un_for_me_force_for_them
+    a: { question: neighbor_field, option: un }
+    b: { question: the_harvest, option: take }
+    i18n:
+      cs: { title: "OSN pro moje pole, síla pro jejich úrodu", blurb: "Když jde o mě, volám právo. Když jde o ně, beru." }
+      en: { title: "The UN for my field, force for their harvest", blurb: "When it's mine, I call the law. When it's theirs, I take." }
+
+  - key: small_sticks_secret_weapon
+    a: { question: bigger_stick, option: treaty }
+    b: { question: secret_weapon, option: buy }
+    i18n:
+      cs: { title: "Svět bez klacků, ale s mojí tajnou zbraní", blurb: "Odzbrojme se všichni. Já až potom." }
+      en: { title: "A world without sticks, plus my secret weapon", blurb: "Everyone disarm. Me later." }
+
+  - key: open_door_closed_bridge
+    a: { question: stranger_at_door, option: let_in }
+    b: { question: the_bridge, option: no_bridge }
+    i18n:
+      cs: { title: "Cizince do postele, most s druhým břehem ne", blurb: "Jednotlivci důvěřuju. Sousedům jako celku ne." }
+      en: { title: "A stranger in my bed, no bridge to the other bank", blurb: "I trust a person. I don't trust the people." }
+
+  - key: un_judge_but_boats_decide
+    a: { question: neighbor_field, option: un }
+    b: { question: the_referee, option: boats }
+    i18n:
+      cs: { title: "Spory má soudit OSN, ryby ten s víc loďmi", blurb: "Právo, dokud nemám víc lodí." }
+      en: { title: "The UN should judge, unless I have more boats", blurb: "Law, until I have the bigger fleet." }
+
+  - key: shared_pipe_upstream_dam
+    a: { question: village_well, option: pipeline }
+    b: { question: the_harvest, option: take }
+    i18n:
+      cs: { title: "Společné potrubí, ale jejich úrodu vezmu", blurb: "Sdílíme vodu. Jídlo sdílím já z jejich." }
+      en: { title: "A shared pipeline, but I'll take their harvest", blurb: "We share water. I share their food." }
+
+  - key: test_the_water_spread_the_rumor
+    a: { question: rumor, option: test }
+    b: { question: rumor, option: retaliate }
+    i18n:
+      cs: { title: "Fakta pro mě, fáma pro ně", blurb: "Technicky nemožné zvolit obojí. Ale kdyby." }
+      en: { title: "Facts for me, rumours for them", blurb: "Technically impossible to choose both. But if." }
