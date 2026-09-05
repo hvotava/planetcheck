@@ -15,6 +15,8 @@ import type {
   SubmissionPayload,
   SubmitVoteResult,
   VoterStatus,
+  ProphecyStats,
+  ProphecyGuessResult,
 } from "@/types/api";
 import type { DbExecutor, Json } from "./executor";
 
@@ -161,6 +163,26 @@ export class Repo {
   }
   releaseJobLease(name: string, status: string, error?: string) {
     return this.db.rpc<{ released: boolean }>("release_job_lease", { name, status, error: error ?? null });
+  }
+
+  // --- prophecies (ARCHITECTURE §15 phase 5)
+  syncProphecies(prophecies: Json) {
+    return this.db.rpc<{ count: number }>("sync_prophecies", { prophecies });
+  }
+  listProphecies(args: { status?: string; include_future?: boolean; clamp_lo?: number; clamp_hi?: number } = {}) {
+    return this.db.rpc<ProphecyStats[]>("list_prophecies", args as Json);
+  }
+  prophecyStats(args: { key?: string; id?: string; clamp_lo?: number; clamp_hi?: number }) {
+    return this.db.rpc<ProphecyStats | null>("prophecy_stats", args as Json);
+  }
+  submitProphecyGuess(input: { key: string; anon_id: string; probability: number; country: string | null; ip_hash: string; locale: string; flags: string[] }) {
+    return this.db.rpc<ProphecyGuessResult>("submit_prophecy_guess", input as unknown as Json);
+  }
+  resolveProphecy(input: { key: string; outcome?: boolean; void?: boolean; note?: string }) {
+    return this.db.rpc<{ ok: boolean; code?: string; status?: string; outcome?: boolean; scored?: number }>("resolve_prophecy", input as unknown as Json);
+  }
+  closeDueProphecies() {
+    return this.db.rpc<{ closed: number }>("close_due_prophecies", {});
   }
 
   health() {

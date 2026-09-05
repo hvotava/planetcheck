@@ -4,6 +4,7 @@ export type Json = string | number | boolean | null | Json[] | { [key: string]: 
 export type Enums = {
   age_band: "18-24" | "25-34" | "35-44" | "45-54" | "55-64" | "65+";
   gender_band: "f" | "m" | "x";
+  prophecy_status: "open" | "closed" | "resolved" | "void";
   question_type: "choice" | "meta";
   round_kind: "anchor" | "weekly" | "flash";
   round_status: "draft" | "live" | "closed";
@@ -144,6 +145,37 @@ export type Tables = {
     pulse_per_min: number;
     pulse_refreshed_at: string;
     computed_at: string;
+  };
+  prophecies: {
+    id: string;
+    key: string;
+    i18n: Json;
+    category: string | null;
+    opens_at: string;
+    closes_at: string;
+    resolves_at: string;
+    status: Enums["prophecy_status"];
+    outcome: boolean | null;
+    resolved_at: string | null;
+    resolution_note: string | null;
+    review_required: boolean;
+    active: boolean;
+    created_at: string;
+    updated_at: string;
+  };
+  prophecy_guesses: {
+    id: string;
+    prophecy_id: string;
+    voter_id: string;
+    probability: number;
+    trust: Enums["trust_level"];
+    country_code: string | null;
+    ip_hash: string;
+    locale: string;
+    brier: number | null;
+    flagged: boolean;
+    flag_reasons: string[];
+    created_at: string;
   };
   pulse_buckets: {
     round_id: string;

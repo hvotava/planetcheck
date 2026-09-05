@@ -9,7 +9,8 @@
       "methodology": "Metodika",
       "data": "Data",
       "verify": "Ověřit hlas",
-      "duel": "Duely"
+      "duel": "Duely",
+      "prophecies": "Proroctví"
     },
     "footer": {
       "madeBy": "Otevřená data, veřejná metodika, žádné osobní údaje.",
@@ -263,6 +264,37 @@
     "roundNote": "Kolo: {round}",
     "backToList": "Všechny duely",
     "playCta": "Zahrát si a přidat hlas"
+  },
+  "prophecy": {
+    "title": "Proroctví",
+    "subtitle": "Šest tvrzení o budoucnosti. Ty řekneš, na kolik procent tomu věříš.",
+    "howItWorks": "Až se ukáže, jak to dopadlo, dostane každý tip Brierovo skóre: (tvoje pravděpodobnost − skutečnost)². Nula je dokonalost, 0,25 je hod mincí.",
+    "empty": "Zatím tu žádné proroctví není. Vrať se.",
+    "settledTitle": "Uzavřená a rozhodnutá",
+    "closesAt": "Tipovat lze do {date}",
+    "resolvesAt": "rozhodne se {date}",
+    "no": "Určitě ne",
+    "maybe": "Půl na půl",
+    "yes": "Určitě ano",
+    "submit": "Tipnout {value} %",
+    "sending": "Posílám…",
+    "hiddenHint": "Co si myslí planeta, uvidíš až po svém tipu.",
+    "planetSays": "Planeta říká",
+    "yourGuess": "Tvůj tip",
+    "voices": "Hlasů",
+    "alreadyAnswered": "Tohle proroctví už jsi tipoval. Platí ten první tip.",
+    "distribution": "Rozložení tipů",
+    "happened": "Stalo se",
+    "didNotHappen": "Nestalo se",
+    "brier": "Brierovo skóre planety",
+    "skill": "o {value} % lepší než hod mincí",
+    "fallbackLocale": "Zatím jen v angličtině — přesná čísla nepouštíme do nezkontrolovaného překladu.",
+    "status": {
+      "open": "Otevřeno",
+      "closed": "Uzavřeno",
+      "resolved": "Rozhodnuto",
+      "void": "Zrušeno"
+    }
   },
   "methodology": {
     "title": "Metodika",

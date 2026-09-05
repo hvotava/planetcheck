@@ -8,15 +8,17 @@ import { anthropicNarratorClient, buildNarratorUserPrompt, NARRATOR_SYSTEM_PROMP
  * Scheduled jobs. Each takes a lease in job_leases (leader election across replicas),
  * so the internal scheduler and the /api/cron/* endpoints can coexist safely.
  */
-export async function runRecomputeJob(): Promise<{ skipped: boolean; rounds: RecomputeSummary[]; ms: number }> {
+export async function runRecomputeJob(): Promise<{ skipped: boolean; rounds: RecomputeSummary[]; prophecies_closed: number; ms: number }> {
   const repo = await getRepo();
   const lease = await repo.acquireJobLease("recompute", 9 * 60);
-  if (!lease.acquired) return { skipped: true, rounds: [], ms: 0 };
+  if (!lease.acquired) return { skipped: true, rounds: [], prophecies_closed: 0, ms: 0 };
   const started = Date.now();
   try {
     const rounds = await recomputeAll(repo, { log: (m) => console.log(`[recompute] ${m}`) });
+    // A prophecy past its closing date must stop offering a slider; resolution stays manual.
+    const closed = await repo.closeDueProphecies();
     await repo.releaseJobLease("recompute", "ok");
-    return { skipped: false, rounds, ms: Date.now() - started };
+    return { skipped: false, rounds, prophecies_closed: closed.closed, ms: Date.now() - started };
   } catch (e) {
     await repo.releaseJobLease("recompute", "error", e instanceof Error ? e.message : String(e));
     throw e;

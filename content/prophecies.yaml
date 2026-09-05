@@ -1,0 +1,104 @@
+# ---------------------------------------------------------------------------
+# PROROCTVÍ / PROPHECIES (ARCHITECTURE §15 phase 5)
+#
+# A prophecy is a yes/no claim about the future. Players give a probability; when it
+# resolves, every guess gets a Brier score, so "how well does the planet forecast?"
+# becomes a number next to "how well does it survive?".
+#
+# Rules for writing one:
+#   1. It must be settleable from a NAMED PUBLIC SOURCE, and the source belongs in the
+#      blurb. A prophecy nobody can check is a rumour, which is what this game is against.
+#   2. No elections, no conflicts, no claims about what a named state will decide.
+#      Prophecies are about the physical world and about technology, not about politics.
+#   3. `review_required: true` everywhere: these carry precise numbers, and an unreviewed
+#      machine translation of a number is worse than English (see §11).
+#   4. `outcome` is never set here. Resolution is an operator action through
+#      POST /api/admin/prophecy, recorded with a public note.
+#
+# WORDING TO CONFIRM WITH HYNEK before the first prophecy closes — the mechanism is
+# approved, these six claims are my drafts.
+# ---------------------------------------------------------------------------
+prophecies:
+  - key: warmest_year_2026
+    category: climate
+    opens_at: 2026-09-05T06:00:00Z
+    closes_at: 2026-12-31T22:00:00Z
+    resolves_at: 2027-01-31T00:00:00Z
+    review_required: true
+    i18n:
+      cs:
+        title: "2026 bude nejteplejší rok v historii měření."
+        blurb: "Rozhodne lednová zpráva Světové meteorologické organizace o globální průměrné teplotě."
+      en:
+        title: "2026 will be the warmest year on record."
+        blurb: "Settled by the World Meteorological Organization's January statement on global mean temperature."
+
+  - key: renewables_over_coal_2026
+    category: energy
+    opens_at: 2026-09-05T06:00:00Z
+    closes_at: 2026-12-31T22:00:00Z
+    resolves_at: 2027-04-30T00:00:00Z
+    review_required: true
+    i18n:
+      cs:
+        title: "Obnovitelné zdroje vyrobí za rok 2026 víc elektřiny než uhlí."
+        blurb: "Rozhodne roční výhled Mezinárodní energetické agentury pro světovou výrobu elektřiny."
+      en:
+        title: "Renewables will generate more electricity than coal over 2026."
+        blurb: "Settled by the International Energy Agency's annual review of world electricity generation."
+
+  - key: arctic_ice_below_4m_2027
+    category: climate
+    opens_at: 2026-09-05T06:00:00Z
+    closes_at: 2027-08-31T22:00:00Z
+    resolves_at: 2027-10-15T00:00:00Z
+    review_required: true
+    i18n:
+      cs:
+        title: "Zářijové minimum arktického mořského ledu klesne v roce 2027 pod 4 miliony km²."
+        blurb: "Rozhodne údaj amerického National Snow and Ice Data Center o denním minimu."
+      en:
+        title: "The September Arctic sea-ice minimum will fall below 4 million km² in 2027."
+        blurb: "Settled by the US National Snow and Ice Data Center's daily minimum figure."
+
+  - key: crewed_moon_landing_2027
+    category: space
+    opens_at: 2026-09-05T06:00:00Z
+    closes_at: 2027-06-30T22:00:00Z
+    resolves_at: 2028-01-31T00:00:00Z
+    review_required: true
+    i18n:
+      cs:
+        title: "Do konce roku 2027 přistane na Měsíci posádka."
+        blurb: "Stačí jedno přistání s lidmi na palubě, potvrzené provozovatelem mise."
+      en:
+        title: "A crewed landing on the Moon will take place before the end of 2027."
+        blurb: "One landing with people aboard is enough, confirmed by the mission operator."
+
+  - key: ev_share_over_30_2027
+    category: technology
+    opens_at: 2026-09-05T06:00:00Z
+    closes_at: 2027-09-30T22:00:00Z
+    resolves_at: 2028-05-31T00:00:00Z
+    review_required: true
+    i18n:
+      cs:
+        title: "Elektromobily budou tvořit víc než 30 % nových aut prodaných ve světě za rok 2027."
+        blurb: "Rozhodne Global EV Outlook Mezinárodní energetické agentury, včetně plug-in hybridů."
+      en:
+        title: "Electric cars will be more than 30% of new cars sold worldwide in 2027."
+        blurb: "Settled by the IEA's Global EV Outlook, plug-in hybrids included."
+
+  - key: population_8_3_billion_2027
+    category: people
+    opens_at: 2026-09-05T06:00:00Z
+    closes_at: 2027-06-30T22:00:00Z
+    resolves_at: 2027-12-31T00:00:00Z
+    review_required: true
+    i18n:
+      cs:
+        title: "Světová populace překročí do konce roku 2027 hranici 8,3 miliardy."
+        blurb: "Rozhodne odhad populační divize OSN ve World Population Prospects."
+      en:
+        title: "World population will pass 8.3 billion before the end of 2027."
+        blurb: "Settled by the UN Population Division's World Population Prospects estimate."

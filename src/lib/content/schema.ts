@@ -146,6 +146,31 @@ export const titlesFileSchema = z.object({
   ),
 });
 
+export const propheciesFileSchema = z.object({
+  prophecies: z
+    .array(
+      z
+        .object({
+          key,
+          category: z.string().max(40).optional(),
+          opens_at: z.coerce.date(),
+          closes_at: z.coerce.date(),
+          resolves_at: z.coerce.date(),
+          review_required: z.boolean().default(true),
+          i18n: z.record(localeCode, localizedLabelSchema).refine((m) => "cs" in m || "en" in m, "prophecy needs cs or en"),
+        })
+        .superRefine((p, ctx) => {
+          if (p.closes_at <= p.opens_at) ctx.addIssue({ code: "custom", message: `prophecy ${p.key} closes before it opens` });
+          if (p.resolves_at < p.closes_at) ctx.addIssue({ code: "custom", message: `prophecy ${p.key} resolves before it closes` });
+          // A prophecy nobody can check is a rumour: every one must name where it is settled.
+          for (const [loc, v] of Object.entries(p.i18n)) {
+            if (!v.blurb || v.blurb.trim().length < 10) ctx.addIssue({ code: "custom", message: `prophecy ${p.key} (${loc}) needs a blurb naming the source that settles it` });
+          }
+        }),
+    )
+    .default([]),
+});
+
 export const duelsFileSchema = z.object({
   duels: z
     .array(
@@ -182,4 +207,5 @@ export type ArchetypesFile = z.infer<typeof archetypesFileSchema>;
 export type TitlesFile = z.infer<typeof titlesFileSchema>;
 export type WeightingFile = z.infer<typeof weightingFileSchema>;
 export type DuelsFile = z.infer<typeof duelsFileSchema>;
+export type PropheciesFile = z.infer<typeof propheciesFileSchema>;
 export type AgeBandKey = (typeof AGE_BANDS)[number];

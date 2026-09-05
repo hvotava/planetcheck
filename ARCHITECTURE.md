@@ -174,6 +174,7 @@ rounds ─┬─< questions ─< options
         ├─< planet_snapshots                  (řada planet_stats při každém přepočtu; trend, „pohyb za 24 h")
         └─< narrator_posts
 
+prophecies ─< prophecy_guesses                (proroctví; guess je vázán na voters, ne na kolo)
 auth_users ─< voters ─< auth_sessions         (jen hash OAuth subjectu; žádný e-mail ani jméno)
 job_leases                                    (leader election pro interní scheduler)
 country_population                            (statická, World Bank + world-countries)
@@ -187,6 +188,7 @@ Klíčová rozhodnutí:
 - **Demografie** jsou volitelné a hrubé: `age_band` (18-24, 25-34, 35-44, 45-54, 55-64, 65+), `gender` (f, m, x), `settlement` (city, town, rural). Nic víc se nesbírá, nikdy.
 - **Datový přístup výhradně přes SQL funkce** `fn(p jsonb) returns jsonb` (0003). Aplikace volá `select fn($1::jsonb)`; stejný kód běží na Railway Postgresu (`pg`) i v PGlite (dev/testy). Typy tabulek generuje `pnpm db:types`.
 - `submissions.synthetic` označuje seedované hlasy (jen lokálně/staging), `contradictions_hit` drží klíče aktivovaných dvojic, `ua_family` hrubou rodinu prohlížeče.
+- **`prophecies` / `prophecy_guesses`** (migrace `0004`): proroctví je tvrzení o budoucnosti s oknem `opens_at … closes_at` a datem `resolves_at`. Není vázané na kolo — přežívá je. Jeden tip na votera a proroctví (unique), opakování = 409, nikdy tichá výměna. `outcome` nastavuje **jen** operátor přes `resolve_prophecy` (`POST /api/admin/prophecy` s `ADMIN_TOKEN`), nikdy obsah ani job; `resolution_note` je veřejný a povinný. Při rozhodnutí dostane každý tip `brier = (p − outcome)²`. Vážení používá jen zemskou část §9 (populace / vzorek, clamp z `content/weighting.yaml`) — tipy nenesou demografii, takže se neraky. Guess ukládá `ip_hash`, nikdy IP.
 
 ---
 
@@ -409,7 +411,8 @@ Každá fáze končí zeleným `pnpm test` a e2e průchodem. Nezačínej další
 
 **Fáze 5 — Virální vrstva** 🟡 (embed hotov)
 - **Duel zemí** ✅ — kurátorované dvojice v `content/duels.yaml` (kódy se ověřují proti `data/countries.json`), stránky `/duel` a `/duel/[key]`, čistá funkce `src/lib/duel/compare.ts` (shoda = 100 − ½·Σ|aᵢ−bᵢ| přes možnosti otázky, raw i weighted), komponenta `DuelBoard` s ukázkou na `/dev/viz`. Duel se nepočítá pro libovolnou dvojici — jen pro ty z obsahu, aby produkt nešel namířit na dvojici, kterou jsme nevybrali.
-- Proroctví (tabulky `prophecies`, `prophecy_guesses`, `resolution`), školní mód (kód třídy = pseudo-země), embed widget (`/embed/planet` iframe) ✅.
+- **Proroctví** ✅ — `content/prophecies.yaml` (každé musí v blurbu jmenovat zdroj, který ho rozhodne; `review_required: true` u všech, aby se přesná čísla nedostala do nezkontrolovaného strojového překladu), migrace `0004`, stránka `/prophecies`, čisté funkce `src/lib/prophecy/score.ts` (Brier, dovednost proti hodu mincí, kalibrace). Průměr planety se hráči **ukáže až po jeho tipu** — stejné pravidlo jako u meta otázky. Proroctví po `closes_at` zavírá `close_due_prophecies` v recompute jobu; rozhodnutí zůstává ruční.
+- Školní mód (kód třídy = pseudo-země), embed widget (`/embed/planet` iframe) ✅.
 
 ---
 

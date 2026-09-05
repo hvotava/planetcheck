@@ -257,6 +257,34 @@ export type NarratorPost = {
   context?: unknown;
 };
 
+export type ProphecyStatus = "open" | "closed" | "resolved" | "void";
+
+export type ProphecyStats = {
+  id: string;
+  key: string;
+  i18n: I18nMap<LocalizedLabel>;
+  category: string | null;
+  opens_at: string;
+  closes_at: string;
+  resolves_at: string;
+  status: ProphecyStatus;
+  outcome: boolean | null;
+  resolved_at: string | null;
+  resolution_note: string | null;
+  review_required: boolean;
+  n: number;
+  n_verified: number;
+  mean: RawWeighted;
+  brier: RawWeighted;
+  histogram: Array<{ bucket: number; n: number }>;
+  countries: Array<{ country_code: string; n: number; mean_raw: number | null }>;
+};
+
+export type ProphecyGuessResult =
+  | { ok: true; guess_id: string; prophecy_id: string }
+  | { ok: false; code: "duplicate"; guess_id: string }
+  | { ok: false; code: "closed" | "not_found" };
+
 export type VoterStatus = { voter_id: string; trust: TrustLevel; verified: boolean; submission_id: string | null; submissions_total: number } | null;
 
 export type ApiOk<T> = { ok: true; data: T };

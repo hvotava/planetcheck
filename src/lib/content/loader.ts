@@ -7,11 +7,13 @@ import {
   archetypesFileSchema,
   contradictionsFileSchema,
   duelsFileSchema,
+  propheciesFileSchema,
   roundFileSchema,
   titlesFileSchema,
   weightingFileSchema,
   type ArchetypesFile,
   type DuelsFile,
+  type PropheciesFile,
   type RoundFile,
   type TitlesFile,
   type WeightingFile,
@@ -53,6 +55,19 @@ export function archetypeRules(a: ArchetypesFile): ArchetypeRule[] {
 
 export function loadTitles(dir = CONTENT_DIR): TitlesFile {
   return titlesFileSchema.parse(readYaml(join(dir, "titles.yaml")));
+}
+
+/** Prophecies from content/prophecies.yaml. Outcomes are never content — only an operator resolves one. */
+export function loadProphecies(dir = CONTENT_DIR): PropheciesFile["prophecies"] {
+  const list = propheciesFileSchema.parse(readYaml(join(dir, "prophecies.yaml"))).prophecies;
+  const seen = new Set<string>();
+  const errors: string[] = [];
+  for (const p of list) {
+    if (seen.has(p.key)) errors.push(`duplicate prophecy key '${p.key}'`);
+    seen.add(p.key);
+  }
+  if (errors.length) throw new Error(`content/prophecies.yaml:\n  - ${errors.join("\n  - ")}`);
+  return list;
 }
 
 /**
@@ -203,8 +218,9 @@ export type ContentBundle = {
   titles: TitlesFile;
   weighting: WeightingFile;
   duels: DuelsFile["duels"];
+  prophecies: PropheciesFile["prophecies"];
 };
 
 export function loadContent(dir = CONTENT_DIR): ContentBundle {
-  return { rounds: loadRounds(dir), archetypes: loadArchetypes(dir), titles: loadTitles(dir), weighting: loadWeighting(dir), duels: loadDuels(dir) };
+  return { rounds: loadRounds(dir), archetypes: loadArchetypes(dir), titles: loadTitles(dir), weighting: loadWeighting(dir), duels: loadDuels(dir), prophecies: loadProphecies(dir) };
 }

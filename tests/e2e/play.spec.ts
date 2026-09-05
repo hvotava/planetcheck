@@ -117,6 +117,33 @@ test.describe("play a round on mobile", () => {
     expect(res?.status()).toBe(404);
   });
 
+  test("prophecies: guess once, see the planet only afterwards", async ({ page }) => {
+    await page.goto("/cs/prophecies");
+    const cards = page.getByTestId("prophecy-card");
+    await cards.first().waitFor();
+    expect(await cards.count()).toBeGreaterThan(0);
+
+    // the crowd's average must not be on screen before you commit to a number
+    await expect(page.getByTestId("prophecy-reveal")).toHaveCount(0);
+
+    const card = cards.first();
+    await page.waitForTimeout(2000); // let Turnstile issue a token, else the guess is flagged out of the numbers
+    await card.getByRole("slider").fill("64");
+    await card.getByRole("button", { name: /Tipnout/ }).click();
+    const reveal = card.getByTestId("prophecy-reveal");
+    await reveal.waitFor({ timeout: 20_000 });
+    // the guess counts immediately: the reveal shows this voter, not the pre-guess zero
+    await expect(reveal).toContainText("64");
+
+    // a second guess from the same cookie is refused, never a silent replacement
+    await page.reload();
+    const again = page.getByTestId("prophecy-card").first();
+    await page.waitForTimeout(1500);
+    await again.getByRole("slider").fill("5");
+    await again.getByRole("button", { name: /Tipnout/ }).click();
+    await expect(again.getByTestId("prophecy-reveal")).toContainText(/už jsi tipoval/);
+  });
+
   test("API envelope, health and export", async ({ request }) => {
     const health = await request.get("/api/health");
     expect(health.ok()).toBeTruthy();

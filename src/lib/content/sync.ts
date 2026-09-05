@@ -5,6 +5,7 @@ import { loadContent } from "./loader";
 export type SyncResult = {
   countries: number;
   rounds: Array<{ slug: string; questions: number; options: number; contradictions: number }>;
+  prophecies: number;
 };
 
 /** content/*.yaml + data/countries.json → DB. Idempotent upsert, never deletes (deactivates). */
@@ -28,5 +29,20 @@ export async function syncContent(repo: Repo, opts: { log?: (m: string) => void;
     rounds.push({ slug: r.slug, questions: res.questions, options: res.options, contradictions: res.contradictions });
     log(`round ${r.slug}: ${res.questions} questions, ${res.options} options, ${res.contradictions} contradictions`);
   }
-  return { countries: countries.count, rounds };
+  // Prophecies are content too, but their outcome never is — resolve_prophecy is the only
+  // thing that sets one, and only an operator may call it.
+  const prophecies = await repo.syncProphecies(
+    bundle.prophecies.map((p) => ({
+      key: p.key,
+      category: p.category ?? null,
+      opens_at: p.opens_at.toISOString(),
+      closes_at: p.closes_at.toISOString(),
+      resolves_at: p.resolves_at.toISOString(),
+      review_required: p.review_required,
+      i18n: p.i18n,
+    })) as unknown as Parameters<typeof repo.syncProphecies>[0],
+  );
+  log(`prophecies: ${prophecies.count}`);
+
+  return { countries: countries.count, rounds, prophecies: prophecies.count };
 }

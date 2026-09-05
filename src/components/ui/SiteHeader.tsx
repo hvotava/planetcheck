@@ -22,6 +22,9 @@ export async function SiteHeader() {
           <Link className="rounded-full px-3 py-1.5 hover:bg-surface-2 hover:text-text" href="/duel">
             {t("nav.duel")}
           </Link>
+          <Link className="rounded-full px-3 py-1.5 hover:bg-surface-2 hover:text-text" href="/prophecies">
+            {t("nav.prophecies")}
+          </Link>
           <Link className="rounded-full px-3 py-1.5 hover:bg-surface-2 hover:text-text" href="/methodology">
             {t("nav.methodology")}
           </Link>

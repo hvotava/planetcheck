@@ -9,7 +9,8 @@
       "methodology": "Methodology",
       "data": "Data",
       "verify": "Verify my vote",
-      "duel": "Duels"
+      "duel": "Duels",
+      "prophecies": "Prophecies"
     },
     "footer": {
       "madeBy": "Open data, public methodology, no personal data.",
@@ -263,6 +264,37 @@
     "roundNote": "Round: {round}",
     "backToList": "All duels",
     "playCta": "Play and add your vote"
+  },
+  "prophecy": {
+    "title": "Prophecies",
+    "subtitle": "Six claims about the future. You say how likely you think each one is.",
+    "howItWorks": "When it settles, every guess gets a Brier score: (your probability − what happened)². Zero is perfect, 0.25 is a coin flip.",
+    "empty": "No prophecies yet. Come back.",
+    "settledTitle": "Closed and settled",
+    "closesAt": "Open for guesses until {date}",
+    "resolvesAt": "settles {date}",
+    "no": "Certainly not",
+    "maybe": "Even odds",
+    "yes": "Certainly yes",
+    "submit": "Guess {value}%",
+    "sending": "Sending…",
+    "hiddenHint": "You'll see what the planet thinks after your own guess.",
+    "planetSays": "The planet says",
+    "yourGuess": "Your guess",
+    "voices": "Voices",
+    "alreadyAnswered": "You already answered this one. Your first guess stands.",
+    "distribution": "Spread of guesses",
+    "happened": "It happened",
+    "didNotHappen": "It didn't happen",
+    "brier": "The planet's Brier score",
+    "skill": "{value}% better than a coin flip",
+    "fallbackLocale": "English for now — we don't ship precise claims in an unreviewed translation.",
+    "status": {
+      "open": "Open",
+      "closed": "Closed",
+      "resolved": "Settled",
+      "void": "Void"
+    }
   },
   "methodology": {
     "title": "Methodology",
