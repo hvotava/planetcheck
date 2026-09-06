@@ -24,3 +24,7 @@ rate_ip_per_hour_class: 60
 # A class page shows nothing below this many votes — a class is small enough that a
 # distribution over 3 people is a description of 3 people.
 min_class_submissions: 5
+# Kompas (ARCHITECTURE §17): the deck is 20 cards, so the round's single 8-second floor
+# would be meaningless here. A floor per card is the honest equivalent — anything faster
+# is not reading. Flag only, never a block. My number, confirm with Hynek.
+compass_seconds_per_card: 1.5

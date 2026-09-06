@@ -10,6 +10,8 @@ import { CountryBoard } from "@/components/viz/CountryBoard";
 import { RulerSwitch, filterLabel } from "@/components/viz/RulerSwitch";
 import { TrendLine } from "@/components/viz/TrendLine";
 import { TwoCamps } from "@/components/viz/TwoCamps";
+import { KnowledgeBars } from "@/components/viz/KnowledgeBars";
+import { KnowledgeSplit } from "@/components/viz/KnowledgeSplit";
 import { WorldMap } from "@/components/viz/WorldMap";
 import { api } from "@/lib/api/client";
 import { useRouter } from "@/lib/i18n/navigation";
@@ -17,7 +19,7 @@ import type { PlanetResults, ResultsFilterPayload } from "@/types/api";
 import type { PlanetPageData } from "@/lib/api/planet-data";
 import { LiveEkg } from "./LiveEkg";
 
-type Localised = Pick<PlanetPageData, "round" | "stats" | "series" | "camps" | "pairs" | "board" | "map" | "codes" | "archetypes" | "titles" | "trend"> & {
+type Localised = Pick<PlanetPageData, "round" | "stats" | "series" | "camps" | "pairs" | "board" | "map" | "codes" | "archetypes" | "titles" | "trend" | "compass"> & {
   results: PlanetResults | null;
 };
 
@@ -26,6 +28,7 @@ export function PlanetDashboard({ data }: { data: Localised }) {
   const t = useTranslations("planet");
   const tc = useTranslations("common");
   const td = useTranslations("demographics");
+  const tk = useTranslations("compass");
   const locale = useLocale();
   const router = useRouter();
   const [filter, setFilter] = useState<ResultsFilterPayload>({});
@@ -127,6 +130,24 @@ export function PlanetDashboard({ data }: { data: Localised }) {
       {data.trend.length > 1 ? (
         <Section id="trend" title={t("trendTitle")}>
           <TrendLine points={data.trend} />
+        </Section>
+      ) : null}
+
+      {data.compass ? (
+        <Section id="knowledge" title={tk("planetTitle")} hint={tk("planetHint", { chance: data.compass.chance == null ? "–" : Math.round(data.compass.chance * 100) })}>
+          <KnowledgeBars items={data.compass.items} chance={data.compass.chance} knowledge={data.compass.knowledge} bias={data.compass.bias} />
+        </Section>
+      ) : null}
+
+      {data.compass ? (
+        <Section id="knowledge-split" title={tk("knowledgeSplitTitle")} hint={tk("knowledgeSplitHint")}>
+          <KnowledgeSplit
+            bands={data.compass.split.bands}
+            questions={data.compass.split.questions}
+            enough={data.compass.split.enough}
+            minN={data.compass.split.minN}
+            limit={3}
+          />
         </Section>
       ) : null}
 

@@ -30,6 +30,38 @@ export type RoundStatus = (typeof ROUND_STATUSES)[number];
 export const QUESTION_TYPES = ["choice", "meta"] as const;
 export type QuestionType = (typeof QUESTION_TYPES)[number];
 
+// ---------------------------------------------------------------------------
+// Compass (ARCHITECTURE §17) — the second index. `fact` questions have a correct answer,
+// `values` and `trust` do not: they draw a profile on the same three axes.
+// ---------------------------------------------------------------------------
+
+export const COMPASS_SECTIONS = ["fact", "values", "trust"] as const;
+export type CompassSection = (typeof COMPASS_SECTIONS)[number];
+
+export const COMPASS_BIASES = ["pessimistic", "optimistic"] as const;
+export type CompassBias = (typeof COMPASS_BIASES)[number];
+
+export type ScoringCompassOption = { key: string; correct: boolean; bias?: CompassBias | null; axis_weights: AxisWeights };
+export type ScoringCompassQuestion = { key: string; section: CompassSection; options: ScoringCompassOption[] };
+export type ScoringCompassDeck = { version: number; questions: ScoringCompassQuestion[] };
+
+export type CompassAnswer = { question: string; option: string };
+
+export type CompassScore = {
+  facts_total: number;
+  facts_correct: number;
+  /** share of facts answered correctly, 0..1; null when no fact was answered */
+  knowledge: number | null;
+  /** what random clicking would score on the facts actually answered */
+  chance: number | null;
+  /** (knowledge − chance) / (1 − chance): 0 = no better than random, negative = worse */
+  skill: number | null;
+  /** how the wrong answers leaned */
+  bias: Record<CompassBias, number>;
+  axes: AxisScores;
+  correct_keys: string[];
+};
+
 /** Flags a submission can carry. Flags never block; they only exclude from public numbers. */
 export const FLAG_REASONS = [
   "honeypot",

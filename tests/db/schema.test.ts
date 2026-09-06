@@ -17,7 +17,15 @@ describe("migrations", () => {
   it("apply in order, exactly once", async () => {
     // Migrations are append-only, so this list only ever grows (CLAUDE.md conventions).
     const first = await runMigrations(db);
-    expect(first.applied).toEqual(["0001_init.sql", "0002_schema_additions.sql", "0003_api_functions.sql", "0004_prophecies.sql", "0005_school_mode.sql", "0006_newsletter.sql"]);
+    expect(first.applied).toEqual([
+      "0001_init.sql",
+      "0002_schema_additions.sql",
+      "0003_api_functions.sql",
+      "0004_prophecies.sql",
+      "0005_school_mode.sql",
+      "0006_newsletter.sql",
+      "0007_compass.sql",
+    ]);
     const second = await runMigrations(db);
     expect(second.applied).toEqual([]);
     expect(second.skipped).toEqual(first.applied);

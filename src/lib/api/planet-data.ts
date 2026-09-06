@@ -10,6 +10,10 @@ import type { MapCountry } from "@/components/viz/WorldMap";
 import type { CampOption } from "@/components/viz/TwoCamps";
 import type { PairShare } from "@/components/viz/ContradictionMeter";
 import type { PlanetResults, PlanetStatsRow, PulseSeries, RoundPayload, NarratorPost } from "@/types/api";
+import type { KnowledgeItem } from "@/components/viz/KnowledgeBars";
+import type { SplitBand, SplitQuestion } from "@/components/viz/KnowledgeSplit";
+import { compassDeck, compassPlanet, compassVersion } from "./compass";
+import { loadWeighting } from "@/lib/content/loader";
 
 /** Everything the landing and /planet need, localised, memoised for 15 s per process. */
 export type PlanetPageData = {
@@ -26,6 +30,15 @@ export type PlanetPageData = {
   titles: ReturnType<typeof titleMeta>;
   narrator: NarratorPost | null;
   trend: Array<{ at: string; survival_weighted: number | null; survival_raw: number | null; votes_total: number }>;
+  /** Kompas (ARCHITECTURE §17). Null when nobody has taken it yet. */
+  compass: {
+    knowledge: { raw: number | null; weighted: number | null };
+    chance: number | null;
+    bias: { pessimistic: number; optimistic: number };
+    n: number;
+    items: KnowledgeItem[];
+    split: { enough: boolean; minN: number; bands: SplitBand[]; questions: SplitQuestion[] };
+  } | null;
 };
 
 export const NUMERIC_TO_CODE: Record<string, string> = Object.fromEntries(COUNTRIES.filter((c) => c.numeric).map((c) => [c.numeric as string, c.code]));
@@ -39,7 +52,8 @@ export async function loadPlanetPage(locale: string): Promise<PlanetPageData> {
   const round = await currentRound();
   const archetypes = archetypeMeta(locale);
   const titles = titleMeta(locale);
-  if (!round) return { round: null, stats: null, series: null, results: null, camps: [], pairs: [], board: [], map: [], codes: NUMERIC_TO_CODE, archetypes, titles, narrator: null, trend: [] };
+  if (!round)
+    return { round: null, stats: null, series: null, results: null, camps: [], pairs: [], board: [], map: [], codes: NUMERIC_TO_CODE, archetypes, titles, narrator: null, trend: [], compass: null };
 
   const raw = await memo(`planet:${round.id}`, 15_000, async () => {
     const repo = await getRepo();
@@ -52,6 +66,22 @@ export async function loadPlanetPage(locale: string): Promise<PlanetPageData> {
       repo.planetSnapshotSeries(round.id, 144),
     ]);
     return { stats, series, results, board, narrator: narrator[0] ?? null, trend };
+  });
+
+  // The Kompas is its own module; the planet page only borrows its numbers. A failure here
+  // must never take the survival dashboard down with it.
+  const compassRaw = await memo(`planet:compass:${round.id}`, 30_000, async () => {
+    try {
+      const repo = await getRepo();
+      const [stats, deck, split] = await Promise.all([
+        compassPlanet(),
+        compassDeck(),
+        repo.roundByKnowledge({ round_id: round.id, version: compassVersion(), min_n: loadWeighting().min_country_submissions }),
+      ]);
+      return { stats, deck, split };
+    } catch {
+      return null;
+    }
   });
 
   const camps = raw.results.questions.map((q) => ({
@@ -78,6 +108,38 @@ export async function loadPlanetPage(locale: string): Promise<PlanetPageData> {
   }));
   const map: MapCountry[] = board.map((c) => ({ code: c.code, name: c.name, survival_index: c.survival_index, unlocked: c.unlocked, submissions_count: c.submissions_count }));
 
+  const compass = (() => {
+    if (!compassRaw || compassRaw.stats.n === 0) return null;
+    const { stats, deck, split } = compassRaw;
+    const label = (id: string) => {
+      const q = deck.questions.find((x) => x.id === id);
+      return q ? (pickLocalized(q.i18n, locale, q.review_required)?.value.text ?? q.key) : id;
+    };
+    const items: KnowledgeItem[] = stats.questions
+      .filter((q) => q.section === "fact")
+      .map((q) => ({ key: q.key, label: label(q.question_id), share_weighted: q.correct_share.weighted, share_raw: q.correct_share.raw }));
+    const questions: SplitQuestion[] = split.questions.map((q) => ({
+      key: q.key,
+      label: pickLocalized(q.i18n, locale)?.value.text ?? q.key,
+      options: q.options.map((o) => ({
+        key: o.key,
+        label: pickLocalized(o.i18n, locale)?.value.text ?? o.key,
+        low: o.low,
+        mid: o.mid,
+        high: o.high,
+        gap: o.gap,
+      })),
+    }));
+    return {
+      knowledge: stats.knowledge,
+      chance: stats.chance,
+      bias: stats.bias,
+      n: stats.n,
+      items,
+      split: { enough: split.enough, minN: split.min_n, bands: split.tertiles, questions },
+    };
+  })();
+
   return {
     round: localiseRound(round, locale),
     stats: raw.stats,
@@ -92,5 +154,6 @@ export async function loadPlanetPage(locale: string): Promise<PlanetPageData> {
     titles,
     narrator: raw.narrator,
     trend: raw.trend,
+    compass,
   };
 }

@@ -1,5 +1,11 @@
 import type { ContentRound, SubmissionScore, Demographics, TrustLevel } from "@/types/domain";
 import type {
+  CompassPayload,
+  CompassShares,
+  CompassStats,
+  CompassSubmissionPayload,
+  CompassSubmitResult,
+  KnowledgeSplit,
   CountryAggregate,
   CountryBoard,
   CountryResults,
@@ -46,6 +52,29 @@ export type SubmitVoteInput = {
   skip_rate?: boolean;
   synthetic?: boolean;
 } & Pick<Demographics, "age_band" | "gender" | "settlement">;
+
+export type CompassSubmitInput = {
+  anon_id: string;
+  version: number;
+  ip_hash: string;
+  ua_family?: string | null;
+  locale: string;
+  country?: string | null;
+  loaded_at?: string | null;
+  submitted_at?: string;
+  answers: Array<{ question_id: string; option_id: string }>;
+  synthetic?: boolean;
+  score: {
+    facts_total: number;
+    facts_correct: number;
+    knowledge: number | null;
+    chance: number | null;
+    skill: number | null;
+    bias: Record<string, number>;
+    axes: Record<string, number>;
+  };
+  flags: string[];
+};
 
 export type CountrySyncRow = { code: string; name_en: string; region: string | null; population: number; demographics: Json; source?: string };
 
@@ -223,6 +252,33 @@ export class Repo {
   }
   closeDueProphecies() {
     return this.db.rpc<{ closed: number }>("close_due_prophecies", {});
+  }
+
+  // --- compass (ARCHITECTURE §17)
+  syncCompass(questions: Json) {
+    return this.db.rpc<{ questions: number; options: number }>("sync_compass", { questions });
+  }
+  /** Full deck, correct answers included. Server-only: strip it with toPlayCompass before it reaches a browser. */
+  getCompass(args: { version: number; i18n: Json }) {
+    return this.db.rpc<CompassPayload>("get_compass", args as Json);
+  }
+  compassStatus(anonId: string, version: number) {
+    return this.db.rpc<{ voter_id: string; submission_id: string | null } | null>("compass_status", { anon_id: anonId, version });
+  }
+  submitCompass(input: CompassSubmitInput) {
+    return this.db.rpc<CompassSubmitResult>("submit_compass", input as unknown as Json);
+  }
+  compassShares(args: { version: number; clamp_lo?: number; clamp_hi?: number }) {
+    return this.db.rpc<CompassShares>("compass_shares", args as Json);
+  }
+  compassStats(args: { version: number; clamp_lo?: number; clamp_hi?: number }) {
+    return this.db.rpc<CompassStats>("compass_stats", args as Json);
+  }
+  getCompassSubmission(id: string) {
+    return this.db.rpc<CompassSubmissionPayload | null>("get_compass_submission", { submission_id: id });
+  }
+  roundByKnowledge(args: { round_id: string; version: number; min_n?: number }) {
+    return this.db.rpc<KnowledgeSplit>("round_by_knowledge", args as Json);
   }
 
   health() {

@@ -1,11 +1,13 @@
 import type { Repo } from "@/lib/db/repo";
 import { COUNTRIES } from "@/lib/countries";
+import { compassSyncPayload } from "@/lib/compass/deck";
 import { loadContent } from "./loader";
 
 export type SyncResult = {
   countries: number;
   rounds: Array<{ slug: string; questions: number; options: number; contradictions: number }>;
   prophecies: number;
+  compass: { questions: number; options: number };
 };
 
 /** content/*.yaml + data/countries.json → DB. Idempotent upsert, never deletes (deactivates). */
@@ -44,5 +46,8 @@ export async function syncContent(repo: Repo, opts: { log?: (m: string) => void;
   );
   log(`prophecies: ${prophecies.count}`);
 
-  return { countries: countries.count, rounds, prophecies: prophecies.count };
+  const compass = await repo.syncCompass(compassSyncPayload(bundle.compass) as unknown as Parameters<typeof repo.syncCompass>[0]);
+  log(`compass v${bundle.compass.compass.version}: ${compass.questions} questions, ${compass.options} options`);
+
+  return { countries: countries.count, rounds, prophecies: prophecies.count, compass };
 }

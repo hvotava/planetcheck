@@ -1,6 +1,8 @@
 import "./_env";
 import { getRepo, closeDb } from "@/lib/db";
 import { seedSynthetic } from "@/lib/seed/synthetic";
+import { seedCompass } from "@/lib/seed/compass";
+import { loadCompass } from "@/lib/content/loader";
 
 /**
  * pnpm seed [--total 10000] [--countries 40] [--round 2026-w37] [--seed 42]
@@ -23,6 +25,12 @@ async function main() {
     roundSlug: arg("round"),
   });
   console.log(`seeded ${res.inserted} votes into ${res.round} (${res.duplicates} duplicates skipped)`);
+
+  const compassTotal = arg("compass") ? Number(arg("compass")) : Math.round((arg("total") ? Number(arg("total")) : 10_000) * 0.12);
+  if (compassTotal > 0) {
+    const c = await seedCompass(repo, loadCompass().compass.version, { total: compassTotal, seed: arg("seed") ? Number(arg("seed")) : undefined });
+    console.log(`seeded ${c.inserted} compass runs (${c.duplicates} duplicates skipped)`);
+  }
   await closeDb();
 }
 

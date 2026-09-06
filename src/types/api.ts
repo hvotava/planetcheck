@@ -2,7 +2,7 @@
  * Shapes returned by the SQL API (db/migrations/0003_api_functions.sql) and by /api/* routes.
  * Numbers inside jsonb arrive as JS numbers; timestamps as ISO strings.
  */
-import type { AgeBand, AxisKey, Gender, I18nMap, LocalizedLabel, LocalizedOption, LocalizedQuestion, QuestionType, RoundKind, RoundStatus, Settlement, SurvivalWeights, TrustLevel } from "./domain";
+import type { AgeBand, AxisKey, CompassBias, CompassSection, Gender, I18nMap, LocalizedLabel, LocalizedOption, LocalizedQuestion, QuestionType, RoundKind, RoundStatus, Settlement, SurvivalWeights, TrustLevel } from "./domain";
 
 export type RawWeighted = { raw: number | null; weighted: number | null };
 
@@ -327,3 +327,135 @@ export type VoterStatus = { voter_id: string; trust: TrustLevel; verified: boole
 export type ApiOk<T> = { ok: true; data: T };
 export type ApiErr = { ok: false; error: { code: string; message: string; details?: unknown } };
 export type ApiResponse<T> = ApiOk<T> | ApiErr;
+
+// ---------------------------------------------------------------------------
+// Compass (ARCHITECTURE §17)
+// ---------------------------------------------------------------------------
+
+export type CompassSourcePayload = { name: string; url: string; as_of: string; review_by: string };
+
+/** Server-side shape: carries the correct answer. Never hand this to a browser. */
+export type CompassOptionPayload = {
+  id: string;
+  key: string;
+  position: number;
+  i18n: I18nMap<LocalizedOption>;
+  icon: string | null;
+  correct: boolean;
+  bias: CompassBias | null;
+  axis_weights: Partial<Record<AxisKey, number>>;
+};
+
+export type CompassQuestionPayload = {
+  id: string;
+  key: string;
+  section: CompassSection;
+  position: number;
+  i18n: I18nMap<LocalizedQuestion>;
+  i18n_answer: I18nMap<LocalizedQuestion> | null;
+  source: CompassSourcePayload | null;
+  review_required: boolean;
+  options: CompassOptionPayload[];
+};
+
+export type CompassPayload = {
+  version: number;
+  i18n: I18nMap<LocalizedLabel>;
+  questions: CompassQuestionPayload[];
+};
+
+/** What the browser gets: localised, with the correct answer and the axis weights removed. */
+export type PlayCompassOption = { id: string; key: string; text: string; icon: string | null };
+export type PlayCompassQuestion = {
+  id: string;
+  key: string;
+  section: CompassSection;
+  position: number;
+  text: string;
+  scenario: string | null;
+  fallback_locale: string | null;
+  options: PlayCompassOption[];
+};
+export type PlayCompass = {
+  version: number;
+  title: string;
+  blurb: string | null;
+  facts_total: number;
+  questions: PlayCompassQuestion[];
+  loaded_at: string;
+  turnstile_site_key: string | null;
+  already_done: { submission_id: string } | null;
+  geo_country: string | null;
+};
+
+export type CompassOptionShare = { option_id: string; key: string; raw: number; weighted: number; share_raw: number | null; share_weighted: number | null };
+export type CompassShares = {
+  version: number;
+  questions: Array<{ question_id: string; key: string; total_raw: number; total_weighted: number; options: CompassOptionShare[] }>;
+};
+
+export type CompassSubmitResult =
+  | { ok: true; submission_id: string; knowledge: number | null; facts_correct: number; facts_total: number }
+  | { ok: false; code: "duplicate"; submission_id: string };
+
+export type CompassSubmissionPayload = {
+  id: string;
+  version: number;
+  country_code: string | null;
+  trust: TrustLevel;
+  locale: string;
+  facts_total: number;
+  facts_correct: number;
+  knowledge: number | null;
+  skill: number | null;
+  chance: number | null;
+  bias: Record<string, number>;
+  axis_scores: Partial<Record<AxisKey, number>>;
+  submitted_at: string;
+  answers: Array<{
+    question_id: string;
+    question_key: string;
+    section: CompassSection;
+    position: number;
+    option_id: string;
+    option_key: string;
+    correct: boolean;
+  }>;
+  planet: CompassStats | null;
+};
+
+export type CompassStats = {
+  version: number;
+  n: number;
+  n_weighted: number;
+  knowledge: RawWeighted;
+  chance: number | null;
+  skill: RawWeighted;
+  bias: { pessimistic: number; optimistic: number };
+  axis_means: AxisMeans;
+  questions: Array<{
+    question_id: string;
+    key: string;
+    section: CompassSection;
+    correct_option_id: string | null;
+    correct_share: RawWeighted;
+    total_raw: number;
+    options: CompassOptionShare[];
+  }>;
+  countries: Array<{ country_code: string; n: number; knowledge: number | null }>;
+};
+
+/** How a round's answers split by the voter's Kompas knowledge. ARCHITECTURE §17. */
+export type KnowledgeSplit = {
+  round_id: string;
+  version: number;
+  min_n: number;
+  enough: boolean;
+  tertiles: Array<{ band: "low" | "mid" | "high"; n: number; knowledge_mean: number | null; survival_mean: number | null }>;
+  questions: Array<{
+    question_id: string;
+    key: string;
+    i18n: I18nMap<LocalizedQuestion>;
+    options: Array<{ option_id: string; key: string; i18n: I18nMap<LocalizedOption>; low: number | null; mid: number | null; high: number | null; gap: number | null }>;
+  }>;
+};

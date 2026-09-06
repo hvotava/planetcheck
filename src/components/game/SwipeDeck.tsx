@@ -3,7 +3,7 @@
 import { AnimatePresence, motion, useMotionValue, useTransform, type PanInfo } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { PlayOption, PlayQuestion } from "@/types/api";
+import type { DeckOption, DeckQuestion } from "./deck-types";
 import { QuestionCard } from "./QuestionCard";
 
 type Dir = "left" | "right" | "up" | "down";
@@ -19,10 +19,24 @@ const KEY: Record<string, Dir> = { ArrowLeft: "left", ArrowRight: "right", Arrow
  * One question = one card. Swipe towards an answer (2–4 directions), tap an option, or use arrow keys.
  * Pure UI: options in, chosen option out. ARCHITECTURE §15 phase 1.
  */
-export function SwipeDeck({ question, next, index, total, onAnswer }: { question: PlayQuestion; next?: PlayQuestion; index: number; total: number; onAnswer: (option: PlayOption) => void }) {
+export function SwipeDeck<Q extends DeckQuestion>({
+  question,
+  next,
+  index,
+  total,
+  onAnswer,
+  badge,
+}: {
+  question: Q;
+  next?: Q;
+  index: number;
+  total: number;
+  onAnswer: (option: Q["options"][number]) => void;
+  badge?: string | null;
+}) {
   const t = useTranslations("play");
   const dirs = DIRS_BY_COUNT[question.options.length] ?? DIRS_BY_COUNT[4]!;
-  const byDir = useMemo(() => Object.fromEntries(dirs.map((d, i) => [d, question.options[i]!])) as Record<Dir, PlayOption>, [dirs, question.options]);
+  const byDir = useMemo(() => Object.fromEntries(dirs.map((d, i) => [d, question.options[i]!])) as Record<Dir, DeckOption>, [dirs, question.options]);
   const [leaving, setLeaving] = useState<Dir | null>(null);
   const [focus, setFocus] = useState<Dir | null>(null);
 
@@ -33,12 +47,12 @@ export function SwipeDeck({ question, next, index, total, onAnswer }: { question
   const choose = useCallback(
     (dir: Dir) => {
       if (leaving) return;
-      const opt = byDir[dir];
+      const opt = question.options.find((o) => o.id === byDir[dir]?.id);
       if (!opt) return;
       setLeaving(dir);
       setTimeout(() => onAnswer(opt), 260);
     },
-    [byDir, leaving, onAnswer],
+    [byDir, leaving, onAnswer, question.options],
   );
 
   useEffect(() => {
@@ -84,7 +98,7 @@ export function SwipeDeck({ question, next, index, total, onAnswer }: { question
       <div className="relative mx-auto aspect-[4/5] w-full max-w-sm">
         {next ? (
           <div className="absolute inset-0 translate-y-3 scale-[0.96]">
-            <QuestionCard question={next} index={index + 1} total={total} dim />
+            <QuestionCard question={next} index={index + 1} total={total} dim badge={badge} />
           </div>
         ) : null}
         <AnimatePresence>
@@ -102,7 +116,7 @@ export function SwipeDeck({ question, next, index, total, onAnswer }: { question
             transition={{ type: "spring", stiffness: 380, damping: 32 }}
             whileTap={{ scale: 1.01 }}
           >
-            <QuestionCard question={question} index={index} total={total} />
+            <QuestionCard question={question} index={index} total={total} badge={badge} />
           </motion.div>
         </AnimatePresence>
         {/* directional hints */}

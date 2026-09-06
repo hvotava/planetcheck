@@ -22,6 +22,7 @@
     "db:local": "tsx scripts/migrate.ts --reset && tsx scripts/sync-content.ts && tsx scripts/seed-synthetic.ts && tsx scripts/recompute.ts",
     "content:sync": "tsx scripts/sync-content.ts",
     "content:check": "tsx scripts/sync-content.ts --check",
+    "content:list": "tsx scripts/dev/dump-content.ts",
     "seed": "tsx scripts/seed-synthetic.ts",
     "recompute": "tsx scripts/recompute.ts",
     "translate": "tsx scripts/translate.ts",

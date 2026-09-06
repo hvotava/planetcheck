@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AGE_BANDS, AXES, QUESTION_TYPES, ROUND_KINDS, ROUND_STATUSES } from "@/types/domain";
+import { AGE_BANDS, AXES, COMPASS_BIASES, COMPASS_SECTIONS, QUESTION_TYPES, ROUND_KINDS, ROUND_STATUSES } from "@/types/domain";
 
 // ---------------------------------------------------------------------------
 // Zod schemas for everything under content/. Loader validates before anything touches the DB.
@@ -201,6 +201,7 @@ export const weightingFileSchema = z.object({
   rate_anon_per_hour: z.number().int().positive(),
   rate_ip_per_hour_class: z.number().int().positive().default(60),
   min_class_submissions: z.number().int().positive().default(5),
+  compass_seconds_per_card: z.number().positive().default(1.5),
 });
 
 export type RoundFile = z.infer<typeof roundFileSchema>;
@@ -211,3 +212,75 @@ export type WeightingFile = z.infer<typeof weightingFileSchema>;
 export type DuelsFile = z.infer<typeof duelsFileSchema>;
 export type PropheciesFile = z.infer<typeof propheciesFileSchema>;
 export type AgeBandKey = (typeof AGE_BANDS)[number];
+
+// ---------------------------------------------------------------------------
+// Compass (ARCHITECTURE §17) — the fact test and the values/trust profile.
+// A deliberately separate shape from rounds: a fact has a correct answer and a source,
+// neither of which a dilemma may ever have.
+// ---------------------------------------------------------------------------
+
+/** A fact nobody can check is a quiz question. Every one names where it was read and when. */
+export const compassSourceSchema = z.object({
+  name: z.string().min(3).max(160),
+  url: z.string().url(),
+  as_of: z.coerce.date(),
+  review_by: z.coerce.date(),
+});
+
+export const compassOptionSchema = z.object({
+  key,
+  icon: z.string().max(8).optional(),
+  i18n: z.record(localeCode, localizedOptionSchema).refine((m) => "cs" in m || "en" in m, "compass option needs cs or en"),
+  correct: z.boolean().default(false),
+  bias: z.enum(COMPASS_BIASES).optional(),
+  axis_weights: axisWeights.default({}),
+});
+
+export const compassQuestionSchema = z
+  .object({
+    key,
+    section: z.enum(COMPASS_SECTIONS),
+    position: z.number().int().positive(),
+    source: compassSourceSchema.optional(),
+    i18n: z.record(localeCode, localizedQuestionSchema).refine((m) => "cs" in m || "en" in m, "compass question needs cs or en"),
+    /** Shown at the reveal: the true value in words, with the number. Facts only. */
+    i18n_answer: z.record(localeCode, localizedQuestionSchema).optional(),
+    options: z.array(compassOptionSchema).min(2).max(4),
+    review_required: z.boolean().default(false),
+  })
+  .superRefine((q, ctx) => {
+    const add = (message: string) => ctx.addIssue({ code: "custom", message });
+    const keys = new Set(q.options.map((o) => o.key));
+    if (keys.size !== q.options.length) add(`duplicate option keys in compass question ${q.key}`);
+
+    if (q.section === "fact") {
+      // Three options exactly: chance is then exactly one third, which is the whole point.
+      if (q.options.length !== 3) add(`fact ${q.key} needs exactly 3 options, has ${q.options.length}`);
+      const correct = q.options.filter((o) => o.correct);
+      if (correct.length !== 1) add(`fact ${q.key} needs exactly one correct option, has ${correct.length}`);
+      if (!q.source) add(`fact ${q.key} needs a source with a name, url and date`);
+      if (!q.i18n_answer || !("cs" in q.i18n_answer || "en" in q.i18n_answer)) add(`fact ${q.key} needs i18n_answer explaining the true value`);
+      for (const o of q.options) {
+        if (!o.correct && !o.bias) add(`fact ${q.key}: wrong option '${o.key}' needs bias: pessimistic or optimistic`);
+        if (o.correct && o.bias) add(`fact ${q.key}: correct option '${o.key}' must not carry a bias`);
+        if (Object.keys(o.axis_weights).length > 0) add(`fact ${q.key}: option '${o.key}' must not carry axis_weights — a fact is not an opinion`);
+      }
+    } else {
+      if (q.options.some((o) => o.correct)) add(`${q.section} question ${q.key} must not mark an option correct`);
+      if (q.options.some((o) => o.bias)) add(`${q.section} question ${q.key} must not carry bias`);
+      if (q.source) add(`${q.section} question ${q.key} has no factual claim, so it must not carry a source`);
+      if (!q.options.some((o) => Object.keys(o.axis_weights).length > 0)) add(`${q.section} question ${q.key} needs axis_weights on at least one option, or it measures nothing`);
+    }
+  });
+
+export const compassFileSchema = z.object({
+  compass: z.object({
+    /** Bumping the version lets everyone retake the test after the facts are refreshed. */
+    version: z.number().int().positive(),
+    i18n: z.record(localeCode, localizedLabelSchema).refine((m) => "cs" in m || "en" in m, "compass needs cs or en"),
+  }),
+  questions: z.array(compassQuestionSchema).min(1),
+});
+
+export type CompassFile = z.infer<typeof compassFileSchema>;
+export type CompassQuestionFile = z.infer<typeof compassQuestionSchema>;

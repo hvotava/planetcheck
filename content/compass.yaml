@@ -1,0 +1,543 @@
+# ---------------------------------------------------------------------------
+# KOMPAS — the second index, next to survival (ARCHITECTURE §17).
+#
+# Two things live here, in one deck:
+#   1. section `fact`  — questions with an objectively correct answer, three options each.
+#      Three options on purpose: random clicking scores exactly one third, so the sentence
+#      "the planet answers worse than chance" is provable rather than rhetorical.
+#   2. sections `values` and `trust` — no correct answer. A profile, not a score.
+#      `trust` is "víra" in the sense Hynek chose on 2026-09-05: whom and what a person
+#      believes. We never ask about religion. It is a special category under GDPR and it
+#      would break the promise in §5 that a vote carries nothing personal.
+#
+# HARD RULES, enforced by src/lib/content/schema.ts and the loader:
+#   * every fact names a source with a URL and a date. A fact nobody can check is a quiz
+#     question, and the credibility of the whole methodology page rests on this.
+#   * exactly three options per fact, exactly one `correct: true`.
+#   * every wrong option carries `bias: pessimistic | optimistic` — which way the planet
+#     is wrong is the second headline this module produces.
+#   * `review_by` in the past fails `pnpm content:check`. Facts go stale silently otherwise.
+#
+# TONE: being wrong must be interesting, never shaming. Rosling's whole point was that the
+# systematic direction of the error is the finding. The app does not lecture anyone.
+#
+# BALANCE: seven facts are better than people expect, five are worse. That is deliberate.
+# A deck that only says "things are better than you think" is an argument, not a measurement.
+#
+# DRAFT — values were verified against the cited sources on 2026-09-05, wordings are mine.
+# Confirm with Hynek before this goes public (CLAUDE.md: never guess question wording).
+# ---------------------------------------------------------------------------
+compass:
+  version: 1
+  i18n:
+    cs:
+      title: "Kompas"
+      blurb: "Dvanáct otázek na to, jak na tom svět doopravdy je, a osm na to, čemu věříš ty. Náhodné klikání dá třetinu. Zvládneš víc?"
+    en:
+      title: "The Compass"
+      blurb: "Twelve questions about how the world actually is, and eight about what you believe. Random clicking scores a third. Can you beat it?"
+
+questions:
+  # =========================================================================
+  # SEKCE FACT — dvanáct faktů, tři možnosti, jedna správná
+  # =========================================================================
+
+  - key: extreme_poverty
+    section: fact
+    position: 1
+    source:
+      name: "World Bank, Poverty and Inequality Platform"
+      url: "https://www.worldbank.org/en/topic/poverty"
+      as_of: 2025-09-01
+      review_by: 2027-06-30
+    i18n:
+      cs: { text: "Kolik ze sta lidí na světě dnes žije v extrémní chudobě?" }
+      en: { text: "Out of every hundred people on Earth, how many live in extreme poverty today?" }
+    options:
+      - key: ten
+        i18n: { cs: { text: "Asi 10" }, en: { text: "About 10" } }
+        correct: true
+      - key: thirty
+        i18n: { cs: { text: "Asi 30" }, en: { text: "About 30" } }
+        bias: pessimistic
+      - key: fifty
+        i18n: { cs: { text: "Asi 50" }, en: { text: "About 50" } }
+        bias: pessimistic
+    i18n_answer:
+      cs: { text: "Zhruba 10 ze sta, tedy asi 808 milionů lidí pod hranicí 3 dolarů na den. V roce 1990 to byla víc než třetina." }
+      en: { text: "About 10 in a hundred, some 808 million people below the $3 a day line. In 1990 it was more than a third." }
+
+  - key: child_vaccination
+    section: fact
+    position: 2
+    source:
+      name: "WHO/UNICEF Estimates of National Immunization Coverage (WUENIC)"
+      url: "https://www.who.int/teams/immunization-vaccines-and-biologicals/immunization-analysis-and-insights/global-monitoring/immunization-coverage"
+      as_of: 2026-07-15
+      review_by: 2027-09-30
+    i18n:
+      cs: { text: "Kolik procent ročních dětí na světě dostane aspoň jednu dávku očkování?" }
+      en: { text: "What share of the world's one-year-olds gets at least one dose of vaccine?" }
+    options:
+      - key: forty
+        i18n: { cs: { text: "Asi 40 %" }, en: { text: "About 40%" } }
+        bias: pessimistic
+      - key: sixty_five
+        i18n: { cs: { text: "Asi 65 %" }, en: { text: "About 65%" } }
+        bias: pessimistic
+      - key: ninety
+        i18n: { cs: { text: "Asi 90 %" }, en: { text: "About 90%" } }
+        correct: true
+    i18n_answer:
+      cs: { text: "Devadesát procent, tedy skoro 116 milionů dětí ročně. Celou trojdávku proti záškrtu, tetanu a černému kašli dokončí 85 %." }
+      en: { text: "Ninety percent, nearly 116 million infants a year. Eighty-five percent complete the full three-dose diphtheria, tetanus and pertussis course." }
+
+  - key: life_expectancy
+    section: fact
+    position: 3
+    source:
+      name: "UN World Population Prospects 2024"
+      url: "https://population.un.org/wpp/"
+      as_of: 2024-07-11
+      review_by: 2027-12-31
+    i18n:
+      cs: { text: "Kolika let se v průměru dožije člověk narozený dnes kdekoli na světě?" }
+      en: { text: "How long does a person born anywhere in the world today live, on average?" }
+    options:
+      - key: sixty
+        i18n: { cs: { text: "Asi 60 let" }, en: { text: "About 60 years" } }
+        bias: pessimistic
+      - key: seventy_three
+        i18n: { cs: { text: "Asi 73 let" }, en: { text: "About 73 years" } }
+        correct: true
+      - key: eighty
+        i18n: { cs: { text: "Asi 80 let" }, en: { text: "About 80 years" } }
+        bias: optimistic
+    i18n_answer:
+      cs: { text: "73,3 roku. Od roku 1995 přibylo osm a půl roku života a covidový propad je od roku 2022 dorovnaný." }
+      en: { text: "73.3 years. Eight and a half years were added since 1995, and the covid dip was made up by 2022." }
+
+  - key: child_mortality
+    section: fact
+    position: 4
+    source:
+      name: "UN IGME, Levels and Trends in Child Mortality"
+      url: "https://data.unicef.org/topic/child-survival/under-five-mortality/"
+      as_of: 2026-03-24
+      review_by: 2027-06-30
+    i18n:
+      cs: { text: "Kolik dětí ze sta narozených se dnes nedožije pěti let?" }
+      en: { text: "Out of every hundred children born today, how many do not reach the age of five?" }
+    options:
+      - key: four
+        i18n: { cs: { text: "Necelé 4" }, en: { text: "Just under 4" } }
+        correct: true
+      - key: twelve
+        i18n: { cs: { text: "Asi 12" }, en: { text: "About 12" } }
+        bias: pessimistic
+      - key: twenty_five
+        i18n: { cs: { text: "Asi 25" }, en: { text: "About 25" } }
+        bias: pessimistic
+    i18n_answer:
+      cs: { text: "Necelé čtyři, přesněji jedno dítě z 27. V roce 1990 to bylo jedno z jedenácti. Pokles se ale od roku 2015 zpomalil." }
+      en: { text: "Just under four, or one child in 27. In 1990 it was one in eleven. The decline has slowed since 2015, though." }
+
+  - key: electricity_access
+    section: fact
+    position: 5
+    source:
+      name: "Tracking SDG7: The Energy Progress Report 2025 (IEA, IRENA, UNSD, World Bank, WHO)"
+      url: "https://www.worldbank.org/en/topic/energy/publication/tracking-sdg-7-the-energy-progress-report-2025"
+      as_of: 2025-06-25
+      review_by: 2027-06-30
+    i18n:
+      cs: { text: "Kolik procent lidí na světě má doma elektřinu?" }
+      en: { text: "What share of the world's people has electricity at home?" }
+    options:
+      - key: seventy
+        i18n: { cs: { text: "Asi 70 %" }, en: { text: "About 70%" } }
+        bias: pessimistic
+      - key: eighty
+        i18n: { cs: { text: "Asi 80 %" }, en: { text: "About 80%" } }
+        bias: pessimistic
+      - key: ninety_two
+        i18n: { cs: { text: "Asi 92 %" }, en: { text: "About 92%" } }
+        correct: true
+    i18n_answer:
+      cs: { text: "Skoro 92 %. Bez elektřiny zůstává 666 milionů lidí a tempo nestačí na to, aby jich do roku 2030 nebyl nikdo." }
+      en: { text: "Almost 92%. Some 666 million people still live without it, and the pace is too slow to reach everyone by 2030." }
+
+  - key: internet_users
+    section: fact
+    position: 6
+    source:
+      name: "ITU, Facts and Figures 2025"
+      url: "https://www.itu.int/itu-d/reports/statistics/"
+      as_of: 2025-11-01
+      review_by: 2027-06-30
+    i18n:
+      cs: { text: "Kolik procent lidstva používá internet?" }
+      en: { text: "What share of humanity uses the internet?" }
+    options:
+      - key: fifty
+        i18n: { cs: { text: "Asi 50 %" }, en: { text: "About 50%" } }
+        bias: pessimistic
+      - key: seventy_four
+        i18n: { cs: { text: "Asi 74 %" }, en: { text: "About 74%" } }
+        correct: true
+      - key: ninety
+        i18n: { cs: { text: "Asi 90 %" }, en: { text: "About 90%" } }
+        bias: optimistic
+    i18n_answer:
+      cs: { text: "74 %, tedy zhruba 6 miliard lidí. Offline zůstává 2,2 miliardy, což je víc lidí, než kolik jich žilo na planetě v roce 1930." }
+      en: { text: "74%, roughly 6 billion people. That leaves 2.2 billion offline, more people than lived on the planet in 1930." }
+
+  - key: nuclear_warheads
+    section: fact
+    position: 7
+    source:
+      name: "Federation of American Scientists, Status of World Nuclear Forces"
+      url: "https://fas.org/initiative/status-world-nuclear-forces/"
+      as_of: 2026-01-01
+      review_by: 2027-06-30
+    i18n:
+      cs:
+        scenario: "Na vrcholu studené války jich bylo přes 70 000."
+        text: "Kolik jaderných hlavic je na světě dnes?"
+      en:
+        scenario: "At the Cold War peak there were more than 70,000."
+        text: "How many nuclear warheads are there in the world today?"
+    options:
+      - key: twelve_thousand
+        i18n: { cs: { text: "Asi 12 000, tedy o čtyři pětiny méně" }, en: { text: "About 12,000, four fifths fewer" } }
+        correct: true
+      - key: same
+        i18n: { cs: { text: "Zhruba stejně jako tehdy" }, en: { text: "Roughly the same as back then" } }
+        bias: pessimistic
+      - key: more
+        i18n: { cs: { text: "Víc než tehdy" }, en: { text: "More than back then" } }
+        bias: pessimistic
+    i18n_answer:
+      cs: { text: "Zhruba 12 300, tedy pokles o 82 % od roku 1986. Tempo odzbrojování se ale zpomaluje a některé arzenály zase rostou." }
+      en: { text: "About 12,300, an 82% fall since 1986. The pace of reduction is slowing, though, and some arsenals are growing again." }
+
+  - key: low_carbon_power
+    section: fact
+    position: 8
+    source:
+      name: "Ember, Global Electricity Review 2026"
+      url: "https://ember-energy.org/latest-insights/global-electricity-review-2026/"
+      as_of: 2026-04-08
+      review_by: 2027-06-30
+    i18n:
+      cs: { text: "Kolik procent světové elektřiny loni vyrobily nízkoemisní zdroje, tedy obnovitelné a jádro dohromady?" }
+      en: { text: "What share of the world's electricity last year came from low-carbon sources, renewables and nuclear together?" }
+    options:
+      - key: twenty
+        i18n: { cs: { text: "Asi 20 %" }, en: { text: "About 20%" } }
+        bias: pessimistic
+      - key: forty_three
+        i18n: { cs: { text: "Asi 43 %" }, en: { text: "About 43%" } }
+        correct: true
+      - key: seventy
+        i18n: { cs: { text: "Asi 70 %" }, en: { text: "About 70%" } }
+        bias: optimistic
+    i18n_answer:
+      cs: { text: "43 %. Obnovitelné zdroje přitom poprvé za sto let předehnaly uhlí. Elektřina je ale jen část energie, kterou svět spotřebuje." }
+      en: { text: "43%. Renewables overtook coal for the first time in a century. Electricity is only part of the energy the world burns, though." }
+
+  - key: solar_wind_share
+    section: fact
+    position: 9
+    source:
+      name: "Ember, Global Electricity Review 2026"
+      url: "https://ember-energy.org/latest-insights/global-electricity-review-2026/"
+      as_of: 2026-04-08
+      review_by: 2027-06-30
+    i18n:
+      cs: { text: "Kolik procent světové elektřiny vyrobily loni solární panely a větrné turbíny dohromady?" }
+      en: { text: "What share of the world's electricity did solar panels and wind turbines produce together last year?" }
+    options:
+      - key: five
+        i18n: { cs: { text: "Asi 5 %" }, en: { text: "About 5%" } }
+        bias: pessimistic
+      - key: seventeen
+        i18n: { cs: { text: "Asi 17 %" }, en: { text: "About 17%" } }
+        correct: true
+      - key: thirty_five
+        i18n: { cs: { text: "Asi 35 %" }, en: { text: "About 35%" } }
+        bias: optimistic
+    i18n_answer:
+      cs: { text: "17 %, z toho solár 8,7 % a vítr 8,5 %. Před deseti lety to bylo dohromady necelých pět procent." }
+      en: { text: "17%, solar at 8.7% and wind at 8.5%. Ten years ago the two together were under five percent." }
+
+  - key: co2_trend
+    section: fact
+    position: 10
+    source:
+      name: "Global Carbon Project, Global Carbon Budget 2025"
+      url: "https://globalcarbonbudget.org/"
+      as_of: 2025-11-13
+      review_by: 2027-01-31
+    i18n:
+      cs: { text: "Co dělaly loni celosvětové emise CO₂ z fosilních paliv?" }
+      en: { text: "What did global CO₂ emissions from fossil fuels do last year?" }
+    options:
+      - key: fell
+        i18n: { cs: { text: "Klesly" }, en: { text: "They fell" } }
+        bias: optimistic
+      - key: flat
+        i18n: { cs: { text: "Zůstaly zhruba stejné" }, en: { text: "They stayed roughly flat" } }
+        bias: optimistic
+      - key: record
+        i18n: { cs: { text: "Vzrostly na nový rekord" }, en: { text: "They rose to a new record" } }
+        correct: true
+    i18n_answer:
+      cs: { text: "Vzrostly o 1,1 % na rekordních 38,1 miliardy tun. Rozvoj čistých zdrojů zatím nestačí pokrýt ani růst spotřeby energie." }
+      en: { text: "Up 1.1% to a record 38.1 billion tonnes. Clean energy is growing, but not fast enough to cover the growth in demand." }
+
+  - key: carbon_budget
+    section: fact
+    position: 11
+    source:
+      name: "Global Carbon Project, Global Carbon Budget 2025"
+      url: "https://globalcarbonbudget.org/"
+      as_of: 2025-11-13
+      review_by: 2027-01-31
+    i18n:
+      cs:
+        scenario: "Rozpočet je množství CO₂, které smíme ještě vypustit, aby oteplení zůstalo pod 1,5 °C."
+        text: "Na jak dlouho ještě vydrží při dnešním tempu?"
+      en:
+        scenario: "The budget is how much CO₂ we can still emit and stay under 1.5 °C of warming."
+        text: "At today's rate, how long does it last?"
+    options:
+      - key: four_years
+        i18n: { cs: { text: "Asi čtyři roky" }, en: { text: "About four years" } }
+        correct: true
+      - key: twenty_years
+        i18n: { cs: { text: "Asi dvacet let" }, en: { text: "About twenty years" } }
+        bias: optimistic
+      - key: fifty_years
+        i18n: { cs: { text: "Asi padesát let" }, en: { text: "About fifty years" } }
+        bias: optimistic
+    i18n_answer:
+      cs: { text: "Zbývá zhruba 170 miliard tun, což jsou čtyři roky dnešních emisí. Rozpočet pro 1,5 °C je prakticky vyčerpaný." }
+      en: { text: "About 170 billion tonnes are left, four years at today's emissions. The 1.5 °C budget is all but spent." }
+
+  - key: wildlife_populations
+    section: fact
+    position: 12
+    source:
+      name: "WWF & ZSL, Living Planet Report 2024"
+      url: "https://www.worldwildlife.org/publications/2024-living-planet-report/"
+      as_of: 2024-10-10
+      review_by: 2027-06-30
+    i18n:
+      cs:
+        scenario: "Vědci sledují velikost téměř 35 000 populací obratlovců."
+        text: "Jak se jejich průměrná velikost změnila od roku 1970?"
+      en:
+        scenario: "Scientists track the size of nearly 35,000 vertebrate populations."
+        text: "How has their average size changed since 1970?"
+    options:
+      - key: grew
+        i18n: { cs: { text: "Mírně vzrostla" }, en: { text: "It grew slightly" } }
+        bias: optimistic
+      - key: fell_quarter
+        i18n: { cs: { text: "Klesla asi o čtvrtinu" }, en: { text: "It fell by about a quarter" } }
+        bias: optimistic
+      - key: fell_three_quarters
+        i18n: { cs: { text: "Klesla asi o tři čtvrtiny" }, en: { text: "It fell by about three quarters" } }
+        correct: true
+    i18n_answer:
+      cs: { text: "Klesla v průměru o 73 %. Nejhůř jsou na tom sladkovodní populace, které ubyly o 85 %." }
+      en: { text: "It fell by 73% on average. Freshwater populations fared worst, down 85%." }
+
+  # =========================================================================
+  # SEKCE VALUES A TRUST — bez správné odpovědi. Profil, ne skóre.
+  # =========================================================================
+
+  - key: most_people_trusted
+    section: trust
+    position: 13
+    i18n:
+      cs: { text: "Dá se většině lidí věřit, nebo je opatrnosti nikdy dost?" }
+      en: { text: "Can most people be trusted, or can you never be careful enough?" }
+    options:
+      - key: trusted
+        icon: "🤝"
+        i18n: { cs: { text: "Většině lidí se dá věřit" }, en: { text: "Most people can be trusted" } }
+        axis_weights: { trust_paranoia: -0.8, us_them: -0.3 }
+      - key: depends
+        icon: "🪞"
+        i18n: { cs: { text: "Záleží, jestli je znám" }, en: { text: "It depends on whether I know them" } }
+        axis_weights: { trust_paranoia: 0.2, us_them: 0.3 }
+      - key: careful
+        icon: "🔒"
+        i18n: { cs: { text: "Opatrnosti není nikdy dost" }, en: { text: "You can never be careful enough" } }
+        axis_weights: { trust_paranoia: 0.8, us_them: 0.4 }
+
+  - key: who_to_believe
+    section: trust
+    position: 14
+    i18n:
+      cs:
+        scenario: "O věci, které nerozumíš, si protiřečí čtyři lidé."
+        text: "Komu uvěříš?"
+      en:
+        scenario: "Four people contradict each other about something you don't understand."
+        text: "Whom do you believe?"
+    options:
+      - key: experts
+        icon: "🔬"
+        i18n: { cs: { text: "Tomu, kdo se tím zabývá celý život" }, en: { text: "The one who has studied it their whole life" } }
+        axis_weights: { trust_paranoia: -0.6 }
+      - key: neighbour
+        icon: "🏘️"
+        i18n: { cs: { text: "Sousedovi, kterého znám dvacet let" }, en: { text: "The neighbour I've known for twenty years" } }
+        axis_weights: { trust_paranoia: 0.2, us_them: 0.5 }
+      - key: myself
+        icon: "👁️"
+        i18n: { cs: { text: "Jen tomu, co si ověřím sám" }, en: { text: "Only what I check myself" } }
+        axis_weights: { trust_paranoia: 0.5, us_them: 0.2 }
+      - key: nobody
+        icon: "🌫️"
+        i18n: { cs: { text: "Nikomu. Pravdu se stejně nedozvím." }, en: { text: "Nobody. I'll never know the truth anyway." } }
+        axis_weights: { trust_paranoia: 0.9, us_them: 0.3 }
+
+  - key: future_world
+    section: trust
+    position: 15
+    i18n:
+      cs: { text: "Bude se na světě za dvacet let žít líp, nebo hůř?" }
+      en: { text: "Will the world be a better or a worse place to live in twenty years?" }
+    options:
+      - key: better
+        icon: "🌅"
+        i18n: { cs: { text: "Líp" }, en: { text: "Better" } }
+        axis_weights: { trust_paranoia: -0.7 }
+      - key: same
+        icon: "➖"
+        i18n: { cs: { text: "Zhruba stejně" }, en: { text: "About the same" } }
+        axis_weights: {}
+      - key: worse
+        icon: "🌒"
+        i18n: { cs: { text: "Hůř" }, en: { text: "Worse" } }
+        axis_weights: { trust_paranoia: 0.6 }
+
+  - key: freedom_or_safety
+    section: values
+    position: 16
+    i18n:
+      cs:
+        scenario: "Někdo ti nabídne, že tvoje město bude bezpečnější."
+        text: "Kolik svobody za to dáš?"
+      en:
+        scenario: "Someone offers to make your city safer."
+        text: "How much freedom will you trade for it?"
+    options:
+      - key: none
+        icon: "🕊️"
+        i18n: { cs: { text: "Nic. Svoboda není směnitelná." }, en: { text: "None. Freedom is not for trade." } }
+        axis_weights: { trust_paranoia: -0.5, peace_force: -0.4 }
+      - key: little
+        icon: "⚖️"
+        i18n: { cs: { text: "Trochu, a chci vidět, kdo o tom rozhoduje" }, en: { text: "A little, and I want to see who decides" } }
+        axis_weights: { trust_paranoia: 0.1 }
+      - key: much
+        icon: "🛡️"
+        i18n: { cs: { text: "Hodně. Mrtvý svobodu nepotřebuje." }, en: { text: "A lot. The dead have no use for freedom." } }
+        axis_weights: { trust_paranoia: 0.6, peace_force: 0.5 }
+
+  - key: now_or_later
+    section: values
+    position: 17
+    i18n:
+      cs: { text: "Sto korun dnes, nebo tři sta za deset let někomu, koho neznáš?" }
+      en: { text: "A hundred today, or three hundred in ten years to someone you'll never meet?" }
+    options:
+      - key: now
+        icon: "🪙"
+        i18n: { cs: { text: "Sto dnes" }, en: { text: "A hundred today" } }
+        axis_weights: { us_them: 0.5 }
+      - key: split
+        icon: "✂️"
+        i18n: { cs: { text: "Rozdělím to napůl" }, en: { text: "I'd split it" } }
+        axis_weights: { us_them: -0.2 }
+      - key: later
+        icon: "🌳"
+        i18n: { cs: { text: "Tři sta za deset let" }, en: { text: "Three hundred in ten years" } }
+        axis_weights: { us_them: -0.7 }
+
+  - key: earned_or_equal
+    section: values
+    position: 18
+    i18n:
+      cs:
+        scenario: "Deset lidí táhlo jeden vůz. Tři z nich táhli víc."
+        text: "Jak se dělí odměna?"
+      en:
+        scenario: "Ten people pulled one cart. Three of them pulled harder."
+        text: "How is the reward split?"
+    options:
+      - key: equal
+        icon: "🟰"
+        i18n: { cs: { text: "Všem stejně. Vůz dojel díky všem." }, en: { text: "Equally. The cart arrived thanks to everyone." } }
+        axis_weights: { us_them: -0.7 }
+      - key: mostly_equal
+        icon: "🤏"
+        i18n: { cs: { text: "Skoro stejně, těm třem o kus víc" }, en: { text: "Almost equally, a bit more for those three" } }
+        axis_weights: { us_them: -0.2 }
+      - key: by_effort
+        icon: "💪"
+        i18n: { cs: { text: "Podle toho, kdo kolik táhl" }, en: { text: "By how much each one pulled" } }
+        axis_weights: { us_them: 0.4 }
+
+  - key: found_wallet
+    section: values
+    position: 19
+    i18n:
+      cs:
+        scenario: "Najdeš peněženku s ročním platem a adresou majitele. Nikdo tě neviděl."
+        text: "Co uděláš?"
+      en:
+        scenario: "You find a wallet holding a year's wages and the owner's address. Nobody saw you."
+        text: "What do you do?"
+    options:
+      - key: return_all
+        icon: "📮"
+        i18n: { cs: { text: "Vrátím celou" }, en: { text: "Return all of it" } }
+        axis_weights: { trust_paranoia: -0.6, us_them: -0.5 }
+      - key: keep_some
+        icon: "🪄"
+        i18n: { cs: { text: "Vrátím ji a nechám si nálezné, i když o něm majitel neví" }, en: { text: "Return it, keeping a finder's fee the owner never agreed to" } }
+        axis_weights: { us_them: 0.2 }
+      - key: keep_all
+        icon: "🚶"
+        i18n: { cs: { text: "Nechám si ji. Kdo ztrácí, ať si dává pozor." }, en: { text: "Keep it. Careless is as careless does." } }
+        axis_weights: { trust_paranoia: 0.4, us_them: 0.7 }
+
+  - key: costly_truth
+    section: values
+    position: 20
+    i18n:
+      cs:
+        scenario: "Víš o svých lidech něco, co je pravda a co jim uškodí."
+        text: "Kdo se to dozví?"
+      en:
+        scenario: "You know something true about your own people that will damage them."
+        text: "Who gets to hear it?"
+    options:
+      - key: everyone
+        icon: "📣"
+        i18n: { cs: { text: "Všichni. Pravda se neváží podle toho, koho se týká." }, en: { text: "Everyone. Truth isn't weighed by whom it hurts." } }
+        axis_weights: { us_them: -0.6, trust_paranoia: -0.3 }
+      - key: inside
+        icon: "🚪"
+        i18n: { cs: { text: "Řeknu to doma a ať si to vyřídíme mezi sebou" }, en: { text: "I say it at home and we sort it out among ourselves" } }
+        axis_weights: { us_them: 0.4 }
+      - key: nobody
+        icon: "🤐"
+        i18n: { cs: { text: "Nikdo. Svoje lidi neshazuju." }, en: { text: "Nobody. I don't sell out my own." } }
+        axis_weights: { us_them: 0.8, trust_paranoia: 0.3 }

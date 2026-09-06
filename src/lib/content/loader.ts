@@ -5,6 +5,7 @@ import { isKnownCountry } from "@/lib/countries";
 import type { ArchetypeRule, ContentContradiction, ContentQuestion, ContentRound, WeightingParams } from "@/types/domain";
 import {
   archetypesFileSchema,
+  compassFileSchema,
   contradictionsFileSchema,
   duelsFileSchema,
   propheciesFileSchema,
@@ -12,6 +13,7 @@ import {
   titlesFileSchema,
   weightingFileSchema,
   type ArchetypesFile,
+  type CompassFile,
   type DuelsFile,
   type PropheciesFile,
   type RoundFile,
@@ -85,6 +87,37 @@ export function loadDuels(dir = CONTENT_DIR): DuelsFile["duels"] {
   }
   if (errors.length) throw new Error(`content/duels.yaml:\n  - ${errors.join("\n  - ")}`);
   return duels;
+}
+
+/**
+ * The Kompas deck (ARCHITECTURE §17). Structural problems throw, so a broken deck fails the
+ * build rather than the product. Staleness does not throw — see `staleFacts` — because a
+ * fact that needs rechecking must not take the running site down with it.
+ */
+export function loadCompass(dir = CONTENT_DIR): CompassFile {
+  const file = compassFileSchema.parse(readYaml(join(dir, "compass.yaml")));
+  const errors: string[] = [];
+  const seenKeys = new Set<string>();
+  const seenPositions = new Map<number, string>();
+  for (const q of file.questions) {
+    if (seenKeys.has(q.key)) errors.push(`duplicate compass question key '${q.key}'`);
+    seenKeys.add(q.key);
+    const other = seenPositions.get(q.position);
+    if (other) errors.push(`position ${q.position} used by both '${other}' and '${q.key}'`);
+    seenPositions.set(q.position, q.key);
+  }
+  const facts = file.questions.filter((q) => q.section === "fact");
+  // Fewer than three facts and the "worse than chance" comparison stops meaning anything.
+  if (facts.length < 3) errors.push(`compass needs at least 3 facts, has ${facts.length}`);
+  if (errors.length) throw new Error(`content/compass.yaml:\n  - ${errors.join("\n  - ")}`);
+  return { compass: file.compass, questions: [...file.questions].sort((a, b) => a.position - b.position) };
+}
+
+/** Facts whose `review_by` has passed. `pnpm content:check` fails on these; the site does not. */
+export function staleFacts(file: CompassFile, now = new Date()): Array<{ key: string; review_by: Date; source: string }> {
+  return file.questions
+    .filter((q) => q.section === "fact" && q.source && q.source.review_by < now)
+    .map((q) => ({ key: q.key, review_by: q.source!.review_by, source: q.source!.name }));
 }
 
 export function loadContradictionsLibrary(dir = CONTENT_DIR): ContentContradiction[] {
@@ -219,8 +252,17 @@ export type ContentBundle = {
   weighting: WeightingFile;
   duels: DuelsFile["duels"];
   prophecies: PropheciesFile["prophecies"];
+  compass: CompassFile;
 };
 
 export function loadContent(dir = CONTENT_DIR): ContentBundle {
-  return { rounds: loadRounds(dir), archetypes: loadArchetypes(dir), titles: loadTitles(dir), weighting: loadWeighting(dir), duels: loadDuels(dir), prophecies: loadProphecies(dir) };
+  return {
+    rounds: loadRounds(dir),
+    archetypes: loadArchetypes(dir),
+    titles: loadTitles(dir),
+    weighting: loadWeighting(dir),
+    duels: loadDuels(dir),
+    prophecies: loadProphecies(dir),
+    compass: loadCompass(dir),
+  };
 }

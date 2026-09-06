@@ -13,6 +13,8 @@ import { RulerSwitch } from "@/components/viz/RulerSwitch";
 import { TrendLine } from "@/components/viz/TrendLine";
 import { TwoCamps } from "@/components/viz/TwoCamps";
 import { WorldMap } from "@/components/viz/WorldMap";
+import { KnowledgeBars } from "@/components/viz/KnowledgeBars";
+import { KnowledgeSplit } from "@/components/viz/KnowledgeSplit";
 import type { TitleMeta } from "@/lib/content/public";
 import { compareCountries, type DuelSideInput } from "@/lib/duel/compare";
 import type { ResultsFilterPayload } from "@/types/api";
@@ -100,6 +102,41 @@ export function VizGallery({ archetypes, titles, codes }: { archetypes: Record<s
     },
   };
 
+  const knowledgeItems = [
+    { key: "co2_trend", label: "Co dělaly loni celosvětové emise CO₂ z fosilních paliv?", share_weighted: 19, share_raw: 21 },
+    { key: "extreme_poverty", label: "Kolik ze sta lidí na světě dnes žije v extrémní chudobě?", share_weighted: 27, share_raw: 25 },
+    { key: "child_mortality", label: "Kolik dětí ze sta narozených se dnes nedožije pěti let?", share_weighted: 34, share_raw: 33 },
+    { key: "nuclear_warheads", label: "Kolik jaderných hlavic je na světě dnes?", share_weighted: 41, share_raw: 44 },
+    { key: "internet_users", label: "Kolik procent lidstva používá internet?", share_weighted: 58, share_raw: 61 },
+    { key: "child_vaccination", label: "Kolik procent ročních dětí dostane aspoň jednu dávku očkování?", share_weighted: 66, share_raw: 63 },
+  ];
+  const splitQuestions = [
+    {
+      key: "secret_weapon",
+      label: "Soused má tajnou zbraň. Můžeš ji mít taky, za celou letošní úrodu.",
+      options: [
+        { key: "buy", label: "Koupím. Bezpečí především.", low: 44, mid: 33, high: 21, gap: -23 },
+        { key: "promise", label: "Nekoupím. Domluvím s ním, že ji nikdy nepoužije.", low: 18, mid: 24, high: 31, gap: 13 },
+        { key: "alliance", label: "Nekoupím, ale domluvím se s ostatními sousedy", low: 21, mid: 26, high: 34, gap: 13 },
+        { key: "half", label: "Koupím půlku a dělám, že mám celou", low: 17, mid: 17, high: 14, gap: -3 },
+      ],
+    },
+    {
+      key: "the_sick_village",
+      label: "V sousední vesnici vypukla nemoc. Co uděláte?",
+      options: [
+        { key: "send_doctor", label: "Pošleme tam našeho doktora a léky", low: 22, mid: 30, high: 39, gap: 17 },
+        { key: "quarantine_help", label: "Cestu zavřeme, ale jídlo a léky necháváme na hranici", low: 38, mid: 40, high: 41, gap: 3 },
+        { key: "close_road", label: "Zavřeme cestu. Nikdo sem, nikdo tam.", low: 40, mid: 30, high: 20, gap: -20 },
+      ],
+    },
+  ];
+  const splitBands = [
+    { band: "low" as const, n: 412, knowledge_mean: 0.19, survival_mean: 0.58 },
+    { band: "mid" as const, n: 408, knowledge_mean: 0.38, survival_mean: 0.62 },
+    { band: "high" as const, n: 410, knowledge_mean: 0.71, survival_mean: 0.69 },
+  ];
+
   const block = (title: string, el: React.ReactNode) => (
     <section className="mt-8">
       <h2 className="mb-3 font-mono text-sm text-accent">{title}</h2>
@@ -119,6 +156,11 @@ export function VizGallery({ archetypes, titles, codes }: { archetypes: Record<s
       {block("RulerSwitch", <RulerSwitch value={filter} onChange={setFilter} />)}
       {block("TrendLine", <TrendLine points={data.trend} />)}
       {block("CountryBoard", <CountryBoard countries={data.board} threshold={500} archetypes={archetypes} titles={titles} highlight="CZ" />)}
+      {block("KnowledgeBars", <KnowledgeBars items={knowledgeItems} chance={1 / 3} knowledge={{ raw: 0.41, weighted: 0.38 }} bias={{ pessimistic: 71, optimistic: 29 }} />)}
+      {block("KnowledgeBars (planeta pod náhodou)", <KnowledgeBars items={knowledgeItems.slice(0, 3)} chance={1 / 3} knowledge={{ raw: 0.28, weighted: 0.26 }} bias={{ pessimistic: 88, optimistic: 12 }} />)}
+      {block("KnowledgeBars (bez dat)", <KnowledgeBars items={[]} chance={1 / 3} knowledge={{ raw: null, weighted: null }} bias={{ pessimistic: 0, optimistic: 0 }} />)}
+      {block("KnowledgeSplit", <KnowledgeSplit bands={splitBands} questions={splitQuestions} enough minN={30} />)}
+      {block("KnowledgeSplit (málo lidí)", <KnowledgeSplit bands={[]} questions={[]} enough={false} minN={30} />)}
       {block("DuelBoard", <DuelBoard duel={duel} texts={duelTexts} />)}
       {block("DuelBoard (not enough votes)", <DuelBoard duel={compareCountries(duelSide("CZ", [46, 21, 33], [28, 24, 48], [-0.18, 0.12, -0.31]), { code: "SK", live_count: 0, stats: null, questions: [] })} texts={duelTexts} />)}
     </div>

@@ -1,8 +1,8 @@
 "use client";
 
-import type { PlayQuestion } from "@/types/api";
 
-export function ProgressDots({ questions, current }: { questions: PlayQuestion[]; current: number }) {
+/** One dot per card; a diamond marks a card that is scored differently (meta, or a Kompas fact). */
+export function ProgressDots({ questions, current }: { questions: ReadonlyArray<{ id: string; type: string }>; current: number }) {
   return (
     <ol className="flex items-center justify-center gap-1.5" aria-label="progress">
       {questions.map((q, i) => {

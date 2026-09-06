@@ -431,6 +431,10 @@ Každá fáze končí zeleným `pnpm test` a e2e průchodem. Nezačínej další
 
 **Fáze 5 je hotová.** Zbývá potvrdit formulace šesti proroctví a nasadit reálné Turnstile klíče (viz §16).
 
+**Fáze 6 — Kompas** ✅ (znění a hodnoty faktů čekají na potvrzení)
+- Druhý index vedle přežití: dvanáct faktů se správnou odpovědí a osm profilových otázek. Detaily v §17.
+- Hotovo, když: deck poslaný do prohlížeče neobsahuje správné odpovědi, e2e projde celý test na 390×844 a druhý pokus vrátí 409.
+
 ---
 
 ## 16. Otevřené otázky (rozhodni před fází 3)
@@ -441,4 +445,64 @@ Každá fáze končí zeleným `pnpm test` a e2e průchodem. Nezačínej další
 - Kolik anchor otázek nechat trvale (návrh 5) vs. rotovat.
 - **Turnstile běží na testovacích klíčích Cloudflare**, které vždy projdou. Před spuštěním pro veřejnost je nutné nasadit reálné klíče: bez tajného klíče se každý hlas oflaguje `turnstile_unavailable` a zmizí z veřejných čísel.
 - Formulace šesti proroctví v `content/prophecies.yaml` jsou návrh; mechanismus je schválený, znění potvrdit před prvním uzavřením.
+- **Kompas (§17):** název modulu a čísla („Kompas", „index reality"), znění dvaceti otázek a hodnoty dvanácti faktů jsou návrh. Hodnoty byly 2026-09-05 ověřené proti citovaným zdrojům, ale znění potvrdit před spuštěním. Také `compass_seconds_per_card: 1.5` v `content/weighting.yaml` je moje číslo.
 - **Newsletter potřebuje odesílací službu.** Bez `RESEND_API_KEY` a `NEWSLETTER_FROM` se formulář nezobrazí a nic se nesbírá. Než se spustí, patří k němu i zásady zpracování údajů s identifikací správce (kdo je provozovatel, kontakt, doba uchování) — text z §14 je technický popis, ne právní dokument.
+
+
+---
+
+## 17. Kompas (druhý index)
+
+Aplikace do fáze 5 měřila jen názory: kde člověk stojí, jestli si neodporuje, jestli je ochoten ke kompromisu a jak dobře odhadne ostatní. Kompas přidává to jediné, co se dá ověřit proti světu — **jestli člověk ví, jak na tom svět je**.
+
+Rozhodnutí Hynka z 2026-09-05: samostatný stálý test, druhý index vedle přežití, fakta se třemi možnostmi, a „víra" ve smyslu důvěry, nikdy ne vyznání.
+
+### Proč vlastní tabulky a ne nový typ otázky v kole
+
+Kolo je postavené na tom, že **dilema nemá správnou odpověď**, a vynucuje to na šesti místech: `planet_results` filtruje `q.type = 'choice'`, trigger nad `answers` sype každý řádek do veřejných podílů názorů, validátor chce 3–9 dilemat a přesně jeden honeypot, `survivalWeightsSchema` chce přesně tři váhy, `questionSchema` je binární choice/meta a `tests/db/schema.test.ts` hlídá shodu enumu. Fakt do téhle formy nepatří. Kompas jde proto cestou proroctví: vlastní obsah, vlastní migrace `0007_compass.sql`, vlastní odeslání. **Index přežití ani jeho metodika se nemění.**
+
+Sdílené zůstává jen to nutné: tabulka `voters` přes cookie `pc_anon`, Turnstile, flood limiter a formule vážení podle zemí z §9.
+
+### Obsah (`content/compass.yaml`)
+
+Jeden soubor, jedna verze, tři sekce. Schéma a loader vynucují:
+
+- **`fact`**: přesně tři možnosti, právě jedna `correct: true`, povinný `source` s názvem, URL, `as_of` a `review_by`, povinný `i18n_answer` s vysvětlením, a `bias: pessimistic | optimistic` na každé špatné možnosti. Fakt nesmí nést `axis_weights`.
+- **`values` / `trust`**: žádná správná odpověď, žádný zdroj, ale aspoň jedna možnost s `axis_weights`, jinak otázka nic neměří.
+- Tři možnosti u faktů jsou záměr: náhoda pak dá přesně třetinu a věta „planeta odpovídá hůř než náhoda" je doložitelná, ne řečnická.
+- Deck je vyvážený schválně: sedm faktů dopadne líp, než lidé čekají, pět hůř. Deck, který říká jen „je to lepší, než si myslíš", je argument, ne měření.
+- `review_by` v minulosti shodí `pnpm content:check`. Běžící web ale běží dál — tichá zastaralost je horší než červený build, pád produkce kvůli datu je horší než obojí.
+
+### Skórování (`src/lib/compass/score.ts`, čisté funkce)
+
+- `knowledge` = podíl správných odpovědí, 0..1, `null` když hráč nezodpověděl žádný fakt.
+- `chance` = průměr z 1/počet možností přes zodpovězené fakty, tedy 1/3.
+- `skill` = `(knowledge − chance) / (1 − chance)`. Nula znamená stejně jako náhoda, jedna všechno správně, **záporné číslo hůř než náhoda**.
+- `bias` = počty špatných odpovědí podle směru, ze kterého vypadne druhý titulek: kterým směrem se planeta mýlí.
+- Osy počítá `scoreAxesOver` — ta samá funkce, kterou používá kolo (vytažená z `scoreAxes`, aby normalizace existovala jen jednou).
+
+### Co se nikdy nedostane do prohlížeče
+
+`get_compass` vrací plný deck včetně `correct`, `bias` a `axis_weights`; ven ho pouští jen `toPlayCompass`, které je odstraní — stejný princip, jakým `toPlayRound` skrývá honeypot. **Během testu se ukazuje jen to, co odpovídali ostatní; co je pravda, až na výsledkové stránce**, tedy až po odeslání. Tím zmizí i možnost si správné odpovědi vytáhnout dopředu. Správnost se navíc nikdy nebere z klienta: server ji přepočítá z vlastního decku a `submit_compass` ji ještě jednou přečte z `compass_options`.
+
+### Vážení
+
+Jen podle zemí, formulí z §9. Demografický raking se vědomě nepoužívá, protože se Kompas na věk ani pohlaví neptá — vážit podle údaje, který nesbíráme, by bylo číslo předstírající přesnost. `/methodology` to říká otevřeně a vypisuje všech dvanáct faktů i s jejich zdroji a daty; ta stránka se generuje z obsahu, ne z ruky.
+
+### Průnik: `round_by_knowledge`
+
+Rozdělí hlasy v kole na třetiny podle toho, jak hlasující dopadl v Kompasu, a vrátí podíly možností pro každou třetinu. Je to jediné číslo v produktu, které neumí ani názorový průzkum, ani faktový kvíz: *mění znalost faktů to, jak se lidé rozhodují?* Je to korelace, ne příčina, a UI to říká.
+
+### Jeden průchod na osobu a verzi
+
+Unique `(voter_id, version)`. Duplicita je jediné tvrdé odmítnutí (409), vše ostatní se flaguje. Zvýšení `compass.version` v obsahu otevře test všem znovu, což je zároveň způsob, jak se obnoví fakta.
+
+| Vrstva | Kde |
+|---|---|
+| Obsah | `content/compass.yaml`, schéma v `src/lib/content/schema.ts`, `loadCompass` + `staleFacts` v loaderu |
+| Migrace | `db/migrations/0007_compass.sql` — 4 tabulky, 9 funkcí `fn(p jsonb) returns jsonb` |
+| Čisté funkce | `src/lib/compass/score.ts`, převody tvarů `src/lib/compass/deck.ts` |
+| API | `GET/POST /api/compass`, `GET /api/compass/shares`, `GET /api/compass/stats` |
+| Stránky | `/[locale]/compass`, `/[locale]/compass/[submissionId]` |
+| Komponenty | `compass/CompassDeck`, `compass/AnswerSpread`, `compass/CompassResult`, viz `KnowledgeBars` a `KnowledgeSplit` (obojí na `/dev/viz`) |
+| i18n | jmenná oblast `compass` + `common.nav.compass` ve všech třech jazycích |

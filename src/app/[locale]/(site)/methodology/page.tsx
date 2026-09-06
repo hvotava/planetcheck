@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { loadArchetypes, loadContent, loadWeighting } from "@/lib/content/loader";
+import { loadArchetypes, loadCompass, loadContent, loadWeighting } from "@/lib/content/loader";
 import { currentRound } from "@/lib/api/rounds";
 import { pickLocalized } from "@/lib/content/i18n";
 import { Link } from "@/lib/i18n/navigation";
@@ -26,6 +26,8 @@ export default async function MethodologyPage({ params }: { params: Promise<{ lo
   const sw = round?.survival_weights ?? loadContent().rounds[0]?.survival_weights ?? { consistency: 0.4, compromise: 0.35, realism: 0.25 };
   const archetypes = loadArchetypes().archetypes;
   const threshold = round?.unlock_threshold ?? 500;
+  const compass = loadCompass();
+  const facts = compass.questions.filter((q) => q.section === "fact");
 
   const P = ({ children }: { children: React.ReactNode }) => <p className="mt-2 leading-relaxed text-muted">{children}</p>;
   const H = ({ id, children }: { id: string; children: React.ReactNode }) => (
@@ -60,6 +62,32 @@ export default async function MethodologyPage({ params }: { params: Promise<{ lo
 
       <H id="unlock">{t("unlockTitle")}</H>
       <P>{t("unlockText", { threshold })}</P>
+
+      <H id="compass">{t("compassTitle")}</H>
+      <P>{t("compassScoring")}</P>
+      <P>{t("compassSeparate")}</P>
+      <P>{t("compassWeighting")}</P>
+      <P>{t("compassStale")}</P>
+      <h3 className="mt-6 text-lg font-bold">{t("compassSourcesTitle")}</h3>
+      <ol className="mt-3 space-y-3">
+        {facts.map((q) => (
+          <li key={q.key} className="text-sm">
+            <p className="text-muted">{pickLocalized(q.i18n, locale, q.review_required)?.value.text ?? q.key}</p>
+            <p className="mt-0.5">
+              <a href={q.source!.url} target="_blank" rel="noopener noreferrer" className="underline decoration-dotted hover:text-accent">
+                {q.source!.name}
+              </a>
+              <span className="text-faint">
+                {" · "}
+                {t("compassAsOf", {
+                  as_of: q.source!.as_of.toISOString().slice(0, 10),
+                  review_by: q.source!.review_by.toISOString().slice(0, 10),
+                })}
+              </span>
+            </p>
+          </li>
+        ))}
+      </ol>
 
       <H id="trust">{t("trustTitle")}</H>
       <P>{t("trustText", { fast: w.too_fast_seconds, ip: w.rate_ip_per_hour, anon: w.rate_anon_per_hour })}</P>

@@ -3,6 +3,7 @@ export type Json = string | number | boolean | null | Json[] | { [key: string]: 
 
 export type Enums = {
   age_band: "18-24" | "25-34" | "35-44" | "45-54" | "55-64" | "65+";
+  compass_section: "fact" | "values" | "trust";
   gender_band: "f" | "m" | "x";
   prophecy_status: "open" | "closed" | "resolved" | "void";
   question_type: "choice" | "meta";
@@ -49,6 +50,60 @@ export type Tables = {
     created_ip_hash: string | null;
     active: boolean;
     created_at: string;
+  };
+  compass_answers: {
+    id: string;
+    submission_id: string;
+    question_id: string;
+    option_id: string;
+    correct: boolean;
+  };
+  compass_options: {
+    id: string;
+    question_id: string;
+    key: string;
+    position: number;
+    i18n: Json;
+    icon: string | null;
+    correct: boolean;
+    bias: string | null;
+    axis_weights: Json;
+    active: boolean;
+  };
+  compass_questions: {
+    id: string;
+    key: string;
+    section: Enums["compass_section"];
+    position: number;
+    i18n: Json;
+    i18n_answer: Json | null;
+    source: Json | null;
+    review_required: boolean;
+    active: boolean;
+    created_at: string;
+    updated_at: string;
+  };
+  compass_submissions: {
+    id: string;
+    voter_id: string;
+    version: number;
+    trust: Enums["trust_level"];
+    country_code: string | null;
+    ip_hash: string;
+    ua_family: string | null;
+    locale: string;
+    facts_total: number;
+    facts_correct: number;
+    knowledge: number | null;
+    chance: number | null;
+    skill: number | null;
+    bias: Json;
+    axis_scores: Json;
+    flagged: boolean;
+    flag_reasons: string[];
+    synthetic: boolean;
+    loaded_at: string | null;
+    submitted_at: string;
   };
   contradiction_pairs: {
     id: string;
